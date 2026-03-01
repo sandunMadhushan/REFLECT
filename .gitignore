@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# UI design reference screens — local only, not pushed to GitHub
+UI_Screens/
+
