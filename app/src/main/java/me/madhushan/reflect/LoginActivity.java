@@ -1,5 +1,7 @@
 package me.madhushan.reflect;
 
+import android.content.Intent;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,8 +53,11 @@ public class LoginActivity extends AppCompatActivity {
         btnApple.setOnClickListener(v ->
                 Toast.makeText(this, "Apple sign-in — coming soon", Toast.LENGTH_SHORT).show());
 
-        tvRegister.setOnClickListener(v ->
-                Toast.makeText(this, "Register — coming soon", Toast.LENGTH_SHORT).show());
+        tvRegister.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        });
     }
 
     private void handleLogin() {

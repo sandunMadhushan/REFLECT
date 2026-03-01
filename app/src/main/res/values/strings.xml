@@ -22,4 +22,15 @@
     <string name="splash_loading">Loading</string>
     <string name="splash_progress_format">%d%%</string>
     <string name="splash_progress_zero">0%</string>
+
+    <!-- Register Screen -->
+    <string name="register_title">Create account</string>
+    <string name="register_subtitle">Start your journey to self-growth with Reflect.</string>
+    <string name="hint_full_name">Full Name</string>
+    <string name="hint_confirm_password">Confirm Password</string>
+    <string name="register_terms_prefix">I agree to the</string>
+    <string name="register_terms_link">Terms &amp; Conditions</string>
+    <string name="btn_register">Register</string>
+    <string name="register_have_account">Already have an account?</string>
+    <string name="register_login_link">Log in</string>
 </resources>
