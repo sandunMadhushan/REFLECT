@@ -25,4 +25,21 @@
 
     <!-- Shadow / Overlay -->
     <color name="primary_shadow">#334e51e9</color>
+
+    <!-- Home Dashboard extras -->
+    <color name="surface_card">#FFFFFF</color>
+    <color name="green_bg">#DCFCE7</color>
+    <color name="green_icon">#16A34A</color>
+    <color name="blue_bg">#DBEAFE</color>
+    <color name="blue_icon">#2563EB</color>
+    <color name="purple_bg">#F3E8FF</color>
+    <color name="purple_icon">#9333EA</color>
+    <color name="bar_inactive">#E2E8F0</color>
+    <color name="notification_dot">#EF4444</color>
+    <color name="bottom_nav_bg">#F8FAFC</color>
+    <color name="bottom_nav_border">#E2E8F0</color>
+    <color name="text_hint">#94A3B8</color>
+    <color name="avatar_border">#4e51e9</color>
+    <color name="quote_overlay">#CC000000</color>
+    <color name="xp_text">#4e51e9</color>
 </resources>

@@ -33,4 +33,26 @@
     <string name="btn_register">Register</string>
     <string name="register_have_account">Already have an account?</string>
     <string name="register_login_link">Log in</string>
+
+    <!-- Home Dashboard -->
+    <string name="home_welcome">Welcome back,</string>
+    <string name="home_active_goals">Active Goals</string>
+    <string name="home_this_week">+1 this week</string>
+    <string name="home_completed">Completed</string>
+    <string name="home_habits_today">Today\'s Habits</string>
+    <string name="home_daily_inspiration">Daily Inspiration</string>
+    <string name="home_quote">"Believe you can and you\'re halfway there."</string>
+    <string name="home_quote_author">— Theodore Roosevelt</string>
+    <string name="home_your_progress">Your Progress</string>
+    <string name="home_view_all">View All</string>
+    <string name="home_recent_activity">Recent Activity</string>
+    <string name="home_nav_home">Home</string>
+    <string name="home_nav_goals">Goals</string>
+    <string name="home_nav_journal">Journal</string>
+    <string name="home_nav_profile">Profile</string>
+    <string name="home_activity_water">Drank Water</string>
+    <string name="home_activity_water_sub">Habit • 2 hours ago</string>
+    <string name="home_activity_reflection">Evening Reflection</string>
+    <string name="home_activity_reflection_sub">Journal • Yesterday</string>
+    <string name="home_xp">+10xp</string>
 </resources>
