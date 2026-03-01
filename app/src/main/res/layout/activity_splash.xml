@@ -6,9 +6,9 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_splash_gradient">
 
-    <!-- ===== CENTER CONTENT: Logo + App Name + Tagline ===== -->
+    <!-- ===== CENTER GROUP: Logo + App Name + Tagline (vertical chain) ===== -->
 
-    <!-- Logo Box -->
+    <!-- Logo Box — top of chain -->
     <FrameLayout
         android:id="@+id/splash_logo_box"
         android:layout_width="96dp"
@@ -19,8 +19,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:layout_constraintVertical_bias="0.42">
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintVertical_chainStyle="packed">
 
         <ImageView
             android:layout_width="48dp"
@@ -28,26 +28,27 @@
             android:layout_gravity="center"
             android:contentDescription="@string/content_desc_logo"
             android:src="@drawable/ic_mindfulness"
-            android:tint="@color/white" />
+            app:tint="@color/white" />
     </FrameLayout>
 
-    <!-- App Name -->
+    <!-- App Name — middle of chain -->
     <TextView
         android:id="@+id/tv_app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="sans-serif"
         android:letterSpacing="-0.02"
         android:text="@string/app_name"
         android:textColor="@color/white"
         android:textSize="40sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tv_tagline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/splash_logo_box" />
 
-    <!-- Tagline -->
+    <!-- Tagline — bottom of chain -->
     <TextView
         android:id="@+id/tv_tagline"
         android:layout_width="wrap_content"
@@ -58,18 +59,18 @@
         android:text="@string/splash_tagline"
         android:textColor="#E5FFFFFF"
         android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_app_name" />
 
     <!-- ===== BOTTOM: Progress Bar ===== -->
 
-    <!-- Progress container -->
     <LinearLayout
         android:id="@+id/progress_container"
         android:layout_width="240dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="56dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -91,7 +92,7 @@
                 android:text="@string/splash_loading"
                 android:textAllCaps="true"
                 android:textColor="#CCFFFFFF"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -99,9 +100,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:text="0%"
+                android:text="@string/splash_progress_zero"
                 android:textColor="#CCFFFFFF"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
