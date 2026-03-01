@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  This drawable is the very first thing the OS paints before SplashActivity renders.
+  It replicates the splash screen so there is zero visual flash.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Layer 1: gradient background (same as bg_splash_gradient) -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="135"
+                android:endColor="#7A5CFF"
+                android:startColor="#4e51e9"
+                android:type="linear" />
+        </shape>
+    </item>
+
+    <!-- Layer 2: semi-transparent rounded box centered -->
+    <item
+        android:bottom="220dp"
+        android:gravity="center"
+        android:left="0dp"
+        android:right="0dp"
+        android:top="0dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#33FFFFFF" />
+            <corners android:radius="24dp" />
+            <size
+                android:height="96dp"
+                android:width="96dp" />
+        </shape>
+    </item>
+
+    <!-- Layer 3: spa / mindfulness icon centered on the box -->
+    <item
+        android:bottom="244dp"
+        android:gravity="center"
+        android:left="0dp"
+        android:right="0dp"
+        android:top="24dp">
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/ic_mindfulness"
+            android:tint="#FFFFFF" />
+    </item>
+
+</layer-list>
+

@@ -12,7 +12,7 @@
     <!-- Splash Screen Theme: fullscreen gradient, no action bar -->
     <style name="Theme.REFLECT.Splash" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowFullscreen">true</item>
-        <item name="android:windowBackground">@drawable/bg_splash_gradient</item>
+        <item name="android:windowBackground">@drawable/splash_screen_preview</item>
         <item name="android:statusBarColor">@color/primary</item>
         <item name="android:navigationBarColor">#7A5CFF</item>
     </style>

@@ -28,7 +28,7 @@
             android:layout_gravity="center"
             android:contentDescription="@string/content_desc_logo"
             android:src="@drawable/ic_mindfulness"
-            android:tint="@color/white" />
+            app:tint="@color/white" />
     </FrameLayout>
 
     <!-- App Name — middle of chain -->
@@ -92,7 +92,7 @@
                 android:text="@string/splash_loading"
                 android:textAllCaps="true"
                 android:textColor="#CCFFFFFF"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -100,9 +100,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:text="0%"
+                android:text="@string/splash_progress_zero"
                 android:textColor="#CCFFFFFF"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -123,5 +123,4 @@
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
 
