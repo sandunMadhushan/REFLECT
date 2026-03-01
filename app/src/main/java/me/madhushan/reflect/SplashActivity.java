@@ -12,11 +12,14 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import me.madhushan.reflect.utils.SessionManager;
+
 public class SplashActivity extends AppCompatActivity {
 
     private static final int SPLASH_DURATION_MS = 2800;
     private TextView tvProgressPercent;
     private View progressFill;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,7 @@ public class SplashActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_splash);
 
+        sessionManager    = new SessionManager(this);
         tvProgressPercent = findViewById(R.id.tv_progress_percent);
         progressFill      = findViewById(R.id.progress_fill);
         View progressContainer = findViewById(R.id.progress_container);
@@ -37,9 +41,16 @@ public class SplashActivity extends AppCompatActivity {
         // Wait until layout is measured so we know the track width
         progressContainer.post(this::startProgressAnimation);
 
-        // Navigate to Login after splash duration
+        // Decide where to go after splash
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+            Intent intent;
+            if (sessionManager.isLoggedIn()) {
+                // Active session → skip login, go straight to Home
+                intent = new Intent(SplashActivity.this, MainActivity.class);
+            } else {
+                intent = new Intent(SplashActivity.this, LoginActivity.class);
+            }
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();
@@ -63,6 +74,3 @@ public class SplashActivity extends AppCompatActivity {
         animator.start();
     }
 }
-
-
-

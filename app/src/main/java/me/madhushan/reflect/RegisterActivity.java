@@ -2,6 +2,7 @@ package me.madhushan.reflect;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,6 +13,15 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import me.madhushan.reflect.database.AppDatabase;
+import me.madhushan.reflect.database.User;
+import me.madhushan.reflect.database.UserDao;
+import me.madhushan.reflect.utils.PasswordUtils;
+import me.madhushan.reflect.utils.SessionManager;
+
 public class RegisterActivity extends AppCompatActivity {
 
     private TextInputLayout tilFullName, tilEmail, tilPassword, tilConfirmPassword;
@@ -20,10 +30,17 @@ public class RegisterActivity extends AppCompatActivity {
     private MaterialButton btnRegister;
     private TextView tvLogin, tvTermsLink;
 
+    private AppDatabase db;
+    private SessionManager sessionManager;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        db             = AppDatabase.getInstance(this);
+        sessionManager = new SessionManager(this);
 
         initViews();
         setupClickListeners();
@@ -48,7 +65,6 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(v -> handleRegister());
 
         tvLogin.setOnClickListener(v -> {
-            // Go back to LoginActivity
             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
@@ -61,14 +77,14 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void handleRegister() {
-        String fullName       = text(etFullName);
-        String email          = text(etEmail);
-        String password       = text(etPassword);
+        String fullName        = text(etFullName);
+        String email           = text(etEmail);
+        String password        = text(etPassword);
         String confirmPassword = text(etConfirmPassword);
 
+        // ── Validation ──────────────────────────────────────────────────────
         boolean valid = true;
 
-        // Full name validation
         if (fullName.isEmpty()) {
             tilFullName.setError("Full name is required");
             valid = false;
@@ -76,7 +92,6 @@ public class RegisterActivity extends AppCompatActivity {
             tilFullName.setError(null);
         }
 
-        // Email validation
         if (email.isEmpty()) {
             tilEmail.setError("Email address is required");
             valid = false;
@@ -87,7 +102,6 @@ public class RegisterActivity extends AppCompatActivity {
             tilEmail.setError(null);
         }
 
-        // Password validation
         if (password.isEmpty()) {
             tilPassword.setError("Password is required");
             valid = false;
@@ -98,7 +112,6 @@ public class RegisterActivity extends AppCompatActivity {
             tilPassword.setError(null);
         }
 
-        // Confirm password validation
         if (confirmPassword.isEmpty()) {
             tilConfirmPassword.setError("Please confirm your password");
             valid = false;
@@ -109,20 +122,74 @@ public class RegisterActivity extends AppCompatActivity {
             tilConfirmPassword.setError(null);
         }
 
-        // Terms validation
         if (!cbTerms.isChecked()) {
             Toast.makeText(this, "Please accept the Terms & Conditions", Toast.LENGTH_SHORT).show();
             valid = false;
         }
 
-        if (valid) {
-            // TODO: Integrate registration backend here
-            Toast.makeText(this, "Account created! Welcome to Reflect 🎉", Toast.LENGTH_LONG).show();
-        }
+        if (!valid) return;
+
+        // ── Disable button while processing ────────────────────────────────
+        btnRegister.setEnabled(false);
+
+        final String finalFullName = fullName;
+        final String finalEmail    = email;
+        final String finalPassword = password;
+
+        // ── Room DB insert on background thread ─────────────────────────────
+        executor.execute(() -> {
+            UserDao dao = db.userDao();
+
+            // Check if email already registered
+            if (dao.emailExists(finalEmail) > 0) {
+                runOnUiThread(() -> {
+                    tilEmail.setError("This email is already registered");
+                    btnRegister.setEnabled(true);
+                });
+                return;
+            }
+
+            // Build and insert new user
+            User newUser       = new User();
+            newUser.fullName   = finalFullName;
+            newUser.email      = finalEmail;
+            newUser.passwordHash = PasswordUtils.hash(finalPassword);
+
+            long newId = dao.insertUser(newUser);
+
+            runOnUiThread(() -> {
+                btnRegister.setEnabled(true);
+                if (newId > 0) {
+                    // Auto-login: save session and go to MainActivity
+                    sessionManager.saveSession((int) newId, finalFullName, finalEmail);
+                    Toast.makeText(this,
+                            "Welcome to Reflect, " + finalFullName + "! 🎉",
+                            Toast.LENGTH_LONG).show();
+                    goToHome();
+                } else {
+                    Toast.makeText(this,
+                            "Registration failed. Please try again.",
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+    }
+
+    private void goToHome() {
+        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        finish();
     }
 
     private String text(TextInputEditText et) {
         return et.getText() != null ? et.getText().toString().trim() : "";
     }
-}
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        executor.shutdown();
+    }
+}
