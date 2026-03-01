@@ -16,4 +16,9 @@
     <string name="content_desc_logo">Reflect logo</string>
     <string name="content_desc_email_icon">Email icon</string>
     <string name="content_desc_visibility">Toggle password visibility</string>
+
+    <!-- Splash Screen -->
+    <string name="splash_tagline">Track. Reflect. Grow.</string>
+    <string name="splash_loading">Loading</string>
+    <string name="splash_progress_format">%d%%</string>
 </resources>
