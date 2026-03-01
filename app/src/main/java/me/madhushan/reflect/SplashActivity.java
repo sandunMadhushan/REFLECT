@@ -31,9 +31,17 @@ public class SplashActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
 
+        sessionManager = new SessionManager(this);
+
+        // ── If already logged in, skip splash entirely ──────────────────────
+        if (sessionManager.isLoggedIn()) {
+            goTo(MainActivity.class);
+            return; // don't setContentView or start animation
+        }
+
+        // ── No session — show splash, then go to Login ───────────────────────
         setContentView(R.layout.activity_splash);
 
-        sessionManager    = new SessionManager(this);
         tvProgressPercent = findViewById(R.id.tv_progress_percent);
         progressFill      = findViewById(R.id.progress_fill);
         View progressContainer = findViewById(R.id.progress_container);
@@ -42,19 +50,10 @@ public class SplashActivity extends AppCompatActivity {
         progressContainer.post(this::startProgressAnimation);
 
         // Decide where to go after splash
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            Intent intent;
-            if (sessionManager.isLoggedIn()) {
-                // Active session → skip login, go straight to Home
-                intent = new Intent(SplashActivity.this, MainActivity.class);
-            } else {
-                intent = new Intent(SplashActivity.this, LoginActivity.class);
-            }
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            finish();
-        }, SPLASH_DURATION_MS);
+        new Handler(Looper.getMainLooper()).postDelayed(
+                () -> goTo(LoginActivity.class),
+                SPLASH_DURATION_MS
+        );
     }
 
     private void startProgressAnimation() {
@@ -72,5 +71,13 @@ public class SplashActivity extends AppCompatActivity {
             progressFill.requestLayout();
         });
         animator.start();
+    }
+
+    private void goTo(Class<?> destination) {
+        Intent intent = new Intent(this, destination);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        finish();
     }
 }
