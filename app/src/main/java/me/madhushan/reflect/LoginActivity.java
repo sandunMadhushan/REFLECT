@@ -11,6 +11,15 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import me.madhushan.reflect.database.AppDatabase;
+import me.madhushan.reflect.database.User;
+import me.madhushan.reflect.database.UserDao;
+import me.madhushan.reflect.utils.PasswordUtils;
+import me.madhushan.reflect.utils.SessionManager;
+
 public class LoginActivity extends AppCompatActivity {
 
     private TextInputLayout tilEmail, tilPassword;
@@ -18,26 +27,32 @@ public class LoginActivity extends AppCompatActivity {
     private MaterialButton btnLogin, btnGoogle, btnApple;
     private TextView tvForgotPassword, tvRegister;
 
+    private AppDatabase db;
+    private SessionManager sessionManager;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        db             = AppDatabase.getInstance(this);
+        sessionManager = new SessionManager(this);
+
         initViews();
         setupClickListeners();
-        styleRegisterLink();
     }
 
     private void initViews() {
-        tilEmail = findViewById(R.id.til_email);
-        tilPassword = findViewById(R.id.til_password);
-        etEmail = findViewById(R.id.et_email);
-        etPassword = findViewById(R.id.et_password);
-        btnLogin = findViewById(R.id.btn_login);
-        btnGoogle = findViewById(R.id.btn_google);
-        btnApple = findViewById(R.id.btn_apple);
+        tilEmail        = findViewById(R.id.til_email);
+        tilPassword     = findViewById(R.id.til_password);
+        etEmail         = findViewById(R.id.et_email);
+        etPassword      = findViewById(R.id.et_password);
+        btnLogin        = findViewById(R.id.btn_login);
+        btnGoogle       = findViewById(R.id.btn_google);
+        btnApple        = findViewById(R.id.btn_apple);
         tvForgotPassword = findViewById(R.id.tv_forgot_password);
-        tvRegister = findViewById(R.id.tv_register);
+        tvRegister      = findViewById(R.id.tv_register);
     }
 
     private void setupClickListeners() {
@@ -53,16 +68,16 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(this, "Apple sign-in — coming soon", Toast.LENGTH_SHORT).show());
 
         tvRegister.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
     }
 
     private void handleLogin() {
-        String email = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
-        String password = etPassword.getText() != null ? etPassword.getText().toString().trim() : "";
+        String email    = text(etEmail);
+        String password = text(etPassword);
 
+        // ── Validation ──────────────────────────────────────────────────────
         boolean valid = true;
 
         if (email.isEmpty()) {
@@ -85,15 +100,50 @@ public class LoginActivity extends AppCompatActivity {
             tilPassword.setError(null);
         }
 
-        if (valid) {
-            // TODO: Integrate authentication here
-            Toast.makeText(this, "Logging in…", Toast.LENGTH_SHORT).show();
-        }
+        if (!valid) return;
+
+        // ── Disable button while authenticating ────────────────────────────
+        btnLogin.setEnabled(false);
+
+        final String finalEmail    = email;
+        final String finalPassword = password;
+
+        // ── Room DB query on background thread ──────────────────────────────
+        executor.execute(() -> {
+            UserDao dao          = db.userDao();
+            String  passwordHash = PasswordUtils.hash(finalPassword);
+            User    user         = dao.findByEmailAndPassword(finalEmail, passwordHash);
+
+            runOnUiThread(() -> {
+                btnLogin.setEnabled(true);
+                if (user != null) {
+                    // Save session and go to home
+                    sessionManager.saveSession(user.id, user.fullName, user.email);
+                    goToHome();
+                } else {
+                    // Show generic error — don't reveal which field is wrong
+                    tilEmail.setError(" ");
+                    tilPassword.setError("Incorrect email or password");
+                }
+            });
+        });
     }
 
-    private void styleRegisterLink() {
-        // Already styled in XML — keep as a standalone clickable view
+    private void goToHome() {
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        finish();
+    }
+
+    private String text(TextInputEditText et) {
+        return et.getText() != null ? et.getText().toString().trim() : "";
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        executor.shutdown();
     }
 }
-
-
