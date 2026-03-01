@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reflect - Splash Screen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4e51e9",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#111121",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased overflow-hidden">
+<div class="relative flex h-screen w-full flex-col items-center justify-between bg-gradient-to-br from-primary to-[#7A5CFF] p-6 text-white">
+<!-- Top Spacer for vertical balance -->
+<div class="flex-1"></div>
+<!-- Center Content: Logo and Title -->
+<div class="flex flex-col items-center justify-center gap-6">
+<!-- Logo Icon -->
+<div class="flex h-24 w-24 items-center justify-center rounded-3xl bg-white/20 backdrop-blur-sm shadow-xl ring-1 ring-white/30">
+<span class="material-symbols-outlined text-[48px] text-white">
+                    spa
+                </span>
+</div>
+<!-- Text Content -->
+<div class="text-center">
+<h1 class="text-[40px] font-extrabold tracking-tight leading-tight text-white drop-shadow-sm">
+                    Reflect
+                </h1>
+<p class="mt-2 text-lg font-medium text-white/90 tracking-wide">
+                    Track. Reflect. Grow.
+                </p>
+</div>
+</div>
+<!-- Bottom Section: Loading Indicator -->
+<div class="flex flex-col items-center justify-end flex-1 pb-12 w-full max-w-[240px]">
+<div class="flex w-full flex-col gap-2">
+<div class="flex justify-between items-end px-1">
+<span class="text-xs font-medium text-white/80 uppercase tracking-widest">Loading</span>
+<span class="text-xs font-medium text-white/80">30%</span>
+</div>
+<!-- Progress Bar -->
+<div class="h-1.5 w-full overflow-hidden rounded-full bg-black/20 backdrop-blur-sm">
+<div class="h-full w-[30%] rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]"></div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

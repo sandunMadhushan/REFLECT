@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Placeholder: Manrope font via Google Fonts downloadable font provider.
+     To enable, add com_google_android_gms_fonts_certs array to res/values/font_certs.xml
+     For now the app falls back to system sans-serif. -->
+<font-family xmlns:android="http://schemas.android.com/apk/res/android" />

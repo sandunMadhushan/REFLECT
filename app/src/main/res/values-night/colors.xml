@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Night mode overrides -->
+    <color name="background_light">#111121</color>
+    <color name="surface_light">#1a1b32</color>
+    <color name="border_light">#334155</color>
+    <color name="text_primary_light">#FFFFFF</color>
+    <color name="text_secondary_light">#94a3b8</color>
+</resources>
+

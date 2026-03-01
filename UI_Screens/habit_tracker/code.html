@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reflect - Habit Tracker</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2EC4B6", 
+                        "primary-dark": "#1F8A7F",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#121221",
+                        "card-dark": "#1C1C2E",
+                        "text-secondary": "#9495c7"
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding for clean UI */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col overflow-hidden">
+<!-- Main Content Area -->
+<div class="flex-1 overflow-y-auto no-scrollbar pb-24">
+<!-- Header -->
+<div class="flex items-center justify-between p-6 pt-12 pb-4">
+<div>
+<h1 class="text-2xl font-bold tracking-tight">Habit Tracker</h1>
+<p class="text-text-secondary text-sm">Keep up the momentum!</p>
+</div>
+<button class="flex items-center justify-center p-2 rounded-full hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-white">settings</span>
+</button>
+</div>
+<!-- Weekly Calendar View -->
+<div class="px-4 mb-6">
+<div class="bg-card-dark rounded-xl p-4 shadow-sm border border-white/5">
+<div class="flex items-center justify-between mb-4">
+<button class="p-1 hover:bg-white/10 rounded-full transition-colors">
+<span class="material-symbols-outlined text-text-secondary text-sm">arrow_back_ios_new</span>
+</button>
+<span class="text-sm font-semibold text-white">October 2023</span>
+<button class="p-1 hover:bg-white/10 rounded-full transition-colors">
+<span class="material-symbols-outlined text-text-secondary text-sm">arrow_forward_ios</span>
+</button>
+</div>
+<div class="grid grid-cols-7 gap-2">
+<!-- Day Headers -->
+<div class="text-center text-xs font-medium text-text-secondary">S</div>
+<div class="text-center text-xs font-medium text-text-secondary">M</div>
+<div class="text-center text-xs font-medium text-text-secondary">T</div>
+<div class="text-center text-xs font-medium text-text-secondary">W</div>
+<div class="text-center text-xs font-medium text-text-secondary">T</div>
+<div class="text-center text-xs font-medium text-text-secondary">F</div>
+<div class="text-center text-xs font-medium text-text-secondary">S</div>
+<!-- Days -->
+<button class="h-10 w-full flex items-center justify-center text-sm rounded-lg text-text-secondary hover:bg-white/5">24</button>
+<button class="h-10 w-full flex items-center justify-center text-sm rounded-lg text-text-secondary hover:bg-white/5">25</button>
+<button class="h-10 w-full flex items-center justify-center text-sm rounded-lg text-text-secondary hover:bg-white/5">26</button>
+<button class="h-10 w-full flex flex-col items-center justify-center text-sm rounded-lg bg-primary text-white shadow-lg shadow-primary/30">
+<span class="font-bold">27</span>
+<div class="w-1 h-1 bg-white rounded-full mt-0.5"></div>
+</button>
+<button class="h-10 w-full flex items-center justify-center text-sm rounded-lg text-white hover:bg-white/5">28</button>
+<button class="h-10 w-full flex items-center justify-center text-sm rounded-lg text-white hover:bg-white/5">29</button>
+<button class="h-10 w-full flex items-center justify-center text-sm rounded-lg text-white hover:bg-white/5">30</button>
+</div>
+</div>
+</div>
+<!-- Progress Overview -->
+<div class="px-4 mb-6">
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-card-dark p-4 rounded-xl border border-white/5">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<span class="text-xs font-medium text-text-secondary uppercase tracking-wider">Current Streak</span>
+</div>
+<div class="text-2xl font-bold text-white">12 Days</div>
+</div>
+<div class="bg-card-dark p-4 rounded-xl border border-white/5">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+<span class="text-xs font-medium text-text-secondary uppercase tracking-wider">Completion</span>
+</div>
+<div class="text-2xl font-bold text-white">85%</div>
+</div>
+</div>
+</div>
+<!-- Habits List -->
+<div class="px-4 pb-4">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-lg font-bold text-white">Today's Habits</h2>
+<button class="text-primary text-sm font-semibold hover:text-primary-dark transition-colors">Manage</button>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Habit Item 1 -->
+<div class="bg-card-dark p-4 rounded-xl border border-white/5 flex items-center justify-between group">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
+<span class="material-symbols-outlined">self_improvement</span>
+</div>
+<div>
+<h3 class="font-semibold text-white">Morning Meditation</h3>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-xs text-text-secondary">15 minutes</span>
+<span class="w-1 h-1 rounded-full bg-text-secondary"></span>
+<div class="flex items-center gap-1 text-orange-400">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<span class="text-xs font-bold">5</span>
+</div>
+</div>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Habit Item 2 -->
+<div class="bg-card-dark p-4 rounded-xl border border-white/5 flex items-center justify-between group">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+<span class="material-symbols-outlined">water_drop</span>
+</div>
+<div>
+<h3 class="font-semibold text-white">Drink Water</h3>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-xs text-text-secondary">2 Liters</span>
+<span class="w-1 h-1 rounded-full bg-text-secondary"></span>
+<div class="flex items-center gap-1 text-text-secondary opacity-50 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[14px]">local_fire_department</span>
+<span class="text-xs font-bold">0</span>
+</div>
+</div>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Habit Item 3 -->
+<div class="bg-card-dark p-4 rounded-xl border border-white/5 flex items-center justify-between group">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-pink-500/20 text-pink-400 flex items-center justify-center">
+<span class="material-symbols-outlined">book_2</span>
+</div>
+<div>
+<h3 class="font-semibold text-white">Read 20 Pages</h3>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-xs text-text-secondary">Book: Atomic Habits</span>
+<span class="w-1 h-1 rounded-full bg-text-secondary"></span>
+<div class="flex items-center gap-1 text-orange-400">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<span class="text-xs font-bold">12</span>
+</div>
+</div>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Habit Item 4 -->
+<div class="bg-card-dark p-4 rounded-xl border border-white/5 flex items-center justify-between group">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-orange-500/20 text-orange-400 flex items-center justify-center">
+<span class="material-symbols-outlined">fitness_center</span>
+</div>
+<div>
+<h3 class="font-semibold text-white">Evening Workout</h3>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-xs text-text-secondary">Strength Training</span>
+<span class="w-1 h-1 rounded-full bg-text-secondary"></span>
+<div class="flex items-center gap-1 text-text-secondary opacity-50 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[14px]">local_fire_department</span>
+<span class="text-xs font-bold">0</span>
+</div>
+</div>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+<!-- Secondary Button Add Habit -->
+<button class="mt-4 w-full py-4 rounded-xl border border-dashed border-primary/40 text-primary bg-primary/5 hover:bg-primary/10 flex items-center justify-center gap-2 transition-all group">
+<span class="material-symbols-outlined transition-transform group-hover:rotate-90">add</span>
+<span class="font-semibold">Add New Habit</span>
+</button>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="flex-none bg-[#1a1b32] border-t border-[#252646] px-4 pb-6 pt-2">
+<div class="flex justify-between items-center">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-text-secondary hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px] group-hover:-translate-y-1 transition-transform duration-300">home</span>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary" href="#">
+<span class="material-symbols-outlined text-[24px] font-variation-settings-fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Habits</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-text-secondary hover:text-white transition-colors group" href="#">
+<div class="relative">
+<div class="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full"></div>
+<span class="material-symbols-outlined text-[24px] group-hover:-translate-y-1 transition-transform duration-300">menu_book</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Journal</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-text-secondary hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px] group-hover:-translate-y-1 transition-transform duration-300">person</span>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Profile</p>
+</a>
+</div>
+</div>
+</body></html>

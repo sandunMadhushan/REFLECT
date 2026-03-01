@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reflect - Achievements</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4e51e9",
+                        "teal-accent": "#00BFA5",
+                        "teal-light": "#E0F2F1",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#111121",
+                        "surface-dark": "#1E1E2F",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-900 dark:text-gray-100 antialiased">
+<div class="mx-auto flex h-full min-h-screen w-full max-w-md flex-col bg-background-light dark:bg-background-dark pb-6">
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 px-6 pt-12 pb-4 backdrop-blur-md">
+<div class="flex items-center justify-between">
+<div>
+<h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Achievements</h1>
+<p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Keep pushing forward!</p>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-center gap-1 rounded-full bg-teal-accent/10 px-3 py-1 text-teal-accent">
+<span class="material-symbols-outlined text-[20px] fill-1">military_tech</span>
+<span class="text-sm font-bold">Level 12</span>
+</div>
+<div class="mt-1 text-xs text-gray-400">1,240 XP</div>
+</div>
+</div>
+<div class="mt-6">
+<div class="flex justify-between text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">
+<span>Total Progress</span>
+<span class="text-teal-accent">14/30 Unlocked</span>
+</div>
+<div class="h-2.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-surface-dark">
+<div class="h-full w-[46%] rounded-full bg-teal-accent shadow-[0_0_10px_rgba(0,191,165,0.4)]"></div>
+</div>
+</div>
+</header>
+<main class="flex-1 px-6 pt-2 pb-24">
+<div class="mb-8">
+<h2 class="mb-4 text-lg font-bold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+<span class="material-symbols-outlined text-orange-500">local_fire_department</span>
+                Streaks
+            </h2>
+<div class="grid grid-cols-2 gap-4">
+<div class="group relative flex flex-col items-center rounded-2xl bg-white dark:bg-surface-dark p-4 shadow-sm border-b-4 border-teal-accent transition-transform hover:scale-[1.02]">
+<div class="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-teal-light dark:bg-teal-accent/20 text-teal-accent">
+<span class="material-symbols-outlined text-[40px] fill-1">check_circle</span>
+</div>
+<h3 class="text-center text-sm font-bold text-gray-900 dark:text-white">Beginner</h3>
+<p class="text-center text-xs text-gray-500 dark:text-gray-400 mt-1">3 Day Streak</p>
+<div class="absolute top-2 right-2 rounded-full bg-teal-accent/10 p-1">
+<span class="material-symbols-outlined text-[16px] text-teal-accent">lock_open</span>
+</div>
+</div>
+<div class="group relative flex flex-col items-center rounded-2xl bg-white dark:bg-surface-dark p-4 shadow-sm border-b-4 border-teal-accent transition-transform hover:scale-[1.02]">
+<div class="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-teal-light dark:bg-teal-accent/20 text-teal-accent">
+<span class="material-symbols-outlined text-[40px] fill-1">bolt</span>
+</div>
+<h3 class="text-center text-sm font-bold text-gray-900 dark:text-white">Consistent</h3>
+<p class="text-center text-xs text-gray-500 dark:text-gray-400 mt-1">7 Day Streak</p>
+<div class="absolute top-2 right-2 rounded-full bg-teal-accent/10 p-1">
+<span class="material-symbols-outlined text-[16px] text-teal-accent">lock_open</span>
+</div>
+</div>
+<div class="group relative flex flex-col items-center rounded-2xl bg-gray-100 dark:bg-surface-dark/40 p-4 border border-transparent opacity-80 grayscale transition-all hover:grayscale-0 hover:opacity-100">
+<div class="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500">
+<span class="material-symbols-outlined text-[40px]">calendar_month</span>
+</div>
+<h3 class="text-center text-sm font-bold text-gray-500 dark:text-gray-400">Habit Master</h3>
+<p class="text-center text-xs text-gray-400 dark:text-gray-600 mt-1">30 Day Streak</p>
+<div class="mt-3 w-full px-2">
+<div class="h-1.5 w-full overflow-hidden rounded-full bg-gray-300 dark:bg-gray-800">
+<div class="h-full w-[45%] rounded-full bg-gray-500"></div>
+</div>
+<p class="mt-1 text-center text-[10px] text-gray-500">14/30 Days</p>
+</div>
+<div class="absolute top-2 right-2 p-1">
+<span class="material-symbols-outlined text-[16px] text-gray-400">lock</span>
+</div>
+</div>
+<div class="group relative flex flex-col items-center rounded-2xl bg-gray-100 dark:bg-surface-dark/40 p-4 border border-transparent opacity-60 grayscale">
+<div class="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500">
+<span class="material-symbols-outlined text-[40px]">diamond</span>
+</div>
+<h3 class="text-center text-sm font-bold text-gray-500 dark:text-gray-400">Unstoppable</h3>
+<p class="text-center text-xs text-gray-400 dark:text-gray-600 mt-1">100 Day Streak</p>
+<div class="absolute top-2 right-2 p-1">
+<span class="material-symbols-outlined text-[16px] text-gray-400">lock</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mb-8">
+<h2 class="mb-4 text-lg font-bold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+<span class="material-symbols-outlined text-purple-500">psychology</span>
+                Reflection Depth
+            </h2>
+<div class="grid grid-cols-2 gap-4">
+<div class="group relative flex flex-col items-center rounded-2xl bg-white dark:bg-surface-dark p-4 shadow-sm border-b-4 border-teal-accent transition-transform hover:scale-[1.02]">
+<div class="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-teal-light dark:bg-teal-accent/20 text-teal-accent">
+<span class="material-symbols-outlined text-[40px] fill-1">edit_note</span>
+</div>
+<h3 class="text-center text-sm font-bold text-gray-900 dark:text-white">First Entry</h3>
+<p class="text-center text-xs text-gray-500 dark:text-gray-400 mt-1">Write 1 Journal</p>
+<div class="absolute top-2 right-2 rounded-full bg-teal-accent/10 p-1">
+<span class="material-symbols-outlined text-[16px] text-teal-accent">lock_open</span>
+</div>
+</div>
+<div class="group relative flex flex-col items-center rounded-2xl bg-white dark:bg-surface-dark p-4 shadow-sm border-b-4 border-teal-accent transition-transform hover:scale-[1.02]">
+<div class="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-teal-light dark:bg-teal-accent/20 text-teal-accent">
+<span class="material-symbols-outlined text-[40px] fill-1">auto_stories</span>
+</div>
+<h3 class="text-center text-sm font-bold text-gray-900 dark:text-white">Storyteller</h3>
+<p class="text-center text-xs text-gray-500 dark:text-gray-400 mt-1">10 Entries Total</p>
+<div class="absolute top-2 right-2 rounded-full bg-teal-accent/10 p-1">
+<span class="material-symbols-outlined text-[16px] text-teal-accent">lock_open</span>
+</div>
+</div>
+<div class="group relative flex flex-col items-center rounded-2xl bg-gray-100 dark:bg-surface-dark/40 p-4 border border-transparent opacity-80 grayscale transition-all hover:grayscale-0 hover:opacity-100">
+<div class="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500">
+<span class="material-symbols-outlined text-[40px]">history_edu</span>
+</div>
+<h3 class="text-center text-sm font-bold text-gray-500 dark:text-gray-400">Novelist</h3>
+<p class="text-center text-xs text-gray-400 dark:text-gray-600 mt-1">50 Entries Total</p>
+<div class="mt-3 w-full px-2">
+<div class="h-1.5 w-full overflow-hidden rounded-full bg-gray-300 dark:bg-gray-800">
+<div class="h-full w-[80%] rounded-full bg-gray-500"></div>
+</div>
+<p class="mt-1 text-center text-[10px] text-gray-500">40/50 Entries</p>
+</div>
+<div class="absolute top-2 right-2 p-1">
+<span class="material-symbols-outlined text-[16px] text-gray-400">lock</span>
+</div>
+</div>
+<div class="group relative flex flex-col items-center rounded-2xl bg-gray-100 dark:bg-surface-dark/40 p-4 border border-transparent opacity-60 grayscale">
+<div class="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500">
+<span class="material-symbols-outlined text-[40px]">self_improvement</span>
+</div>
+<h3 class="text-center text-sm font-bold text-gray-500 dark:text-gray-400">Enlightened</h3>
+<p class="text-center text-xs text-gray-400 dark:text-gray-600 mt-1">Reflect for 1 Year</p>
+<div class="absolute top-2 right-2 p-1">
+<span class="material-symbols-outlined text-[16px] text-gray-400">lock</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<nav class="fixed bottom-0 left-0 right-0 z-50 mx-auto max-w-md bg-white/90 dark:bg-background-dark/90 backdrop-blur-xl border-t border-gray-100 dark:border-gray-800">
+<div class="flex items-center justify-around pb-6 pt-3">
+<button class="flex flex-col items-center gap-1 text-gray-400 hover:text-teal-accent">
+<span class="material-symbols-outlined text-[26px]">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400 hover:text-teal-accent">
+<span class="material-symbols-outlined text-[26px]">edit_note</span>
+<span class="text-[10px] font-medium">Reflect</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-teal-accent">
+<span class="material-symbols-outlined text-[26px] fill-1">emoji_events</span>
+<span class="text-[10px] font-medium">Goals</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400 hover:text-teal-accent">
+<span class="material-symbols-outlined text-[26px]">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</button>
+</div>
+</nav>
+</div>
+
+</body></html>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Reflect Brand Colors -->
+    <color name="primary">#4e51e9</color>
+    <color name="primary_dark">#4040d0</color>
+    <color name="indigo_600">#4f46e5</color>
+    <color name="purple_600">#9333ea</color>
+
+    <!-- Light Theme -->
+    <color name="background_light">#f6f6f8</color>
+    <color name="surface_light">#FFFFFF</color>
+    <color name="border_light">#e2e8f0</color>
+    <color name="text_primary_light">#0f172a</color>
+    <color name="text_secondary_light">#64748b</color>
+
+    <!-- Dark Theme -->
+    <color name="background_dark">#111121</color>
+    <color name="surface_dark">#1a1b32</color>
+    <color name="border_dark">#334155</color>
+    <color name="text_primary_dark">#FFFFFF</color>
+    <color name="text_secondary_dark">#94a3b8</color>
+
+    <!-- Shadow / Overlay -->
+    <color name="primary_shadow">#334e51e9</color>
+</resources>

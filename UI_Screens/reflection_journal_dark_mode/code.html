@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reflection Journal - Dark Mode</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#4e51e9",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#121212", // Updated to match user request slightly better while keeping config structure
+                        surface: "#1E1E1E", // User requested entry cards color
+                        "text-main": "#EAEAEA", // User requested text color
+                        "text-muted": "#A0A0A0",
+                    },
+                    fontFamily: {
+                        display: ["Manrope", "sans-serif"],
+                    },
+                    boxShadow: {
+                        'glow': '0 0 15px rgba(78, 81, 233, 0.3)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark text-text-main font-display antialiased min-h-screen flex flex-col overflow-x-hidden selection:bg-primary selection:text-white">
+<!-- Header Section -->
+<header class="sticky top-0 z-20 bg-background-dark/80 backdrop-blur-md border-b border-white/5 pt-12 pb-4 px-6">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface border border-white/10 flex items-center justify-center overflow-hidden">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="User profile avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAd04qkoYc1Nw9VOuLlfACdrPzodPMhtJa_xbvjMmwauKV8jLa0gOWwdgDLwyGJtmL1SP6Z52V87F1Mc5IqK18E4v5i_WZkmMk4L8vDZZG4HFyaBOQmL3RyYOtb8eFvx-hE5F5Yr_4vRdOVvRY5TTY9_QPu3GKBtzC6bnDt5jcqaeVZxvgwNkOCssscJvZ0ZoqF0y2xF8iMLUMzd9xzRpsE95Nzrq9IevLTRkhK11r0_iOoUqpZB7G4IQShv4U_J_50YrWz_-nx-1s"/>
+</div>
+<div>
+<p class="text-text-muted text-xs font-medium uppercase tracking-wider">Good Evening</p>
+<h1 class="text-xl font-bold text-white">Alex Johnson</h1>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full bg-surface border border-white/10 flex items-center justify-center text-text-main hover:bg-white/5 transition-colors relative">
+<span class="material-symbols-outlined !text-[20px]">notifications</span>
+<span class="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-surface"></span>
+</button>
+</div>
+<div class="flex items-center justify-between">
+<h2 class="text-2xl font-bold tracking-tight">Journal</h2>
+<div class="flex gap-2">
+<button class="w-10 h-10 rounded-xl flex items-center justify-center text-text-main hover:bg-surface transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="flex items-center gap-2 bg-surface hover:bg-white/5 border border-white/5 px-4 h-10 rounded-xl transition-all">
+<span class="material-symbols-outlined !text-[20px] text-primary">calendar_month</span>
+<span class="text-sm font-semibold">Oct 2023</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 px-4 py-6 pb-24 space-y-8">
+<!-- Stats / Mood Summary -->
+<section>
+<div class="flex justify-between items-center mb-4 px-2">
+<h3 class="text-lg font-bold text-white">Weekly Mood</h3>
+<a class="text-primary text-sm font-semibold hover:text-primary/80" href="#">View Report</a>
+</div>
+<div class="grid grid-cols-7 gap-2 bg-surface p-4 rounded-2xl border border-white/5">
+<!-- Day 1 -->
+<div class="flex flex-col items-center gap-2">
+<span class="text-xs text-text-muted font-medium">M</span>
+<div class="w-8 h-12 rounded-full bg-primary/20 flex items-center justify-center relative group">
+<div class="absolute inset-x-0 bottom-0 bg-primary rounded-full" style="height: 60%"></div>
+</div>
+</div>
+<!-- Day 2 -->
+<div class="flex flex-col items-center gap-2">
+<span class="text-xs text-text-muted font-medium">T</span>
+<div class="w-8 h-12 rounded-full bg-primary/20 flex items-center justify-center relative group">
+<div class="absolute inset-x-0 bottom-0 bg-primary rounded-full" style="height: 40%"></div>
+</div>
+</div>
+<!-- Day 3 -->
+<div class="flex flex-col items-center gap-2">
+<span class="text-xs text-text-muted font-medium">W</span>
+<div class="w-8 h-12 rounded-full bg-primary/20 flex items-center justify-center relative group">
+<div class="absolute inset-x-0 bottom-0 bg-primary rounded-full" style="height: 80%"></div>
+</div>
+</div>
+<!-- Day 4 -->
+<div class="flex flex-col items-center gap-2">
+<span class="text-xs text-text-muted font-medium">T</span>
+<div class="w-8 h-12 rounded-full bg-primary/20 flex items-center justify-center relative group">
+<div class="absolute inset-x-0 bottom-0 bg-primary rounded-full" style="height: 50%"></div>
+</div>
+</div>
+<!-- Day 5 -->
+<div class="flex flex-col items-center gap-2">
+<span class="text-xs text-text-muted font-medium">F</span>
+<div class="w-8 h-12 rounded-full bg-primary/20 flex items-center justify-center relative group">
+<div class="absolute inset-x-0 bottom-0 bg-primary rounded-full shadow-[0_0_10px_rgba(78,81,233,0.5)]" style="height: 90%"></div>
+</div>
+</div>
+<!-- Day 6 -->
+<div class="flex flex-col items-center gap-2">
+<span class="text-xs text-text-muted font-medium">S</span>
+<div class="w-8 h-12 rounded-full bg-white/5 flex items-center justify-center relative border border-white/5 border-dashed">
+</div>
+</div>
+<!-- Day 7 -->
+<div class="flex flex-col items-center gap-2">
+<span class="text-xs text-text-muted font-medium">S</span>
+<div class="w-8 h-12 rounded-full bg-white/5 flex items-center justify-center relative border border-white/5 border-dashed">
+</div>
+</div>
+</div>
+</section>
+<!-- Filters -->
+<section class="overflow-x-auto no-scrollbar -mx-4 px-4">
+<div class="flex gap-3 min-w-max">
+<button class="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl shadow-glow">
+<span class="material-symbols-outlined !text-[18px]">view_list</span>
+<span class="text-sm font-bold">All Entries</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2.5 bg-surface text-text-muted hover:text-white hover:bg-white/10 rounded-xl border border-white/5 transition-colors">
+<span class="material-symbols-outlined !text-[18px]">favorite</span>
+<span class="text-sm font-medium">Gratitude</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2.5 bg-surface text-text-muted hover:text-white hover:bg-white/10 rounded-xl border border-white/5 transition-colors">
+<span class="material-symbols-outlined !text-[18px]">flag</span>
+<span class="text-sm font-medium">Goals</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2.5 bg-surface text-text-muted hover:text-white hover:bg-white/10 rounded-xl border border-white/5 transition-colors">
+<span class="material-symbols-outlined !text-[18px]">sentiment_satisfied</span>
+<span class="text-sm font-medium">Mood</span>
+</button>
+</div>
+</section>
+<!-- Timeline -->
+<section>
+<h3 class="text-lg font-bold text-white mb-4 px-2">Today, Oct 24</h3>
+<div class="space-y-4">
+<!-- Entry Card 1 -->
+<div class="bg-surface p-4 rounded-2xl border border-white/5 relative overflow-hidden group hover:border-primary/30 transition-colors">
+<div class="flex gap-4">
+<div class="flex flex-col items-center pt-1 min-w-[3rem]">
+<span class="text-sm font-bold text-white">08:00</span>
+<span class="text-xs text-text-muted">AM</span>
+<div class="h-full w-px bg-white/10 mt-2 mb-[-2rem]"></div>
+</div>
+<div class="flex-1 pb-2">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-base font-bold text-white group-hover:text-primary transition-colors">Morning Reflection</h4>
+<div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.2)]">
+<span class="material-symbols-outlined !text-[18px]">wb_sunny</span>
+</div>
+</div>
+<p class="text-text-muted text-sm leading-relaxed mb-3 line-clamp-2">
+                                Woke up feeling energetic. The morning run really helped clear my mind. Ready to tackle the project presentation today.
+                            </p>
+<div class="w-full h-32 rounded-xl bg-cover bg-center" data-alt="Peaceful morning sunrise over mountains" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDHiJWUM-bBCvUQbnlTngROWdVd70qSnZ7TX6eS1QyEI8O5teVOx_NoCwNVWP7cFQMtIGILM89OGI3qlXNGRPkX9YdLsAx-9Iisv-oPk38IHBPgAgBafQ5-8bZlbBO9a081hcWqAtsBbe1OHNqWffVZob7ZwObwZDrjFBYzheB9oboUueFb_pZJZ6kuoFXT64H_dc2mJMVMwsUZ5H7TPkkL9IdAmQaLXpRhfWg1qeeKCrqj33cWUwwQb-USb1qC21jDoY6figf9F1c');"></div>
+</div>
+</div>
+</div>
+<!-- Entry Card 2 -->
+<div class="bg-surface p-4 rounded-2xl border border-white/5 relative overflow-hidden group hover:border-primary/30 transition-colors">
+<div class="flex gap-4">
+<div class="flex flex-col items-center pt-1 min-w-[3rem]">
+<span class="text-sm font-bold text-white">01:30</span>
+<span class="text-xs text-text-muted">PM</span>
+<div class="h-full w-px bg-white/10 mt-2 mb-[-2rem]"></div>
+</div>
+<div class="flex-1 pb-2">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-base font-bold text-white group-hover:text-primary transition-colors">Mid-day Check-in</h4>
+<div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-blue-400 shadow-[0_0_10px_rgba(96,165,250,0.2)]">
+<span class="material-symbols-outlined !text-[18px]">waves</span>
+</div>
+</div>
+<p class="text-text-muted text-sm leading-relaxed mb-3">
+                                A bit stressed with the deadlines, but making steady progress. Need to remember to breathe.
+                            </p>
+<div class="flex gap-2">
+<span class="px-2 py-1 rounded-md bg-white/5 text-xs text-text-muted font-medium border border-white/5">#work</span>
+<span class="px-2 py-1 rounded-md bg-white/5 text-xs text-text-muted font-medium border border-white/5">#stress</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Entry Card 3 -->
+<div class="bg-surface p-4 rounded-2xl border border-white/5 relative overflow-hidden group hover:border-primary/30 transition-colors">
+<div class="flex gap-4">
+<div class="flex flex-col items-center pt-1 min-w-[3rem]">
+<span class="text-sm font-bold text-white">08:45</span>
+<span class="text-xs text-text-muted">PM</span>
+</div>
+<div class="flex-1 pb-2">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-base font-bold text-white group-hover:text-primary transition-colors">Gratitude</h4>
+<div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-pink-400 shadow-[0_0_10px_rgba(244,114,182,0.2)]">
+<span class="material-symbols-outlined !text-[18px]">favorite</span>
+</div>
+</div>
+<p class="text-text-muted text-sm leading-relaxed mb-3">
+                                Grateful for a supportive team and a quiet evening at home. The rain sounds lovely outside.
+                            </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-6 w-14 h-14 rounded-full bg-gradient-to-br from-primary to-indigo-600 text-white shadow-[0_4px_20px_rgba(78,81,233,0.5)] flex items-center justify-center z-30 hover:scale-105 transition-transform active:scale-95">
+<span class="material-symbols-outlined !text-[28px]">add</span>
+</button>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 z-40 bg-surface border-t border-white/5 px-6 pb-6 pt-3 shadow-[0_-5px_20px_rgba(0,0,0,0.5)]">
+<div class="flex justify-between items-center max-w-md mx-auto">
+<a class="flex flex-col items-center gap-1 group" href="#">
+<div class="w-12 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined !text-[24px] fill-current">book_2</span>
+</div>
+<span class="text-[10px] font-bold text-white">Journal</span>
+</a>
+<a class="flex flex-col items-center gap-1 group text-text-muted hover:text-white transition-colors" href="#">
+<div class="w-12 h-8 flex items-center justify-center">
+<span class="material-symbols-outlined !text-[24px]">bar_chart</span>
+</div>
+<span class="text-[10px] font-medium">Stats</span>
+</a>
+<div class="w-8"></div> <!-- Spacer for FAB visually if needed, though FAB is floating above -->
+<a class="flex flex-col items-center gap-1 group text-text-muted hover:text-white transition-colors" href="#">
+<div class="w-12 h-8 flex items-center justify-center">
+<span class="material-symbols-outlined !text-[24px]">person</span>
+</div>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+<a class="flex flex-col items-center gap-1 group text-text-muted hover:text-white transition-colors" href="#">
+<div class="w-12 h-8 flex items-center justify-center">
+<span class="material-symbols-outlined !text-[24px]">settings</span>
+</div>
+<span class="text-[10px] font-medium">Settings</span>
+</a>
+</div>
+</nav>
+</body></html>

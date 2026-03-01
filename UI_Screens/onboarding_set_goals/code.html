@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reflect - Onboarding</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4e51e9",
+                        "primary-dark": "#3b3eb3",
+                        "background-light": "#F7F9FC",
+                        "background-dark": "#121221",
+                        "surface-dark": "#1c1c30",
+                        "text-secondary": "#9495c7",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased overflow-hidden">
+<div class="relative flex h-screen w-full flex-col overflow-hidden max-w-md mx-auto shadow-2xl bg-background-light dark:bg-background-dark">
+<!-- Top Bar -->
+<div class="flex items-center justify-end p-6 z-10">
+<button class="flex items-center justify-center rounded-full px-3 py-1.5 transition-colors hover:bg-black/5 dark:hover:bg-white/10">
+<span class="text-slate-500 dark:text-[#9495c7] text-sm font-bold leading-normal tracking-wide">Skip</span>
+</button>
+</div>
+<!-- Main Content Area -->
+<div class="flex flex-1 flex-col items-center justify-between pb-8">
+<!-- Illustration Area -->
+<div class="w-full px-6 flex-1 flex items-center justify-center max-h-[50vh]">
+<div class="w-full aspect-[4/5] bg-center bg-no-repeat bg-cover rounded-3xl overflow-hidden shadow-lg relative group" data-alt="Modern clean workspace with notebooks and laptop for goal planning" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBCF2iNNFZvDSdzvmutaaL8oR4fWXShjQEQL77497a720-Cj_R_8NxgkXmj_bADZPvSUU8V7ANmP_Q38QhpuYI2nclBi9FXbusQ-caZ_2Gemgjb3y06elDLTtrzCRajx5vL9-0E9nmVBHKvFpysD-irgg32XB5WJWMH3cmhw9kkpSWxBqfSH21kDyUA86kgD7hnm4F5C7HS6E3e9pZVjtpzAXCS3KFuNe1GiXi6-IhlZ7KQeYhY15p0AcjFWxbpyPTNmGJ1UUGR6Sw");'>
+<div class="absolute inset-0 bg-gradient-to-t from-background-light/20 via-transparent to-transparent dark:from-background-dark/40 dark:to-transparent"></div>
+</div>
+</div>
+<!-- Text Content -->
+<div class="flex w-full flex-col items-center px-6 pt-8 text-center">
+<h1 class="text-3xl font-extrabold leading-tight tracking-tight text-slate-900 dark:text-white mb-4">
+                    Set Meaningful Goals
+                </h1>
+<p class="text-slate-500 dark:text-[#9495c7] text-base font-medium leading-relaxed max-w-[300px]">
+                    Define your personal and professional aspirations with clarity. Reflect helps you break them down into actionable steps.
+                </p>
+</div>
+<!-- Footer Controls -->
+<div class="flex w-full flex-col items-center gap-8 px-6 pt-8 pb-4">
+<!-- Pagination Dots -->
+<div class="flex flex-row items-center justify-center gap-2.5">
+<div class="h-2.5 w-8 rounded-full bg-primary transition-all duration-300"></div>
+<div class="h-2.5 w-2.5 rounded-full bg-slate-300 dark:bg-[#353664] transition-all duration-300"></div>
+<div class="h-2.5 w-2.5 rounded-full bg-slate-300 dark:bg-[#353664] transition-all duration-300"></div>
+</div>
+<!-- Next Button -->
+<button class="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-xl bg-primary px-6 py-4 transition-all hover:bg-primary-dark active:scale-[0.98]">
+<span class="relative text-base font-bold text-white">Next Step</span>
+<span class="material-symbols-outlined text-white text-xl font-bold transition-transform group-hover:translate-x-1">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

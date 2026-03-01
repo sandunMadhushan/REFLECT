@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reflect - Reflection Journal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4e51e9",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#111121",
+                        "surface-dark": "#1a1b32", // Derived from original bg-[#1a1b32]
+                        "surface-light": "#ffffff",
+                        "text-secondary": "#9495c7",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "body": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex justify-center">
+<div class="relative flex h-full min-h-screen w-full max-w-md flex-col overflow-hidden bg-background-light dark:bg-background-dark shadow-2xl">
+<!-- Header -->
+<div class="flex items-center px-6 pt-12 pb-4 justify-between bg-background-light dark:bg-background-dark sticky top-0 z-10">
+<h2 class="text-2xl font-bold leading-tight tracking-tight text-slate-900 dark:text-white flex-1">Reflection Journal</h2>
+<div class="flex items-center justify-end">
+<button class="flex items-center justify-center rounded-xl h-10 w-10 bg-slate-200 dark:bg-surface-dark text-slate-600 dark:text-white hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-[24px]">calendar_today</span>
+</button>
+</div>
+</div>
+<!-- Filters -->
+<div class="flex gap-3 px-6 py-2 overflow-x-auto no-scrollbar mb-4">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary px-5 shadow-lg shadow-primary/25 transition-transform active:scale-95">
+<p class="text-white text-sm font-bold leading-normal">All time</p>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-slate-200 dark:bg-surface-dark px-5 border border-transparent dark:border-slate-800 transition-transform active:scale-95">
+<p class="text-slate-600 dark:text-slate-300 text-sm font-medium leading-normal">This week</p>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-slate-200 dark:bg-surface-dark px-5 border border-transparent dark:border-slate-800 transition-transform active:scale-95">
+<p class="text-slate-600 dark:text-slate-300 text-sm font-medium leading-normal">This month</p>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-slate-200 dark:bg-surface-dark px-5 border border-transparent dark:border-slate-800 transition-transform active:scale-95">
+<p class="text-slate-600 dark:text-slate-300 text-sm font-medium leading-normal">Favorites</p>
+</button>
+</div>
+<!-- Journal Entries List -->
+<div class="flex-1 overflow-y-auto px-6 pb-24 space-y-4">
+<!-- Entry 1 -->
+<div class="group flex gap-4 bg-white dark:bg-surface-dark p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800/50 hover:border-primary/50 transition-all cursor-pointer">
+<div class="flex items-start gap-4 flex-1">
+<div class="flex items-center justify-center rounded-xl bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 shrink-0 size-12">
+<span class="material-symbols-outlined text-[28px]">sentiment_satisfied</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<div class="flex justify-between items-start mb-1">
+<p class="text-slate-900 dark:text-white text-base font-bold leading-normal">Weekly Reflection</p>
+<span class="text-slate-400 dark:text-text-secondary text-xs font-medium">9:41 AM</span>
+</div>
+<p class="text-primary text-xs font-semibold mb-1.5 uppercase tracking-wide">Oct 24</p>
+<p class="text-slate-500 dark:text-text-secondary text-sm font-normal leading-relaxed line-clamp-2">
+                            Felt really productive this week, achieved most of my goals. I managed to finish the design sprint ahead of schedule and spent some quality time reading.
+                        </p>
+</div>
+</div>
+</div>
+<!-- Entry 2 -->
+<div class="group flex gap-4 bg-white dark:bg-surface-dark p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800/50 hover:border-primary/50 transition-all cursor-pointer">
+<div class="flex items-start gap-4 flex-1">
+<div class="flex items-center justify-center rounded-xl bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 shrink-0 size-12">
+<span class="material-symbols-outlined text-[28px]">sentiment_dissatisfied</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<div class="flex justify-between items-start mb-1">
+<p class="text-slate-900 dark:text-white text-base font-bold leading-normal">Anxiety Check-in</p>
+<span class="text-slate-400 dark:text-text-secondary text-xs font-medium">8:30 PM</span>
+</div>
+<p class="text-primary text-xs font-semibold mb-1.5 uppercase tracking-wide">Oct 22</p>
+<p class="text-slate-500 dark:text-text-secondary text-sm font-normal leading-relaxed line-clamp-2">
+                            Struggling a bit with the new project deadline. Need to break down the tasks into smaller chunks to avoid feeling overwhelmed.
+                        </p>
+</div>
+</div>
+</div>
+<!-- Entry 3 -->
+<div class="group flex gap-4 bg-white dark:bg-surface-dark p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800/50 hover:border-primary/50 transition-all cursor-pointer">
+<div class="flex items-start gap-4 flex-1">
+<div class="flex items-center justify-center rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shrink-0 size-12">
+<span class="material-symbols-outlined text-[28px]">sentiment_neutral</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<div class="flex justify-between items-start mb-1">
+<p class="text-slate-900 dark:text-white text-base font-bold leading-normal">Mid-week Sync</p>
+<span class="text-slate-400 dark:text-text-secondary text-xs font-medium">2:15 PM</span>
+</div>
+<p class="text-primary text-xs font-semibold mb-1.5 uppercase tracking-wide">Oct 20</p>
+<p class="text-slate-500 dark:text-text-secondary text-sm font-normal leading-relaxed line-clamp-2">
+                            Today was average. Didn't get much done but didn't waste time either. Just cruising through the tasks.
+                        </p>
+</div>
+</div>
+</div>
+<!-- Entry 4 -->
+<div class="group flex gap-4 bg-white dark:bg-surface-dark p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800/50 hover:border-primary/50 transition-all cursor-pointer">
+<div class="flex items-start gap-4 flex-1">
+<div class="flex items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 shrink-0 size-12">
+<span class="material-symbols-outlined text-[28px]">psychology</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<div class="flex justify-between items-start mb-1">
+<p class="text-slate-900 dark:text-white text-base font-bold leading-normal">Idea Spark</p>
+<span class="text-slate-400 dark:text-text-secondary text-xs font-medium">11:00 AM</span>
+</div>
+<p class="text-primary text-xs font-semibold mb-1.5 uppercase tracking-wide">Oct 18</p>
+<p class="text-slate-500 dark:text-text-secondary text-sm font-normal leading-relaxed line-clamp-2">
+                            Had a breakthrough on how to structure the database for the new feature. It suddenly clicked while walking.
+                        </p>
+</div>
+</div>
+</div>
+<!-- Entry 5 -->
+<div class="group flex gap-4 bg-white dark:bg-surface-dark p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800/50 hover:border-primary/50 transition-all cursor-pointer">
+<div class="flex items-start gap-4 flex-1">
+<div class="flex items-center justify-center rounded-xl bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 shrink-0 size-12">
+<span class="material-symbols-outlined text-[28px]">favorite</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<div class="flex justify-between items-start mb-1">
+<p class="text-slate-900 dark:text-white text-base font-bold leading-normal">Gratitude Log</p>
+<span class="text-slate-400 dark:text-text-secondary text-xs font-medium">7:00 AM</span>
+</div>
+<p class="text-primary text-xs font-semibold mb-1.5 uppercase tracking-wide">Oct 15</p>
+<p class="text-slate-500 dark:text-text-secondary text-sm font-normal leading-relaxed line-clamp-2">
+                            Grateful for the sunny weather and a good cup of coffee this morning. Small things matter.
+                        </p>
+</div>
+</div>
+</div>
+</div>
+<!-- FAB (Floating Action Button) -->
+<button class="absolute bottom-24 right-6 h-14 w-14 rounded-full bg-primary text-white shadow-lg shadow-primary/40 flex items-center justify-center hover:bg-primary/90 transition-transform hover:scale-105 active:scale-95 z-20">
+<span class="material-symbols-outlined text-[32px]">add</span>
+</button>
+<!-- Bottom Navigation -->
+<div class="flex gap-2 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-surface-dark px-4 pb-6 pt-3 z-30">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 rounded-full text-primary" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px] font-variation-settings-'FILL'1">book</span>
+</div>
+<span class="text-[10px] font-medium">Journal</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400 dark:text-text-secondary hover:text-slate-600 dark:hover:text-slate-200 transition-colors" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">track_changes</span>
+</div>
+<span class="text-[10px] font-medium">Goals</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400 dark:text-text-secondary hover:text-slate-600 dark:hover:text-slate-200 transition-colors" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">bar_chart</span>
+</div>
+<span class="text-[10px] font-medium">Stats</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400 dark:text-text-secondary hover:text-slate-600 dark:hover:text-slate-200 transition-colors" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">person</span>
+</div>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</div>
+</div>
+</body></html>

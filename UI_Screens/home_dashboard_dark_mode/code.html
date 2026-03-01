@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reflect - Home Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2513ec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#121022",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col overflow-hidden text-slate-900 dark:text-slate-100">
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto pb-20">
+<!-- Header -->
+<header class="flex items-center justify-between p-4 pt-6 sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden relative border border-slate-300 dark:border-slate-600">
+<img alt="User Profile" class="h-full w-full object-cover" data-alt="Portrait of a user smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBI_mN8OnIESb__NkR_Qx4Bno-B5XRVCJsBJG3a7tT4WwvOkwE1yGfwGjlTOFe6DMB551N4998dRM9QSpcPY8hVYV_CxdvpvapioDqR7AJ-sDl4fIhQfY7rWwHDNBpVkue0xCbpi26Z0qDDoFU3lDNeZ4K4So2giGgjkTamAkdX_4ki7r2xhFR8M89sXagMkjmkqH2Z4OlMCboUmIbU9zar_YWwvvk6tSr4bXgnzwuPjEee6_Lamtfdj4YSRgVOHMcNAqTcxxreWu8"/>
+</div>
+<div>
+<h2 class="text-sm font-medium text-slate-500 dark:text-slate-400">Welcome back,</h2>
+<h1 class="text-lg font-bold text-slate-900 dark:text-white leading-tight">Alex Morgan</h1>
+</div>
+</div>
+<button class="relative p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500 border border-background-light dark:border-background-dark"></span>
+</button>
+</header>
+<!-- Greeting Section -->
+<section class="px-4 py-2">
+<h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-6">Hello, User</h1>
+<!-- Summary Cards -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Active Goals Card -->
+<div class="bg-white dark:bg-[#1E1C2E] p-5 rounded-xl border border-slate-200 dark:border-slate-700/50 shadow-sm flex flex-col justify-between h-40 relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 bg-primary/10 h-24 w-24 rounded-full blur-2xl group-hover:bg-primary/20 transition-all duration-500"></div>
+<div class="flex items-start justify-between relative z-10">
+<div class="p-2 bg-primary/10 rounded-lg text-primary">
+<span class="material-symbols-outlined text-[24px]">target</span>
+</div>
+<span class="text-xs font-semibold text-green-500 bg-green-500/10 px-2 py-1 rounded-full">+1 this week</span>
+</div>
+<div class="relative z-10">
+<p class="text-3xl font-bold text-slate-900 dark:text-white">5</p>
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Active Goals</p>
+</div>
+</div>
+<!-- Habits Completed Card -->
+<div class="bg-white dark:bg-[#1E1C2E] p-5 rounded-xl border border-slate-200 dark:border-slate-700/50 shadow-sm flex flex-col justify-between h-40 relative overflow-hidden group">
+<div class="absolute -left-4 -bottom-4 bg-purple-500/10 h-24 w-24 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-all duration-500"></div>
+<div class="flex items-start justify-between relative z-10">
+<div class="p-2 bg-purple-500/10 rounded-lg text-purple-500">
+<span class="material-symbols-outlined text-[24px]">check_circle</span>
+</div>
+</div>
+<div class="relative z-10">
+<div class="flex items-end gap-1">
+<p class="text-3xl font-bold text-slate-900 dark:text-white">3</p>
+<p class="text-lg font-medium text-slate-400 dark:text-slate-500 mb-1">/8</p>
+</div>
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Habits Done</p>
+<!-- Mini Progress Bar -->
+<div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-3 overflow-hidden">
+<div class="bg-purple-500 h-full rounded-full w-[37.5%]"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Daily Insight / Motivation -->
+<section class="px-4 py-6">
+<div class="bg-gradient-to-r from-primary to-[#4f3df5] rounded-xl p-6 text-white shadow-lg relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+<h3 class="font-bold text-lg mb-2 relative z-10">Daily Reflection</h3>
+<p class="text-white/80 text-sm mb-4 relative z-10 leading-relaxed">"Success is not final, failure is not fatal: It is the courage to continue that counts."</p>
+<button class="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white text-xs font-bold py-2 px-4 rounded-lg transition-colors inline-flex items-center gap-2">
+                    Write Journal
+                    <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</section>
+<!-- Today's Habits List -->
+<section class="px-4 pb-6">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Today's Habits</h3>
+<a class="text-primary text-sm font-semibold hover:opacity-80" href="#">View All</a>
+</div>
+<div class="space-y-3">
+<!-- Habit Item 1 -->
+<div class="flex items-center p-4 bg-white dark:bg-[#1E1C2E] rounded-xl border border-slate-200 dark:border-slate-700/50 shadow-sm group cursor-pointer hover:border-primary/50 transition-colors">
+<div class="flex-shrink-0 mr-4">
+<div class="w-6 h-6 rounded-full border-2 border-slate-300 dark:border-slate-500 group-hover:border-primary flex items-center justify-center transition-colors">
+<!-- Checked State would have inner fill -->
+</div>
+</div>
+<div class="flex-1">
+<h4 class="text-base font-semibold text-slate-900 dark:text-slate-100">Morning Meditation</h4>
+<p class="text-xs text-slate-500 dark:text-slate-400">10 minutes • Mindfulness</p>
+</div>
+<div class="bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-slate-400 dark:text-slate-500">
+<span class="material-symbols-outlined text-[20px]">self_improvement</span>
+</div>
+</div>
+<!-- Habit Item 2 -->
+<div class="flex items-center p-4 bg-white dark:bg-[#1E1C2E] rounded-xl border border-slate-200 dark:border-slate-700/50 shadow-sm group cursor-pointer hover:border-primary/50 transition-colors">
+<div class="flex-shrink-0 mr-4">
+<div class="w-6 h-6 rounded-full bg-primary border-2 border-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</div>
+</div>
+<div class="flex-1 opacity-50">
+<h4 class="text-base font-semibold text-slate-900 dark:text-slate-100 line-through">Drink Water</h4>
+<p class="text-xs text-slate-500 dark:text-slate-400">2L Goal • Health</p>
+</div>
+<div class="bg-primary/10 p-2 rounded-lg text-primary">
+<span class="material-symbols-outlined text-[20px]">water_drop</span>
+</div>
+</div>
+<!-- Habit Item 3 -->
+<div class="flex items-center p-4 bg-white dark:bg-[#1E1C2E] rounded-xl border border-slate-200 dark:border-slate-700/50 shadow-sm group cursor-pointer hover:border-primary/50 transition-colors">
+<div class="flex-shrink-0 mr-4">
+<div class="w-6 h-6 rounded-full border-2 border-slate-300 dark:border-slate-500 group-hover:border-primary flex items-center justify-center transition-colors">
+</div>
+</div>
+<div class="flex-1">
+<h4 class="text-base font-semibold text-slate-900 dark:text-slate-100">Read 30 Pages</h4>
+<p class="text-xs text-slate-500 dark:text-slate-400">Current: Atomic Habits</p>
+</div>
+<div class="bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-slate-400 dark:text-slate-500">
+<span class="material-symbols-outlined text-[20px]">menu_book</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Spacer for bottom nav -->
+<div class="h-20"></div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 w-full bg-white dark:bg-[#17152a] border-t border-slate-200 dark:border-slate-800/50 px-6 pb-6 pt-3 flex justify-between items-center z-50 shadow-[0_-5px_15px_rgba(0,0,0,0.05)] dark:shadow-none">
+<a class="flex flex-col items-center gap-1 group" href="#">
+<div class="p-1.5 rounded-xl bg-primary/10 text-primary dark:bg-primary dark:text-white transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+</div>
+<span class="text-[10px] font-medium text-primary dark:text-white">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 group text-slate-400 hover:text-primary dark:text-slate-500 dark:hover:text-slate-300 transition-colors" href="#">
+<div class="p-1.5 rounded-xl group-hover:bg-slate-100 dark:group-hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined">book_2</span>
+</div>
+<span class="text-[10px] font-medium">Journal</span>
+</a>
+<!-- FAB (Floating Action Button) for central action -->
+<div class="relative -top-6">
+<button class="h-14 w-14 rounded-full bg-primary text-white shadow-lg shadow-primary/40 flex items-center justify-center hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[28px]">add</span>
+</button>
+</div>
+<a class="flex flex-col items-center gap-1 group text-slate-400 hover:text-primary dark:text-slate-500 dark:hover:text-slate-300 transition-colors" href="#">
+<div class="p-1.5 rounded-xl group-hover:bg-slate-100 dark:group-hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined">track_changes</span>
+</div>
+<span class="text-[10px] font-medium">Goals</span>
+</a>
+<a class="flex flex-col items-center gap-1 group text-slate-400 hover:text-primary dark:text-slate-500 dark:hover:text-slate-300 transition-colors" href="#">
+<div class="p-1.5 rounded-xl group-hover:bg-slate-100 dark:group-hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined">person</span>
+</div>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</nav>
+</body></html>
