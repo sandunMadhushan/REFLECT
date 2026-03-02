@@ -496,11 +496,12 @@ Sync Gradle, then run the app. Tap **Google** on the login screen — the system
 - [ ] 🔔 **Reminders** — daily reflection push notifications (channel already set up)
 - [ ] 🧩 **Habit Tracker** — daily habit check-ins with streaks
 
+<!--
 ---
 
 ## 👥 Team Members
 
-<!--
+
 | Name | Role | Screens / Contribution |
 |---|---|---|
 | **Sandun Madhushan** | Lead Developer | Splash, Onboarding, Login, Register, Forgot Password, Home Dashboard, Goals Tab, Add Goal, Edit Goal, Goal Details, Profile, Personal Details, Help & Support, Subscription, Google Sign-In, Profile Photo, Notifications, Dark/Light Theme |
