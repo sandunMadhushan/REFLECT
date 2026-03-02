@@ -51,6 +51,8 @@ public class ProfileActivity extends AppCompatActivity {
         btnLogout           = findViewById(R.id.btn_logout);
 
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
+        findViewById(R.id.btn_edit_avatar).setOnClickListener(v ->
+                startActivity(new Intent(this, PersonalDetailsActivity.class)));
     }
 
     private void populateUserData() {

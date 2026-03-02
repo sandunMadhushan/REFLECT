@@ -125,6 +125,7 @@ public class PersonalDetailsActivity extends AppCompatActivity {
                     etNewPassword.setText("");
                     etConfirmPassword.setText("");
                     Toast.makeText(this, getString(R.string.personal_details_success_password), Toast.LENGTH_SHORT).show();
+                    finish();
                 });
             });
         } else {
@@ -136,6 +137,7 @@ public class PersonalDetailsActivity extends AppCompatActivity {
                     sessionManager.setUserName(finalNewName);
                     tvAvatarInitials.setText(getInitials(finalNewName));
                     Toast.makeText(this, getString(R.string.personal_details_success_name), Toast.LENGTH_SHORT).show();
+                    finish();
                 });
             });
         }
@@ -180,6 +182,8 @@ public class PersonalDetailsActivity extends AppCompatActivity {
         if (executor != null) executor.shutdown();
     }
 }
+
+
 
 
 
