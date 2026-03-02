@@ -28,12 +28,12 @@
 
     <!-- Home Dashboard extras -->
     <color name="surface_card">#FFFFFF</color>
-    <color name="green_bg">#DCFCE7</color>
-    <color name="green_icon">#16A34A</color>
-    <color name="blue_bg">#DBEAFE</color>
-    <color name="blue_icon">#2563EB</color>
-    <color name="purple_bg">#F3E8FF</color>
-    <color name="purple_icon">#9333EA</color>
+    <color name="green_bg">#0D3321</color>
+    <color name="green_icon">#22C55E</color>
+    <color name="blue_bg">#1E3A5F</color>
+    <color name="blue_icon">#60A5FA</color>
+    <color name="purple_bg">#2D1B4E</color>
+    <color name="purple_icon">#C084FC</color>
     <color name="bar_inactive">#E2E8F0</color>
     <color name="notification_dot">#EF4444</color>
     <color name="bottom_nav_bg">#F8FAFC</color>

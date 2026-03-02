@@ -39,7 +39,7 @@ public class CircularProgressView extends View {
 
         trackPaint.setStyle(Paint.Style.STROKE);
         trackPaint.setStrokeWidth(strokeWidth);
-        trackPaint.setColor(0xFFE2E8F0); // light grey track
+        trackPaint.setColor(0xFF2A2D4A); // dark grey track for dark background
 
         progressPaint.setStyle(Paint.Style.STROKE);
         progressPaint.setStrokeWidth(strokeWidth);
