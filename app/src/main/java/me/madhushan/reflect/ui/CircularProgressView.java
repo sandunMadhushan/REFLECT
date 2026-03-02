@@ -5,11 +5,14 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
+import me.madhushan.reflect.R;
 
 /**
  * A lightweight circular progress ring drawn entirely via Canvas.
- * No third-party library needed.
+ * Track colour is resolved from the theme at construction time so it
+ * correctly switches between light and dark mode.
  */
 public class CircularProgressView extends View {
 
@@ -21,25 +24,34 @@ public class CircularProgressView extends View {
 
     public CircularProgressView(Context context) {
         super(context);
-        init();
+        init(context);
     }
 
     public CircularProgressView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context);
     }
 
     public CircularProgressView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(context);
     }
 
-    private void init() {
+    private void init(Context context) {
         float strokeWidth = dpToPx(4);
+
+        // Resolve track colour from theme attr (colorProgressTrack)
+        TypedValue tv = new TypedValue();
+        int trackColor;
+        if (context.getTheme().resolveAttribute(R.attr.colorProgressTrack, tv, true)) {
+            trackColor = tv.data;
+        } else {
+            trackColor = 0xFFE2E8F0; // fallback light grey
+        }
 
         trackPaint.setStyle(Paint.Style.STROKE);
         trackPaint.setStrokeWidth(strokeWidth);
-        trackPaint.setColor(0xFF2A2D4A); // dark grey track for dark background
+        trackPaint.setColor(trackColor);
 
         progressPaint.setStyle(Paint.Style.STROKE);
         progressPaint.setStrokeWidth(strokeWidth);

@@ -42,4 +42,20 @@
     <color name="avatar_border">#4e51e9</color>
     <color name="quote_overlay">#CC000000</color>
     <color name="xp_text">#4e51e9</color>
+
+    <!-- ── Semantic day/night switching colors (LIGHT defaults) ── -->
+    <color name="colorBackground">#F6F6F8</color>
+    <color name="colorCard">#FFFFFF</color>
+    <color name="colorTextPrimary">#0f172a</color>
+    <color name="colorTextSecondary">#64748b</color>
+    <color name="colorBarInactive">#E2E8F0</color>
+    <color name="colorCircleGreen">#DCFCE7</color>
+    <color name="colorCircleBlue">#DBEAFE</color>
+    <color name="colorCirclePurple">#F3E8FF</color>
+    <color name="colorNavBar">#F8FAFC</color>
+    <color name="colorNotifBtn">#FFFFFF</color>
+    <color name="colorGreenIcon">#16A34A</color>
+    <color name="colorBlueIcon">#2563EB</color>
+    <color name="colorPurpleIcon">#9333EA</color>
+    <color name="colorProgressTrack">#E2E8F0</color>
 </resources>
