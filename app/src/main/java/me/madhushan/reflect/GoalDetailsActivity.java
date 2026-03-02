@@ -4,16 +4,16 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,34 +35,50 @@ public class GoalDetailsActivity extends AppCompatActivity {
     private TextView tvTitle, tvDescription, tvCategory, tvPriority, tvDeadline, tvCreated;
     private TextView tvProgressPct, tvMarkLabel, tvNoReflections;
     private CircularProgressView circularProgress;
-    private LinearLayout reflectionsContainer, btnMarkAchieved;
+    private LinearLayout reflectionsContainer;
+
+    // Launcher for EditGoalActivity — reload goal when we return
+    private final ActivityResultLauncher<Intent> editLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (result.getResultCode() == RESULT_OK) {
+                            setResult(RESULT_OK); // propagate up to home
+                            loadGoal();
+                        }
+                    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goal_details);
 
-        goalId  = getIntent().getIntExtra(EXTRA_GOAL_ID, -1);
-        goalDao = AppDatabase.getInstance(this).goalDao();
+        goalId   = getIntent().getIntExtra(EXTRA_GOAL_ID, -1);
+        goalDao  = AppDatabase.getInstance(this).goalDao();
         executor = Executors.newSingleThreadExecutor();
 
-        tvTitle        = findViewById(R.id.tv_goal_title);
-        tvDescription  = findViewById(R.id.tv_goal_description);
-        tvCategory     = findViewById(R.id.tv_category_badge);
-        tvPriority     = findViewById(R.id.tv_priority_val);
-        tvDeadline     = findViewById(R.id.tv_deadline_val);
-        tvCreated      = findViewById(R.id.tv_created_val);
-        tvProgressPct  = findViewById(R.id.tv_progress_pct);
+        tvTitle          = findViewById(R.id.tv_goal_title);
+        tvDescription    = findViewById(R.id.tv_goal_description);
+        tvCategory       = findViewById(R.id.tv_category_badge);
+        tvPriority       = findViewById(R.id.tv_priority_val);
+        tvDeadline       = findViewById(R.id.tv_deadline_val);
+        tvCreated        = findViewById(R.id.tv_created_val);
+        tvProgressPct    = findViewById(R.id.tv_progress_pct);
         circularProgress = findViewById(R.id.circular_progress);
         reflectionsContainer = findViewById(R.id.reflections_container);
-        tvNoReflections = findViewById(R.id.tv_no_reflections);
-        btnMarkAchieved = findViewById(R.id.btn_mark_achieved);
-        tvMarkLabel    = findViewById(R.id.tv_mark_btn_label);
+        tvNoReflections  = findViewById(R.id.tv_no_reflections);
+        tvMarkLabel      = findViewById(R.id.tv_mark_btn_label);
 
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
-        findViewById(R.id.btn_edit).setOnClickListener(v -> showEditDialog());
+
+        // Edit → open full EditGoalActivity
+        findViewById(R.id.btn_edit).setOnClickListener(v -> {
+            Intent intent = new Intent(this, EditGoalActivity.class);
+            intent.putExtra(EditGoalActivity.EXTRA_GOAL_ID, goalId);
+            editLauncher.launch(intent);
+        });
+
         findViewById(R.id.btn_delete).setOnClickListener(v -> confirmDelete());
-        btnMarkAchieved.setOnClickListener(v -> toggleAchieved());
+        findViewById(R.id.btn_mark_achieved).setOnClickListener(v -> toggleAchieved());
         findViewById(R.id.btn_add_reflection).setOnClickListener(v -> showAddReflectionDialog());
 
         loadGoal();
@@ -80,23 +96,23 @@ public class GoalDetailsActivity extends AppCompatActivity {
 
         tvTitle.setText(currentGoal.title);
         tvDescription.setText(currentGoal.description != null ? currentGoal.description : "");
-        tvDescription.setVisibility(currentGoal.description != null && !currentGoal.description.isEmpty()
-                ? View.VISIBLE : View.GONE);
+        tvDescription.setVisibility(
+                currentGoal.description != null && !currentGoal.description.isEmpty()
+                        ? View.VISIBLE : View.GONE);
 
         tvCategory.setText(currentGoal.category != null ? currentGoal.category : "Personal Growth");
         tvPriority.setText(capitalize(currentGoal.priority != null ? currentGoal.priority : "medium"));
-        tvDeadline.setText(currentGoal.deadline != null ? currentGoal.deadline : "—");
-        tvCreated.setText(currentGoal.createdAt != null ? currentGoal.createdAt.substring(5) : "—"); // MM-DD
+        tvDeadline.setText(currentGoal.deadline != null && !currentGoal.deadline.isEmpty()
+                ? currentGoal.deadline : "—");
+        tvCreated.setText(currentGoal.createdAt != null && currentGoal.createdAt.length() >= 7
+                ? currentGoal.createdAt.substring(5) : "—");
 
-        // Progress: 0% if active, 100% if achieved
         float progress = currentGoal.isAchieved == 1 ? 1f : 0f;
         circularProgress.setProgress(progress);
         tvProgressPct.setText(currentGoal.isAchieved == 1 ? "100%" : "0%");
 
-        // Mark button label
         tvMarkLabel.setText(currentGoal.isAchieved == 1 ? "Mark as Active" : "Mark as Achieved");
 
-        // Reflections
         bindReflections();
     }
 
@@ -135,7 +151,8 @@ public class GoalDetailsActivity extends AppCompatActivity {
     private void toggleAchieved() {
         if (currentGoal == null) return;
         int newStatus = currentGoal.isAchieved == 1 ? 0 : 1;
-        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().getTime());
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                .format(Calendar.getInstance().getTime());
         executor.execute(() -> {
             currentGoal.isAchieved = newStatus;
             currentGoal.updatedAt  = today;
@@ -150,54 +167,26 @@ public class GoalDetailsActivity extends AppCompatActivity {
         });
     }
 
-    private void showEditDialog() {
-        if (currentGoal == null) return;
-        final EditText input = new EditText(this);
-        input.setText(currentGoal.title);
-        input.setPadding(40, 20, 40, 20);
-
-        new AlertDialog.Builder(this)
-                .setTitle("Edit Goal Title")
-                .setView(input)
-                .setPositiveButton("Save", (d, w) -> {
-                    String newTitle = input.getText().toString().trim();
-                    if (!newTitle.isEmpty()) {
-                        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().getTime());
-                        executor.execute(() -> {
-                            currentGoal.title = newTitle;
-                            currentGoal.updatedAt = today;
-                            goalDao.updateGoal(currentGoal);
-                            runOnUiThread(() -> {
-                                bindGoal();
-                                setResult(RESULT_OK);
-                            });
-                        });
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
-    }
-
     private void confirmDelete() {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Goal")
-                .setMessage("Are you sure you want to delete \"" + (currentGoal != null ? currentGoal.title : "") + "\"? This cannot be undone.")
-                .setPositiveButton("Delete", (d, w) -> {
-                    executor.execute(() -> {
-                        if (currentGoal != null) goalDao.deleteGoal(currentGoal);
-                        runOnUiThread(() -> {
-                            setResult(RESULT_OK);
-                            Toast.makeText(this, "Goal deleted", Toast.LENGTH_SHORT).show();
-                            finish();
-                        });
+                .setMessage("Are you sure you want to delete \""
+                        + (currentGoal != null ? currentGoal.title : "")
+                        + "\"? This cannot be undone.")
+                .setPositiveButton("Delete", (d, w) -> executor.execute(() -> {
+                    if (currentGoal != null) goalDao.deleteGoal(currentGoal);
+                    runOnUiThread(() -> {
+                        setResult(RESULT_OK);
+                        Toast.makeText(this, "Goal deleted", Toast.LENGTH_SHORT).show();
+                        finish();
                     });
-                })
+                }))
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
     private void showAddReflectionDialog() {
-        final EditText input = new EditText(this);
+        android.widget.EditText input = new android.widget.EditText(this);
         input.setHint("Write your reflection...");
         input.setMinLines(3);
         input.setPadding(40, 20, 40, 20);
@@ -211,8 +200,10 @@ public class GoalDetailsActivity extends AppCompatActivity {
                         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                                 .format(Calendar.getInstance().getTime());
                         executor.execute(() -> {
-                            String existing = currentGoal.reflectionNotes != null ? currentGoal.reflectionNotes : "";
-                            currentGoal.reflectionNotes = existing.isEmpty() ? note : existing + "||" + note;
+                            String existing = currentGoal.reflectionNotes != null
+                                    ? currentGoal.reflectionNotes : "";
+                            currentGoal.reflectionNotes = existing.isEmpty()
+                                    ? note : existing + "||" + note;
                             currentGoal.updatedAt = today;
                             goalDao.updateGoal(currentGoal);
                             runOnUiThread(() -> {
