@@ -1,9 +1,11 @@
 package me.madhushan.reflect;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import me.madhushan.reflect.ui.CircularProgressView;
@@ -11,14 +13,12 @@ import me.madhushan.reflect.utils.SessionManager;
 
 public class MainActivity extends AppCompatActivity {
 
-    private SessionManager sessionManager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sessionManager = new SessionManager(this);
+        SessionManager sessionManager = new SessionManager(this);
 
         // Populate user name + avatar initials from session
         String fullName = sessionManager.getUserName();
@@ -44,12 +44,22 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.nav_journal).setOnClickListener(v ->
                 Toast.makeText(this, "Journal — coming soon", Toast.LENGTH_SHORT).show());
 
-        findViewById(R.id.nav_profile).setOnClickListener(v ->
-                Toast.makeText(this, "Profile — coming soon", Toast.LENGTH_SHORT).show());
+        findViewById(R.id.nav_profile).setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        });
 
         // Notification bell
         findViewById(R.id.btn_notifications).setOnClickListener(v ->
                 Toast.makeText(this, "Notifications — coming soon", Toast.LENGTH_SHORT).show());
+
+        // Block back — user must log out explicitly
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Do nothing — back is blocked on home screen
+            }
+        });
     }
 
     /** Returns up-to-2-letter initials from a full name */
@@ -58,10 +68,5 @@ public class MainActivity extends AppCompatActivity {
         String[] parts = fullName.trim().split("\\s+");
         if (parts.length == 1) return String.valueOf(parts[0].charAt(0)).toUpperCase();
         return (String.valueOf(parts[0].charAt(0)) + String.valueOf(parts[parts.length - 1].charAt(0))).toUpperCase();
-    }
-
-    @Override
-    public void onBackPressed() {
-        // Block back button — user must log out explicitly
     }
 }

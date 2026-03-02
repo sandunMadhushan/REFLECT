@@ -42,6 +42,11 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <!-- Profile Screen -->
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
+
         <!-- Main / Home Screen -->
         <activity
             android:name=".MainActivity"
