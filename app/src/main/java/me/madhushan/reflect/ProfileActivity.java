@@ -16,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -34,13 +35,13 @@ public class ProfileActivity extends AppCompatActivity {
     private final ActivityResultLauncher<String> notifPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 sessionManager.setNotificationsEnabled(isGranted);
-                // Update toggle without triggering the listener
+                sessionManager.markNotifDialogShown();
                 switchNotifications.setOnCheckedChangeListener(null);
                 switchNotifications.setChecked(isGranted);
                 setupNotificationToggle();
                 if (!isGranted) {
                     Toast.makeText(this,
-                            "Notification permission denied. Enable it in App Settings.",
+                            "Permission denied. Enable notifications in App Settings.",
                             Toast.LENGTH_LONG).show();
                 }
             });
@@ -89,14 +90,21 @@ public class ProfileActivity extends AppCompatActivity {
         tvAvatarInitials.setText(getInitials(fullName));
     }
 
-    /** Sync the notification toggle with the real system permission state. */
+    /** Called on onResume — shows correct toggle state without overwriting the user's choice. */
     private void syncNotificationToggle() {
-        boolean granted = isNotificationPermissionGranted();
-        // Update stored pref to match real state (in case user changed it in settings)
-        sessionManager.setNotificationsEnabled(granted);
-        // Set toggle silently (no listener fire)
+        boolean systemGranted = isNotificationPermissionGranted();
+
+        if (!systemGranted) {
+            // System permission was revoked externally (via System Settings)
+            // Force save OFF and show toggle as OFF
+            sessionManager.clearNotificationPreference();
+        }
+
+        // Always read the saved pref — never overwrite it here
+        boolean savedChoice = sessionManager.getNotificationsEnabled();
+
         switchNotifications.setOnCheckedChangeListener(null);
-        switchNotifications.setChecked(granted);
+        switchNotifications.setChecked(savedChoice);
         setupNotificationToggle();
     }
 
@@ -104,64 +112,91 @@ public class ProfileActivity extends AppCompatActivity {
     private void setupNotificationToggle() {
         switchNotifications.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                // User wants to turn ON — check permission
                 handleNotificationToggleOn();
             } else {
-                // User turned OFF — just save preference (can't revoke permission
-                // programmatically, but we respect their choice in the app)
-                sessionManager.setNotificationsEnabled(false);
+                handleNotificationToggleOff();
             }
         });
     }
 
-    private void handleNotificationToggleOn() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            // Below Android 13 — always allowed
-            sessionManager.setNotificationsEnabled(true);
-            return;
-        }
+    private void handleNotificationToggleOff() {
+        // Simply save OFF — do NOT clear the dialog-shown flag.
+        // This prevents MainActivity from re-triggering the system dialog.
+        sessionManager.setNotificationsEnabled(false);
+    }
 
-        if (isNotificationPermissionGranted()) {
-            // Already granted — just save
-            sessionManager.setNotificationsEnabled(true);
-        } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
-            // Can ask again — show rationale then request
-            new AlertDialog.Builder(this)
-                    .setTitle("Enable Notifications")
-                    .setMessage("Reflect needs notification permission to send you daily reflection reminders and goal updates.")
-                    .setPositiveButton("Allow", (d, w) ->
-                            notifPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS))
-                    .setNegativeButton("Not now", (d, w) -> {
-                        // Revert toggle silently
-                        switchNotifications.setOnCheckedChangeListener(null);
-                        switchNotifications.setChecked(false);
-                        setupNotificationToggle();
-                        sessionManager.setNotificationsEnabled(false);
-                    })
-                    .show();
+    private void handleNotificationToggleOn() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (isNotificationPermissionGranted()) {
+                // System permission is granted — show an in-app confirmation dialog
+                // (Android won't re-show the system dialog for already-granted permissions)
+                new AlertDialog.Builder(this)
+                        .setTitle("Enable Notifications")
+                        .setMessage("Allow Reflect to send you daily reflection reminders and goal updates?")
+                        .setPositiveButton("Enable", (d, w) ->
+                                sessionManager.setNotificationsEnabled(true))
+                        .setNegativeButton("Not now", (d, w) -> revertToggleOff())
+                        .show();
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+                // Denied before — show rationale then re-request
+                new AlertDialog.Builder(this)
+                        .setTitle("Enable Notifications")
+                        .setMessage("Reflect needs notification permission to send you daily reflection reminders and goal updates.")
+                        .setPositiveButton("Allow", (d, w) ->
+                                notifPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS))
+                        .setNegativeButton("Not now", (d, w) -> revertToggleOff())
+                        .show();
+            } else {
+                // Permanently denied — go to App Settings
+                revertToggleOff();
+                showOpenSettingsDialog();
+            }
         } else {
-            // Permanently denied — send to App Settings
-            switchNotifications.setOnCheckedChangeListener(null);
-            switchNotifications.setChecked(false);
-            setupNotificationToggle();
-            sessionManager.setNotificationsEnabled(false);
-            new AlertDialog.Builder(this)
-                    .setTitle("Notifications Blocked")
-                    .setMessage("Notification permission was denied. Please enable it in App Settings to receive reminders.")
-                    .setPositiveButton("Open Settings", (d, w) -> {
-                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        intent.setData(Uri.parse("package:" + getPackageName()));
-                        startActivity(intent);
-                    })
-                    .setNegativeButton("Cancel", null)
-                    .show();
+            // Android 12 and below
+            if (NotificationManagerCompat.from(this).areNotificationsEnabled()) {
+                new AlertDialog.Builder(this)
+                        .setTitle("Enable Notifications")
+                        .setMessage("Allow Reflect to send you daily reflection reminders and goal updates?")
+                        .setPositiveButton("Enable", (d, w) ->
+                                sessionManager.setNotificationsEnabled(true))
+                        .setNegativeButton("Not now", (d, w) -> revertToggleOff())
+                        .show();
+            } else {
+                revertToggleOff();
+                showOpenSettingsDialog();
+            }
         }
     }
 
+    private void revertToggleOff() {
+        switchNotifications.setOnCheckedChangeListener(null);
+        switchNotifications.setChecked(false);
+        setupNotificationToggle();
+        sessionManager.setNotificationsEnabled(false);
+    }
+
+    private void showOpenSettingsDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Notifications Blocked")
+                .setMessage("Notification permission is disabled. Please enable it in App Settings to receive reminders.")
+                .setPositiveButton("Open Settings", (d, w) -> {
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    intent.setData(Uri.parse("package:" + getPackageName()));
+                    startActivity(intent);
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
     private boolean isNotificationPermissionGranted() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return true;
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                == PackageManager.PERMISSION_GRANTED;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Android 13+ — check the runtime permission
+            return ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    == PackageManager.PERMISSION_GRANTED;
+        } else {
+            // Android 12 and below — check system notification setting
+            return NotificationManagerCompat.from(this).areNotificationsEnabled();
+        }
     }
 
     private void setupDarkModeSwitch() {
@@ -231,3 +266,5 @@ public class ProfileActivity extends AppCompatActivity {
         return (String.valueOf(parts[0].charAt(0)) + String.valueOf(parts[parts.length - 1].charAt(0))).toUpperCase();
     }
 }
+
+

@@ -12,6 +12,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import me.madhushan.reflect.ui.CircularProgressView;
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private final ActivityResultLauncher<String> notifPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 sessionManager.setNotificationsEnabled(isGranted);
-                // Result is silently saved — ProfileActivity.onResume() will reflect it
+                sessionManager.markNotifDialogShown();
             });
 
     @Override
@@ -80,25 +81,22 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * On Android 13+ (API 33), POST_NOTIFICATIONS is a runtime permission.
-     * Ask only if not already granted. Save the result so the Profile toggle
-     * reflects the actual state.
-     */
     private void requestNotificationPermissionIfNeeded() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            // Below Android 13 — notifications are allowed by default
-            sessionManager.setNotificationsEnabled(true);
-            return;
-        }
+        // Only show the system dialog ONCE ever — never overwrite user's saved choice
+        if (sessionManager.hasNotifDialogBeenShown()) return;
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                == PackageManager.PERMISSION_GRANTED) {
-            // Already granted — make sure the pref is in sync
-            sessionManager.setNotificationsEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    == PackageManager.PERMISSION_GRANTED) {
+                sessionManager.setNotificationsEnabled(true);
+                sessionManager.markNotifDialogShown();
+            } else {
+                notifPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
         } else {
-            // Ask the user — result handled in notifPermissionLauncher
-            notifPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            boolean enabled = NotificationManagerCompat.from(this).areNotificationsEnabled();
+            sessionManager.setNotificationsEnabled(enabled);
+            sessionManager.markNotifDialogShown();
         }
     }
 
