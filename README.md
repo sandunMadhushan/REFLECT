@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="app/src/main/res/drawable/logo.png" width="110" alt="Reflect Lotus Logo"/>
+<!-- <img src="app/src/main/res/drawable/logo.png" width="110" alt="Reflect Lotus Logo"/> -->
 
 # 🌿 Reflect
 
