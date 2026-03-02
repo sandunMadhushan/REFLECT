@@ -82,6 +82,17 @@
     <string name="error_email_invalid">Please enter a valid email address.</string>
     <string name="error_password_required">Password is required.</string>
 
+    <!-- Onboarding -->
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_next">Next Step</string>
+    <string name="onboarding_get_started">Get Started</string>
+    <string name="onboarding1_title">Set Meaningful Goals</string>
+    <string name="onboarding1_subtitle">Define your personal and professional aspirations with clarity. Reflect helps you break them down into actionable steps.</string>
+    <string name="onboarding2_title">Reflect on Your Journey</string>
+    <string name="onboarding2_subtitle">Look back at your daily progress to understand your patterns and celebrate small wins.</string>
+    <string name="onboarding3_title">See Your Progress</string>
+    <string name="onboarding3_subtitle">Visualise your growth journey with beautiful charts. Understand your habits and celebrate every milestone.</string>
+
     <!-- Profile Screen -->
     <string name="profile_title">Profile &amp; Settings</string>
     <string name="profile_member_since">Goal Achiever · Reflect Member</string>

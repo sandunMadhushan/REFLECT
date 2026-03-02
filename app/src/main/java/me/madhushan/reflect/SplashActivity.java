@@ -36,22 +36,25 @@ public class SplashActivity extends AppCompatActivity {
         // ── If already logged in, skip splash entirely ──────────────────────
         if (sessionManager.isLoggedIn()) {
             goTo(MainActivity.class);
-            return; // don't setContentView or start animation
+            return;
         }
 
-        // ── No session — show splash, then go to Login ───────────────────────
+        // ── No session — show splash, then decide where to go ───────────────
         setContentView(R.layout.activity_splash);
 
         tvProgressPercent = findViewById(R.id.tv_progress_percent);
         progressFill      = findViewById(R.id.progress_fill);
         View progressContainer = findViewById(R.id.progress_container);
 
-        // Wait until layout is measured so we know the track width
         progressContainer.post(this::startProgressAnimation);
 
-        // Decide where to go after splash
+        // If onboarding already completed → Login, otherwise → Onboarding
+        Class<?> destination = OnboardingActivity.isCompleted(this)
+                ? LoginActivity.class
+                : OnboardingActivity.class;
+
         new Handler(Looper.getMainLooper()).postDelayed(
-                () -> goTo(LoginActivity.class),
+                () -> goTo(destination),
                 SPLASH_DURATION_MS
         );
     }
