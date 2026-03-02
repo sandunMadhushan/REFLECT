@@ -23,5 +23,13 @@ public interface UserDao {
     /** Get user by ID — used to restore session. */
     @Query("SELECT * FROM users WHERE id = :userId LIMIT 1")
     User getUserById(int userId);
+
+    /** Find a user by email — used for forgot password. */
+    @Query("SELECT * FROM users WHERE email = :email LIMIT 1")
+    User findByEmail(String email);
+
+    /** Update password hash for a user — used for forgot password reset. */
+    @Query("UPDATE users SET passwordHash = :newPasswordHash WHERE email = :email")
+    void updatePassword(String email, String newPasswordHash);
 }
 
