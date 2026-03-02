@@ -35,15 +35,21 @@ It's about **thinking deeply**, not managing tasks. Each goal is a conversation 
 
 | Feature | Status | Description |
 |---|---|---|
-| 💫 **Splash Screen** | ✅ Done | Animated branded loading screen with progress bar |
+| 💫 **Splash Screen** | ✅ Done | Animated branded loading screen with progress bar, routes by session/onboarding state |
 | 🎓 **Onboarding** | ✅ Done | 3-page swipeable intro with ViewPager2, skip support, shown only once |
-| 🔐 **Register** | ✅ Done | Full validation, SHA-256 password hashing, Room DB insert |
+| 🔐 **Register** | ✅ Done | Full validation, SHA-256 password hashing, Room DB insert, auto-login on success |
 | 🔑 **Login** | ✅ Done | Email/password auth against Room DB, session creation |
 | 🔵 **Google Sign-In** | ✅ Done | One-tap Google sign-in via Credential Manager API — auto-registers on first use |
+| 🖼️ **Google Profile Photo** | ✅ Done | Google account photo loaded via Glide with CircleCrop on Home & Profile |
 | 🔓 **Forgot Password** | ✅ Done | 2-step flow: verify email → set new password → success screen |
 | 🏠 **Home Dashboard** | ✅ Done | Stats cards, inspiration quote, progress chart, recent activity, bottom nav + FAB |
-| 👤 **Profile & Settings** | ✅ Done | Avatar initials, dark mode toggle, notifications toggle, account rows, logout |
+| 👤 **Profile & Settings** | ✅ Done | Avatar, dark mode toggle, notifications toggle, account rows, logout with dialog |
+| 📸 **Profile Photo Update** | ✅ Done | Choose from gallery (Photo Picker) or capture with camera — saved to private storage |
+| 🪪 **Personal Details** | ✅ Done | Edit name, view email, change password with current password verification |
+| 💳 **Subscription Screen** | ✅ Done | Plan overview UI screen |
+| ❓ **Help & Support** | ✅ Done | FAQ and support contact screen |
 | 🌙 **Dark / Light Theme** | ✅ Done | Follows device system theme live — switches across all screens instantly |
+| 🔔 **Notifications Toggle** | ✅ Done | Runtime permission request (Android 13+), toggle persists across app restarts, resets when turned off |
 | 📱 **Session Management** | ✅ Done | Persistent login via `SharedPreferences`, auto-skip splash & onboarding |
 
 ---
@@ -60,6 +66,7 @@ It's about **thinking deeply**, not managing tasks. Each goal is a conversation 
 | **ConstraintLayout** | `androidx.constraintlayout` | `2.2.1` |
 | **ViewPager2** | `androidx.viewpager2` | `1.1.0` |
 | **Local Database** | Room Persistence Library | `2.6.1` |
+| **Image Loading** | Glide | `4.16.0` |
 | **Google Sign-In** | Credential Manager API | `1.5.0` |
 | **Google ID Token** | `com.google.android.libraries.identity.googleid` | `1.1.1` |
 | **Password Security** | SHA-256 via `MessageDigest` | — |
@@ -106,14 +113,16 @@ It's about **thinking deeply**, not managing tasks. Each goal is a conversation 
            │              │  Google Account Picker │   │  Forgot Password     │
            │              │  (system bottom sheet) │   │  Step 1: verify email│
            │              │  Auto-register if new  │   │  Step 2: new password│
-           │              └────────────┬───────────┘   │  Step 3: success     │
-           │                           │               └──────────────────────┘
+           │              │  Loads Google photo    │   │  Step 3: success     │
+           │              └────────────┬───────────┘   └──────────────────────┘
+           │                           │
            └───────────────────────────┘
                            │
                            ▼
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │                           Home Dashboard                                     │
-│  • Top bar: avatar initials, "Welcome back, [Name]", notification bell       │
+│  • Top bar: avatar (Google photo / initials), "Welcome back, [Name]",       │
+│             notification bell                                                │
 │  • Active Goals card (primary gradient)                                      │
 │  • Completed count card  •  Today's Habits with circular progress ring       │
 │  • Daily Inspiration quote card                                              │
@@ -123,26 +132,38 @@ It's about **thinking deeply**, not managing tasks. Each goal is a conversation 
 └──────────────────────────────────────────────────────────────────────────────┘
            │
     [nav_profile tap]
-           │
            ▼
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │                         Profile & Settings Screen                            │
-│  • Avatar circle with initials + edit button                                 │
+│  • Avatar (Google photo / camera photo / gallery photo / initials fallback)  │
 │  • User name  •  "Goal Achiever · Reflect Member"  •  Pro Member badge       │
-│  • App Preferences: Dark Mode toggle, Notifications toggle                   │
-│  • Account: Personal Details, Subscription, Help & Support (chevron rows)   │
+│  • App Preferences: Dark Mode toggle, Notifications toggle (runtime perm)   │
+│  • Account rows: Personal Details ▶  Subscription ▶  Help & Support ▶       │
 │  • Log Out button (red border) with confirmation dialog                      │
 │  • Version text  •  Bottom nav (Profile active)                              │
+└──────────┬───────────────────────────────────────────────────────────────────┘
+           │
+    [Personal Details tap]
+           ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         Personal Details Screen                              │
+│  • Avatar with edit pencil — tap to change photo                             │
+│  • Options: Take Photo (camera) / Choose from Gallery / Remove Photo         │
+│  • Edit Full Name field                                                      │
+│  • Email (read-only)                                                         │
+│  • Change Password: current → new → confirm                                  │
+│  • Save Changes button  •  Delete Account (with confirmation)                │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 **Navigation rules:**
 - Splash → auto-routes based on session & onboarding state
 - Onboarding → shown only on **first launch**, never again
-- Google Sign-In → **auto-registers** new users on first Google sign-in
+- Google Sign-In → **auto-registers** new users on first Google sign-in + loads profile photo
 - Home → back button **blocked** (must log out explicitly)
 - Register success → **auto-login** → Home
 - Profile logout → confirmation dialog → clears session → Login
+- Personal Details save → returns to Profile with updated name/photo instantly
 
 ---
 
@@ -182,7 +203,7 @@ Reflect fully supports **system-driven dark and light mode**:
 
 - Follows the device theme automatically — no manual toggle needed
 - Switches **live** while the app is open (Activity recreates on `uiMode` config change)
-- Covers **every** screen: Splash → Onboarding → Login → Register → Forgot Password → Home → Profile
+- Covers **every** screen: Splash → Onboarding → Login → Register → Forgot Password → Home → Profile → Personal Details → Help & Support → Subscription
 - Implemented via `AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM` in `ReflectApp.java`
 - Profile screen **Dark Mode toggle** lets users override to force dark/light
 - All colors defined as semantic names in `values/colors.xml` with overrides in `values-night/colors.xml`
@@ -212,14 +233,19 @@ REFLECT/
 │   │   ├── ForgotPasswordActivity.java     # 2-step password reset (verify email → new password)
 │   │   ├── MainActivity.java               # Home dashboard — stats, chart, activity feed, bottom nav
 │   │   ├── ProfileActivity.java            # Profile & Settings — avatar, toggles, account rows, logout
+│   │   ├── PersonalDetailsActivity.java    # Edit name/password, camera/gallery photo picker
+│   │   ├── SubscriptionActivity.java       # Subscription plan overview UI
+│   │   ├── HelpSupportActivity.java        # FAQ and support contact screen
 │   │   ├── database/
 │   │   │   ├── AppDatabase.java            # @Database — Room singleton
 │   │   │   ├── User.java                   # @Entity — users table
-│   │   │   └── UserDao.java                # @Dao — insert, login, emailExists, findByEmail, updatePassword
+│   │   │   └── UserDao.java                # @Dao — insert, login, emailExists, findByEmail, updateNameAndPassword
 │   │   ├── utils/
+│   │   │   ├── AvatarLoader.java           # Glide-based avatar loader — local file / Google URL / initials
 │   │   │   ├── GoogleSignInHelper.java     # Credential Manager Google Sign-In wrapper
+│   │   │   ├── NotificationHelper.java     # Notification channel creation and helper
 │   │   │   ├── PasswordUtils.java          # SHA-256 password hashing
-│   │   │   └── SessionManager.java         # SharedPreferences login session handler
+│   │   │   └── SessionManager.java         # SharedPreferences — session, photo URL, local photo path, notif prefs
 │   │   └── ui/
 │   │       └── CircularProgressView.java   # Custom canvas view — circular progress ring
 │   ├── res/
@@ -233,20 +259,56 @@ REFLECT/
 │   │   │   ├── activity_register.xml
 │   │   │   ├── activity_forgot_password.xml
 │   │   │   ├── activity_main.xml
-│   │   │   └── activity_profile.xml
-│   │   ├── drawable/                       # 50+ vector icons, shape backgrounds, gradients
+│   │   │   ├── activity_profile.xml
+│   │   │   ├── activity_personal_details.xml
+│   │   │   ├── activity_subscription.xml
+│   │   │   └── activity_help_support.xml
+│   │   ├── drawable/                       # 50+ vector icons, shape backgrounds, gradients, logo
+│   │   ├── xml/
+│   │   │   ├── file_paths.xml              # FileProvider paths for camera capture
+│   │   │   ├── backup_rules.xml
+│   │   │   └── data_extraction_rules.xml
 │   │   ├── values/
 │   │   │   ├── colors.xml                  # Brand + semantic light-theme palette
 │   │   │   ├── strings.xml                 # All UI strings
 │   │   │   └── themes.xml                  # Base.Theme.REFLECT (DayNight) + Splash theme
 │   │   └── values-night/
 │   │       └── colors.xml                  # Dark-mode color overrides
-│   └── AndroidManifest.xml                 # All activity declarations, ReflectApp registered
+│   └── AndroidManifest.xml                 # Activities, permissions, FileProvider declared
 ├── gradle/
-│   └── libs.versions.toml                  # Version catalog (Room, ViewPager2, Credential Manager)
+│   └── libs.versions.toml                  # Version catalog (Room, ViewPager2, Glide, Credential Manager)
 ├── .gitignore                              # UI_Screens/ and build outputs excluded
 └── README.md
 ```
+
+---
+
+## 📸 Profile Photo System
+
+Reflect supports three levels of avatar display with automatic priority:
+
+| Priority | Source | When Used |
+|---|---|---|
+| 1st | 📁 Local file (camera / gallery) | User has set a custom photo |
+| 2nd | 🌐 Google profile photo (URL) | User logged in with Google, no custom photo set |
+| 3rd | 🔤 Initials (text fallback) | No photo available |
+
+- **Camera capture** — uses `TakePicture` contract + `FileProvider` for secure temp file URI
+- **Gallery pick** — uses `PickVisualMedia` (Android 13+) or `OpenDocument` (Android 12 and below)
+- Images are **copied to app-private storage** (`/files/profile_photos/`) so they persist even if the original is deleted
+- Each save uses a **timestamped filename** to bust Glide's disk cache
+- `AvatarLoader.loadFromSession()` is called on every screen resume to keep the avatar in sync
+
+---
+
+## 🔔 Notification System
+
+- **Android 13+** — runtime `POST_NOTIFICATIONS` permission requested on first app launch
+- **Android 12 and below** — reads system notification setting automatically
+- Toggle in Profile screen persists across app restarts via `SessionManager`
+- Turning toggle **OFF** saves the preference immediately (synchronous `commit()`)
+- Turning toggle **ON** after being OFF shows a confirmation dialog
+- System permission revoked externally (via System Settings) → toggle auto-corrects to OFF on next resume
 
 ---
 
@@ -313,12 +375,11 @@ Follow these steps to enable it:
 2. Enter package name: `me.madhushan.reflect`
 3. Enter app nickname: `Reflect`
 4. Get your **SHA-1 fingerprint**:
-   - In Android Studio → open **Terminal** and run:
-     ```bash
-     # Windows
-     keytool -list -v -keystore "%USERPROFILE%\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android
-     ```
-   - Copy the `SHA1:` value from the output
+   ```bash
+   # Windows
+   keytool -list -v -keystore "%USERPROFILE%\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android
+   ```
+   Copy the `SHA1:` value from the output
 5. Paste the SHA-1 into Firebase → **Register app**
 6. Download **`google-services.json`** → place it in `/app/` folder
 
@@ -326,7 +387,7 @@ Follow these steps to enable it:
 
 1. Firebase Console → **Authentication** → **Sign-in method**
 2. Click **Google** → toggle **Enable** → Save
-3. Copy the **Web Client ID** shown (it ends in `.apps.googleusercontent.com`)
+3. Copy the **Web Client ID** shown (ends in `.apps.googleusercontent.com`)
 
 ### Step 4 — Add Web Client ID to the app
 
@@ -336,34 +397,11 @@ Open `app/src/main/res/values/strings.xml` and replace:
 <string name="default_web_client_id">YOUR_WEB_CLIENT_ID_HERE.apps.googleusercontent.com</string>
 ```
 
-with your actual Web Client ID:
-
-```xml
-<string name="default_web_client_id">123456789-abcdefghijklmnop.apps.googleusercontent.com</string>
-```
-
-### Step 5 — Add google-services plugin *(if not already added)*
-
-In `app/build.gradle.kts`, the app already includes Credential Manager dependencies.
-If you added `google-services.json`, also apply the plugin:
-
-```kotlin
-// In root build.gradle.kts
-plugins {
-    id("com.google.gms.google-services") version "4.4.2" apply false
-}
-
-// In app/build.gradle.kts
-plugins {
-    id("com.google.gms.google-services")
-}
-```
-
-### Step 6 — Build & Run
+### Step 5 — Build & Run
 
 Sync Gradle, then run the app. Tap **Google** on the login screen — the system account picker will appear.
 
-> **Note:** Google Sign-In works on physical devices and emulators with a Google account configured. The app auto-registers new Google users on first sign-in and logs in existing users automatically.
+> **Note:** Google Sign-In works on physical devices and emulators with a Google account configured.
 
 ---
 
@@ -376,7 +414,16 @@ Sync Gradle, then run the app. Tap **Google** on the login screen — the system
 - [ ] 🗺️ **Vision Board** — visual inspiration board for goals
 - [ ] 🔔 **Reminders** — daily reflection push notifications
 - [ ] 🧩 **Habit Tracker** — daily habit check-ins with streaks
-- [ ] 🔒 **Personal Details** — edit profile name, email, password
+
+---
+
+## 👥 Team Members
+
+| Name | Role | Screens / Contribution |
+|---|---|---|
+| **Sandun Madhushan** | Lead Developer | Splash, Onboarding, Login, Register, Forgot Password, Home, Profile, Personal Details, Help & Support, Subscription, Google Sign-In, Profile Photo, Notifications, Dark/Light Theme |
+| **Chathurika Sandamali** | UI/UX Designer & Developer | View Goal, Add Goal, Goal Details, New Reflection |
+| **Chanika Kavindi** | Developer & Tester | Analytics, Recent Activity, Profile settings, Account Settings |
 
 ---
 
@@ -403,10 +450,14 @@ During login and password reset, the entered password is hashed and compared —
 ### Google Sign-In Authentication
 Google Sign-In is implemented using the **Android Credential Manager API** (`androidx.credentials`).
 The Google **ID Token** is verified locally via `GoogleIdTokenCredential` — no password is stored.
-Google users are identified by a `GOOGLE_AUTH_<hash>` marker in the `passwordHash` column so they can never accidentally log in with a plain-text password.
+Google users are identified by a `GOOGLE_AUTH_<hash>` marker in the `passwordHash` column.
+
+### Profile Photos
+Profile photos are stored in **app-private internal storage** (`/files/profile_photos/`).
+They are never accessible to other apps and are deleted when the account is deleted.
 
 ### Thread Safety
-All Room database operations run on a **background thread** via `ExecutorService`, following Android's strict main-thread policy.
+All Room database operations and file I/O run on a **background thread** via `ExecutorService`, following Android's strict main-thread policy.
 
 ---
 
