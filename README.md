@@ -4,7 +4,7 @@
 
 # 🌿 Reflect
 
-### *Your Journey to Mindful Growth*
+### *Track. Reflect. Grow.*
 
 [![Android](https://img.shields.io/badge/Platform-Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://developer.android.com)
 [![Java](https://img.shields.io/badge/Language-Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://www.java.com)
@@ -71,9 +71,9 @@ It's about **thinking deeply**, not managing tasks. Each goal is a conversation 
 │                  │     │                  │     │                  │
 │  • Gradient bg   │     │  • App logo      │     │  • App logo      │
 │  • App logo      │     │  • Email field   │     │  • Full Name     │
-│  • "Reflect"     │     │  • Password      │     │  • Email         │
-│  • Tagline       │     │  • Log In btn    │     │  • Password      │
-│  • Loading bar   │     │  • Google/Apple  │     │  • Confirm pwd   │
+│  • "Reflect"     │     │  • Password      │     │  • Password      │
+│  • "Track.       │     │  • Log In btn    │     │  • Confirm pwd   │
+│    Reflect.Grow" │     │  • Google/Apple  │     │  • Terms check   │
 │                  │     │  • Register link │     │  • Terms check   │
 └──────────────────┘     └────────┬─────────┘     │  • Register btn  │
          │                        │               │  • Log in link   │
@@ -288,7 +288,8 @@ This project is submitted as academic coursework for ICT3214.
 ---
 
 <div align="center">
-  <i>"Growth begins the moment you start reflecting."</i><br><br>
+  <i>"Track. Reflect. Grow."</i><br><br>
   Built with ❤️ for ICT3214 — Mobile Application Development
 </div>
+
 
