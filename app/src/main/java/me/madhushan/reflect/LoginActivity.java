@@ -2,6 +2,7 @@ package me.madhushan.reflect;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import java.util.concurrent.Executors;
 import me.madhushan.reflect.database.AppDatabase;
 import me.madhushan.reflect.database.User;
 import me.madhushan.reflect.database.UserDao;
+import me.madhushan.reflect.utils.GoogleSignInHelper;
 import me.madhushan.reflect.utils.PasswordUtils;
 import me.madhushan.reflect.utils.SessionManager;
 
@@ -29,6 +31,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private AppDatabase db;
     private SessionManager sessionManager;
+    private GoogleSignInHelper googleSignInHelper;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
@@ -36,8 +39,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        db             = AppDatabase.getInstance(this);
-        sessionManager = new SessionManager(this);
+        db                 = AppDatabase.getInstance(this);
+        sessionManager     = new SessionManager(this);
+        googleSignInHelper = new GoogleSignInHelper(this);
 
         initViews();
         setupClickListeners();
@@ -63,8 +67,7 @@ public class LoginActivity extends AppCompatActivity {
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
 
-        btnGoogle.setOnClickListener(v ->
-                Toast.makeText(this, "Google sign-in — coming soon", Toast.LENGTH_SHORT).show());
+        btnGoogle.setOnClickListener(v -> handleGoogleSignIn());
 
         btnApple.setOnClickListener(v ->
                 Toast.makeText(this, "Apple sign-in — coming soon", Toast.LENGTH_SHORT).show());
@@ -128,6 +131,68 @@ public class LoginActivity extends AppCompatActivity {
                     tilPassword.setError("Incorrect email or password");
                 }
             });
+        });
+    }
+
+    private void handleGoogleSignIn() {
+        btnGoogle.setEnabled(false);
+        btnGoogle.setText(R.string.google_signing_in);
+
+        googleSignInHelper.signIn(new GoogleSignInHelper.Callback() {
+            @Override
+            public void onSuccess(String idToken, String displayName, String email, String photoUrl) {
+                // Find or create the user in local Room DB
+                handleGoogleUser(displayName, email);
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                btnGoogle.setEnabled(true);
+                btnGoogle.setText(R.string.btn_google);
+                Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void handleGoogleUser(String displayName, String email) {
+        executor.execute(() -> {
+            UserDao dao = db.userDao();
+            User existing = dao.findByEmail(email);
+
+            if (existing != null) {
+                // User already registered — just log them in
+                final User user = existing;
+                runOnUiThread(() -> {
+                    btnGoogle.setEnabled(true);
+                    btnGoogle.setText(R.string.btn_google);
+                    sessionManager.saveSession(user.id, user.fullName, user.email);
+                    goToHome();
+                });
+            } else {
+                // First time Google sign-in — auto-register with a random password hash
+                User newUser = new User();
+                newUser.fullName     = displayName;
+                newUser.email        = email;
+                // Store a Google-specific placeholder — no plain-text password needed
+                newUser.passwordHash = "GOOGLE_AUTH_" + PasswordUtils.hash(email);
+
+                long newId = dao.insertUser(newUser);
+                runOnUiThread(() -> {
+                    btnGoogle.setEnabled(true);
+                    btnGoogle.setText(R.string.btn_google);
+                    if (newId > 0) {
+                        sessionManager.saveSession((int) newId, displayName, email);
+                        Toast.makeText(LoginActivity.this,
+                                "Welcome to Reflect, " + displayName + "! 🎉",
+                                Toast.LENGTH_SHORT).show();
+                        goToHome();
+                    } else {
+                        Toast.makeText(LoginActivity.this,
+                                "Sign-in failed. Please try again.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         });
     }
 

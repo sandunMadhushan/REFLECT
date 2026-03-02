@@ -45,6 +45,10 @@ dependencies {
     annotationProcessor(libs.room.compiler)
     // ViewPager2 for onboarding
     implementation(libs.viewpager2)
+    // Google Sign-In via Credential Manager
+    implementation(libs.credentials)
+    implementation(libs.credentials.play.services)
+    implementation(libs.googleid)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
