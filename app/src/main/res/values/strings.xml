@@ -55,4 +55,30 @@
     <string name="home_activity_reflection">Evening Reflection</string>
     <string name="home_activity_reflection_sub">Journal • Yesterday</string>
     <string name="home_xp">+10xp</string>
+
+    <!-- Forgot Password Screen -->
+    <string name="forgot_password_title">Reset Password</string>
+    <string name="forgot_password_subtitle">Enter your registered email address and we\'ll help you reset your password.</string>
+    <string name="forgot_step2_subtitle">Account found! Now set your new password below.</string>
+    <string name="hint_new_password">New Password</string>
+    <string name="hint_confirm_new_password">Confirm New Password</string>
+    <string name="btn_find_account">Find Account</string>
+    <string name="btn_find_account_loading">Searching…</string>
+    <string name="btn_reset_password">Reset Password</string>
+    <string name="btn_reset_password_loading">Updating…</string>
+    <string name="forgot_back_to_login">Back to Login</string>
+    <string name="forgot_step_email">Step 1 of 2 — Enter your email</string>
+    <string name="forgot_step_reset">Step 2 of 2 — Set new password</string>
+    <string name="forgot_success_title">Password Reset!</string>
+    <string name="forgot_success_subtitle">Your password has been updated successfully. You can now log in with your new password.</string>
+    <string name="btn_go_to_login">Go to Login</string>
+    <string name="forgot_email_not_found">No account found with that email address.</string>
+    <string name="forgot_password_mismatch">Passwords do not match.</string>
+    <string name="forgot_password_too_short">Password must be at least 6 characters.</string>
+    <string name="forgot_password_reset_success">Password reset successfully!</string>
+
+    <!-- Validation errors (shared) -->
+    <string name="error_email_required">Email address is required.</string>
+    <string name="error_email_invalid">Please enter a valid email address.</string>
+    <string name="error_password_required">Password is required.</string>
 </resources>

@@ -58,8 +58,10 @@ public class LoginActivity extends AppCompatActivity {
     private void setupClickListeners() {
         btnLogin.setOnClickListener(v -> handleLogin());
 
-        tvForgotPassword.setOnClickListener(v ->
-                Toast.makeText(this, "Forgot password — coming soon", Toast.LENGTH_SHORT).show());
+        tvForgotPassword.setOnClickListener(v -> {
+            startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        });
 
         btnGoogle.setOnClickListener(v ->
                 Toast.makeText(this, "Google sign-in — coming soon", Toast.LENGTH_SHORT).show());
