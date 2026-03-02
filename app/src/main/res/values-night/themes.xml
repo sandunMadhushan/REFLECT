@@ -4,6 +4,13 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primary_dark</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="android:windowBackground">@color/background_dark</item>
+        <item name="android:windowBackground">@color/colorAppBg</item>
+        <!-- Make Material surfaces use our dark card color -->
+        <item name="colorSurface">@color/colorCard</item>
+        <item name="colorOnSurface">@color/colorTextPrimary</item>
+        <item name="colorOnSurfaceVariant">@color/colorTextSecondary</item>
+        <item name="android:textColorPrimary">@color/colorTextPrimary</item>
+        <item name="android:textColorSecondary">@color/colorTextSecondary</item>
+        <item name="android:editTextColor">@color/colorTextPrimary</item>
     </style>
 </resources>
