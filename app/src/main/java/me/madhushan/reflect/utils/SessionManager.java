@@ -9,6 +9,7 @@ public class SessionManager {
     private static final String KEY_USER_ID   = "user_id";
     private static final String KEY_USER_NAME = "user_name";
     private static final String KEY_USER_EMAIL = "user_email";
+    private static final String KEY_NOTIFICATIONS = "notifications_enabled";
     private static final int    NO_USER = -1;
 
     private final SharedPreferences prefs;
@@ -49,6 +50,16 @@ public class SessionManager {
     /** Update the stored user name (after profile edit). */
     public void setUserName(String newName) {
         prefs.edit().putString(KEY_USER_NAME, newName).commit();
+    }
+
+    /** Returns true if the user has granted notification permission. */
+    public boolean getNotificationsEnabled() {
+        return prefs.getBoolean(KEY_NOTIFICATIONS, false);
+    }
+
+    /** Save whether notifications are enabled. */
+    public void setNotificationsEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_NOTIFICATIONS, enabled).apply();
     }
 
     /** Clear the session (logout). */
