@@ -1,6 +1,6 @@
-<div align="center>
+<div align="center">
 
-<img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp" width="110" alt="Reflect Logo"/>
+<img src="app/src/main/res/drawable/logo.png" width="110" alt="Reflect Lotus Logo"/>
 
 # 🌿 Reflect
 
@@ -500,11 +500,13 @@ Sync Gradle, then run the app. Tap **Google** on the login screen — the system
 
 ## 👥 Team Members
 
+<!--
 | Name | Role | Screens / Contribution |
 |---|---|---|
 | **Sandun Madhushan** | Lead Developer | Splash, Onboarding, Login, Register, Forgot Password, Home Dashboard, Goals Tab, Add Goal, Edit Goal, Goal Details, Profile, Personal Details, Help & Support, Subscription, Google Sign-In, Profile Photo, Notifications, Dark/Light Theme |
 | **Chathurika Sandamali** | UI/UX Designer & Developer | View Goal UI, Goal Details UI, New Reflection UI |
 | **Chanika Kavindi** | Developer & Tester | Analytics, Recent Activity, Account Settings |
+-->
 
 ---
 
