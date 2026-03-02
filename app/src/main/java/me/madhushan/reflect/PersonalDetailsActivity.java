@@ -3,6 +3,7 @@ package me.madhushan.reflect;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +16,7 @@ import java.util.concurrent.Executors;
 
 import me.madhushan.reflect.database.AppDatabase;
 import me.madhushan.reflect.database.UserDao;
+import me.madhushan.reflect.utils.AvatarLoader;
 import me.madhushan.reflect.utils.PasswordUtils;
 import me.madhushan.reflect.utils.SessionManager;
 
@@ -25,6 +27,7 @@ public class PersonalDetailsActivity extends AppCompatActivity {
     private ExecutorService executor;
 
     private TextView tvAvatarInitials;
+    private ImageView ivAvatarPhoto;
     private EditText etFullName, etEmail, etCurrentPassword, etNewPassword, etConfirmPassword;
     private LinearLayout btnSave, btnDeleteAccount;
 
@@ -44,6 +47,7 @@ public class PersonalDetailsActivity extends AppCompatActivity {
 
     private void initViews() {
         tvAvatarInitials   = findViewById(R.id.tv_avatar_initials);
+        ivAvatarPhoto      = findViewById(R.id.iv_avatar_photo);
         etFullName         = findViewById(R.id.et_full_name);
         etEmail            = findViewById(R.id.et_email);
         etCurrentPassword  = findViewById(R.id.et_current_password);
@@ -56,14 +60,16 @@ public class PersonalDetailsActivity extends AppCompatActivity {
     }
 
     private void populateData() {
-        String name  = sessionManager.getUserName();
-        String email = sessionManager.getUserEmail();
+        String name     = sessionManager.getUserName();
+        String email    = sessionManager.getUserEmail();
+        String photoUrl = sessionManager.getPhotoUrl();
         if (name  == null) name  = "";
         if (email == null) email = "";
 
         etFullName.setText(name);
         etEmail.setText(email);
-        tvAvatarInitials.setText(getInitials(name));
+        AvatarLoader.load(ivAvatarPhoto, tvAvatarInitials,
+                photoUrl, AvatarLoader.getInitials(name));
     }
 
     private void setupListeners() {
@@ -120,7 +126,7 @@ public class PersonalDetailsActivity extends AppCompatActivity {
 
                 runOnUiThread(() -> {
                     sessionManager.setUserName(finalNewName);
-                    tvAvatarInitials.setText(getInitials(finalNewName));
+                    tvAvatarInitials.setText(AvatarLoader.getInitials(finalNewName));
                     etCurrentPassword.setText("");
                     etNewPassword.setText("");
                     etConfirmPassword.setText("");
@@ -135,7 +141,7 @@ public class PersonalDetailsActivity extends AppCompatActivity {
                 userDao.updateName(email, finalNewName);
                 runOnUiThread(() -> {
                     sessionManager.setUserName(finalNewName);
-                    tvAvatarInitials.setText(getInitials(finalNewName));
+                    tvAvatarInitials.setText(AvatarLoader.getInitials(finalNewName));
                     Toast.makeText(this, getString(R.string.personal_details_success_name), Toast.LENGTH_SHORT).show();
                     finish();
                 });
@@ -169,19 +175,18 @@ public class PersonalDetailsActivity extends AppCompatActivity {
         });
     }
 
-    private String getInitials(String fullName) {
-        if (fullName == null || fullName.isEmpty()) return "?";
-        String[] parts = fullName.trim().split("\\s+");
-        if (parts.length == 1) return String.valueOf(parts[0].charAt(0)).toUpperCase();
-        return (String.valueOf(parts[0].charAt(0)) + String.valueOf(parts[parts.length - 1].charAt(0))).toUpperCase();
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (executor != null) executor.shutdown();
     }
 }
+
+
+
+
+
+
 
 
 

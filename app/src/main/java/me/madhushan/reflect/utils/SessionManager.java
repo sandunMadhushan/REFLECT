@@ -14,6 +14,7 @@ public class SessionManager {
     //                           (NEVER cleared when user toggles — only on full logout)
     private static final String KEY_NOTIFICATIONS      = "notifications_enabled";
     private static final String KEY_NOTIF_DIALOG_SHOWN = "notifications_dialog_shown";
+    private static final String KEY_PHOTO_URL          = "photo_url";
     private static final int    NO_USER = -1;
 
     private final SharedPreferences prefs;
@@ -54,6 +55,16 @@ public class SessionManager {
     /** Update the stored user name (after profile edit). */
     public void setUserName(String newName) {
         prefs.edit().putString(KEY_USER_NAME, newName).commit();
+    }
+
+    /** Returns the stored Google profile photo URL, or null if not a Google user. */
+    public String getPhotoUrl() {
+        return prefs.getString(KEY_PHOTO_URL, null);
+    }
+
+    /** Save the Google profile photo URL. */
+    public void setPhotoUrl(String url) {
+        prefs.edit().putString(KEY_PHOTO_URL, url).apply();
     }
 
     // ── Notification preferences ────────────────────────────────────────────
@@ -110,3 +121,4 @@ public class SessionManager {
         prefs.edit().clear().apply();
     }
 }
+
