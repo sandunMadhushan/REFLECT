@@ -1,6 +1,7 @@
 package me.madhushan.reflect.database;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -31,5 +32,17 @@ public interface UserDao {
     /** Update password hash for a user — used for forgot password reset. */
     @Query("UPDATE users SET passwordHash = :newPasswordHash WHERE email = :email")
     void updatePassword(String email, String newPasswordHash);
+
+    /** Update full name for a user. */
+    @Query("UPDATE users SET fullName = :newName WHERE email = :email")
+    void updateName(String email, String newName);
+
+    /** Update full name and password hash for a user. */
+    @Query("UPDATE users SET fullName = :newName, passwordHash = :newPasswordHash WHERE email = :email")
+    void updateNameAndPassword(String email, String newName, String newPasswordHash);
+
+    /** Delete a user — used for account deletion. */
+    @Delete
+    void deleteUser(User user);
 }
 

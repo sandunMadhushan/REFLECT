@@ -120,4 +120,76 @@
     <string name="profile_logout_confirm_message">Are you sure you want to log out?</string>
     <string name="profile_logout_confirm_yes">Log Out</string>
     <string name="profile_logout_confirm_cancel">Cancel</string>
+
+    <!-- Personal Details Screen -->
+    <string name="personal_details_title">Personal Details</string>
+    <string name="personal_details_change_photo">Change Photo</string>
+    <string name="personal_details_section_profile">Profile Info</string>
+    <string name="personal_details_full_name">FULL NAME</string>
+    <string name="personal_details_email">EMAIL ADDRESS</string>
+    <string name="personal_details_email_note">Email cannot be changed after registration.</string>
+    <string name="personal_details_section_security">Change Password</string>
+    <string name="personal_details_current_password">CURRENT PASSWORD</string>
+    <string name="personal_details_current_password_hint">Enter current password</string>
+    <string name="personal_details_new_password">NEW PASSWORD</string>
+    <string name="personal_details_new_password_hint">Minimum 6 characters</string>
+    <string name="personal_details_confirm_password">CONFIRM NEW PASSWORD</string>
+    <string name="personal_details_confirm_password_hint">Re-enter new password</string>
+    <string name="personal_details_save">Save Changes</string>
+    <string name="personal_details_section_danger">Danger Zone</string>
+    <string name="personal_details_delete_account">Delete Account</string>
+    <string name="personal_details_error_name_empty">Name cannot be empty.</string>
+    <string name="personal_details_error_current_pwd">Current password is incorrect.</string>
+    <string name="personal_details_error_pwd_short">New password must be at least 6 characters.</string>
+    <string name="personal_details_error_pwd_mismatch">Passwords do not match.</string>
+    <string name="personal_details_success_name">Name updated successfully!</string>
+    <string name="personal_details_success_password">Password changed successfully!</string>
+    <string name="personal_details_delete_confirm_title">Delete Account</string>
+    <string name="personal_details_delete_confirm_msg">This will permanently delete your account and all your data. This cannot be undone.</string>
+    <string name="personal_details_delete_confirm_yes">Delete</string>
+    <string name="personal_details_delete_confirm_cancel">Cancel</string>
+
+    <!-- Subscription Screen -->
+    <string name="subscription_title">Subscription</string>
+    <string name="subscription_current_plan">Current Plan</string>
+    <string name="subscription_free_plan">Free Plan</string>
+    <string name="subscription_free_plan_sub">Up to 5 goals · 20 reflections per month</string>
+    <string name="subscription_goals_used">3/5</string>
+    <string name="subscription_goals_label">Goals Used</string>
+    <string name="subscription_reflections_used">8/20</string>
+    <string name="subscription_reflections_label">Reflections</string>
+    <string name="subscription_streak">7</string>
+    <string name="subscription_streak_label">Day Streak</string>
+    <string name="subscription_section_upgrade">Upgrade to Pro</string>
+    <string name="subscription_pro">Reflect Pro</string>
+    <string name="subscription_popular">Most Popular</string>
+    <string name="subscription_pro_price">$4.99 / month · Cancel anytime</string>
+    <string name="subscription_feature_unlimited_goals">Unlimited goals &amp; reflections</string>
+    <string name="subscription_feature_analytics">Advanced analytics &amp; insights</string>
+    <string name="subscription_feature_reminders">Smart daily reminders</string>
+    <string name="subscription_feature_export">Export your journal as PDF</string>
+    <string name="subscription_upgrade_cta">Upgrade to Pro — $4.99/mo</string>
+    <string name="subscription_restore">Restore Purchase</string>
+
+    <!-- Help &amp; Support Screen -->
+    <string name="help_title">Help &amp; Support</string>
+    <string name="help_hero_title">How can we help?</string>
+    <string name="help_hero_sub">Find answers to common questions or reach out to our support team.</string>
+    <string name="help_section_faq">Frequently Asked Questions</string>
+    <string name="help_faq1_q">How do I add a new goal?</string>
+    <string name="help_faq1_a">Tap the ＋ button on the Home screen or navigate to the Goals tab and tap "Add Goal". Give your goal a title and description, then tap Save.</string>
+    <string name="help_faq2_q">How do I write a reflection?</string>
+    <string name="help_faq2_a">Open any goal from the Goals tab, then tap "Add Reflection" at the bottom. Write your thoughts and tap Save. Your reflections are stored privately and only visible to you.</string>
+    <string name="help_faq3_q">Is my data stored securely?</string>
+    <string name="help_faq3_a">Yes. All your data is stored locally on your device using an encrypted Room database. Your passwords are hashed with SHA-256 — we never store plain-text passwords.</string>
+    <string name="help_faq4_q">How do I change my password?</string>
+    <string name="help_faq4_a">Go to Profile → Personal Details → Change Password section. Enter your current password and your new password, then tap Save Changes.</string>
+    <string name="help_section_contact">Contact &amp; About</string>
+    <string name="help_contact_email_title">Email Support</string>
+    <string name="help_contact_email_sub">support@reflect.app</string>
+    <string name="help_contact_bug_title">Report a Bug</string>
+    <string name="help_contact_bug_sub">Help us improve the app</string>
+    <string name="help_privacy_title">Privacy Policy</string>
+    <string name="help_privacy_sub">How we handle your data</string>
+    <string name="help_made_with_love">Made with ❤️ by Team Reflect · ICT3214</string>
 </resources>
