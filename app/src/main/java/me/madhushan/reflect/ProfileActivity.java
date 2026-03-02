@@ -30,9 +30,14 @@ public class ProfileActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this);
 
         initViews();
-        populateUserData();
         setupDarkModeSwitch();
         setupClickListeners();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        populateUserData();
     }
 
     private void initViews() {
@@ -46,6 +51,8 @@ public class ProfileActivity extends AppCompatActivity {
         btnLogout           = findViewById(R.id.btn_logout);
 
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
+        findViewById(R.id.btn_edit_avatar).setOnClickListener(v ->
+                startActivity(new Intent(this, PersonalDetailsActivity.class)));
     }
 
     private void populateUserData() {
@@ -76,13 +83,13 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void setupClickListeners() {
         rowPersonalDetails.setOnClickListener(v ->
-                Toast.makeText(this, "Personal Details — coming soon", Toast.LENGTH_SHORT).show());
+                startActivity(new Intent(this, PersonalDetailsActivity.class)));
 
         rowSubscription.setOnClickListener(v ->
-                Toast.makeText(this, "Subscription — coming soon", Toast.LENGTH_SHORT).show());
+                startActivity(new Intent(this, SubscriptionActivity.class)));
 
         rowHelp.setOnClickListener(v ->
-                Toast.makeText(this, "Help & Support — coming soon", Toast.LENGTH_SHORT).show());
+                startActivity(new Intent(this, HelpSupportActivity.class)));
 
         switchNotifications.setOnCheckedChangeListener((buttonView, isChecked) ->
                 Toast.makeText(this,
