@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light"
+    android:background="@color/colorAppBg"
     android:fillViewport="true">
 
     <LinearLayout
@@ -44,7 +44,7 @@
             android:fontFamily="sans-serif"
             android:letterSpacing="-0.02"
             android:text="@string/register_title"
-            android:textColor="@color/text_primary_light"
+            android:textColor="@color/colorTextPrimary"
             android:textSize="30sp"
             android:textStyle="bold" />
 
@@ -55,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/register_subtitle"
-            android:textColor="@color/text_secondary_light"
+            android:textColor="@color/colorTextSecondary"
             android:textSize="14sp" />
 
         <Space android:layout_width="match_parent" android:layout_height="28dp" />
@@ -83,7 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:inputType="textPersonName|textCapWords"
-                android:textColor="@color/text_primary_light"
+                android:textColor="@color/colorTextPrimary"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -110,7 +110,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:inputType="textEmailAddress"
-                android:textColor="@color/text_primary_light"
+                android:textColor="@color/colorTextPrimary"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -136,7 +136,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:inputType="textPassword"
-                android:textColor="@color/text_primary_light"
+                android:textColor="@color/colorTextPrimary"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -162,7 +162,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:inputType="textPassword"
-                android:textColor="@color/text_primary_light"
+                android:textColor="@color/colorTextPrimary"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -188,7 +188,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:text="@string/register_terms_prefix"
-                android:textColor="@color/text_secondary_light"
+                android:textColor="@color/colorTextSecondary"
                 android:textSize="13sp" />
 
             <TextView
@@ -232,7 +232,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/register_have_account"
-                android:textColor="@color/text_secondary_light"
+                android:textColor="@color/colorTextSecondary"
                 android:textSize="13sp" />
 
             <TextView

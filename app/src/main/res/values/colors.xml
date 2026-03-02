@@ -48,6 +48,7 @@
     <color name="colorCard">#FFFFFF</color>
     <color name="colorTextPrimary">#0f172a</color>
     <color name="colorTextSecondary">#64748b</color>
+    <color name="colorBorder">#e2e8f0</color>
     <color name="colorBarInactive">#E2E8F0</color>
     <color name="colorCircleGreen">#DCFCE7</color>
     <color name="colorCircleBlue">#DBEAFE</color>

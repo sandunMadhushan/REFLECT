@@ -12,6 +12,7 @@
     <color name="colorCard">#1E2035</color>
     <color name="colorTextPrimary">#FFFFFF</color>
     <color name="colorTextSecondary">#94a3b8</color>
+    <color name="colorBorder">#334155</color>
     <color name="colorBarInactive">#2A2D4A</color>
     <color name="colorCircleGreen">#0D3321</color>
     <color name="colorCircleBlue">#1E3A5F</color>

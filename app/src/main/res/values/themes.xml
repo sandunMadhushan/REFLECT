@@ -5,6 +5,13 @@
         <item name="colorPrimaryVariant">@color/primary_dark</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="android:windowBackground">@color/colorAppBg</item>
+        <!-- Light surface colors for CardView, TextInputLayout, etc. -->
+        <item name="colorSurface">@color/surface_light</item>
+        <item name="colorOnSurface">@color/text_primary_light</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary_light</item>
+        <item name="android:textColorPrimary">@color/text_primary_light</item>
+        <item name="android:textColorSecondary">@color/text_secondary_light</item>
+        <item name="android:editTextColor">@color/text_primary_light</item>
     </style>
 
     <style name="Theme.REFLECT" parent="Base.Theme.REFLECT" />
