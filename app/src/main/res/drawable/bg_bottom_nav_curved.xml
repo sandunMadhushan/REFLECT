@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Bottom navigation bar background with rounded top corners -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <solid android:color="?attr/colorNavBar"/>
+    <solid android:color="@color/colorNavBar"/>
     <corners android:topLeftRadius="20dp" android:topRightRadius="20dp"/>
 </shape>
-

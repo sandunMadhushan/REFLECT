@@ -1,18 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Semantic color attributes that auto-switch with day/night -->
-    <attr name="colorBackground" format="color"/>
-    <attr name="colorCard" format="color"/>
-    <attr name="colorTextPrimary" format="color"/>
-    <attr name="colorTextSecondary" format="color"/>
-    <attr name="colorBarInactive" format="color"/>
-    <attr name="colorCircleGreen" format="color"/>
-    <attr name="colorCircleBlue" format="color"/>
-    <attr name="colorCirclePurple" format="color"/>
-    <attr name="colorNavBar" format="color"/>
-    <attr name="colorNotifBtn" format="color"/>
-    <attr name="colorGreenIcon" format="color"/>
-    <attr name="colorBlueIcon" format="color"/>
-    <attr name="colorPurpleIcon" format="color"/>
-    <attr name="colorProgressTrack" format="color"/>
+    <!-- Custom attributes reserved for future use -->
 </resources>

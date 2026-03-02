@@ -4,23 +4,7 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primary_dark</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="android:windowBackground">@color/colorBackground</item>
-
-        <!-- Semantic theme colours used throughout the app -->
-        <item name="colorBackground">@color/colorBackground</item>
-        <item name="colorCard">@color/colorCard</item>
-        <item name="colorTextPrimary">@color/colorTextPrimary</item>
-        <item name="colorTextSecondary">@color/colorTextSecondary</item>
-        <item name="colorBarInactive">@color/colorBarInactive</item>
-        <item name="colorCircleGreen">@color/colorCircleGreen</item>
-        <item name="colorCircleBlue">@color/colorCircleBlue</item>
-        <item name="colorCirclePurple">@color/colorCirclePurple</item>
-        <item name="colorNavBar">@color/colorNavBar</item>
-        <item name="colorNotifBtn">@color/colorNotifBtn</item>
-        <item name="colorGreenIcon">@color/colorGreenIcon</item>
-        <item name="colorBlueIcon">@color/colorBlueIcon</item>
-        <item name="colorPurpleIcon">@color/colorPurpleIcon</item>
-        <item name="colorProgressTrack">@color/colorProgressTrack</item>
+        <item name="android:windowBackground">@color/colorAppBg</item>
     </style>
 
     <style name="Theme.REFLECT" parent="Base.Theme.REFLECT" />

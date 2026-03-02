@@ -8,7 +8,7 @@
     <color name="text_secondary_light">#94a3b8</color>
 
     <!-- ── Semantic day/night switching colors (DARK overrides) ── -->
-    <color name="colorBackground">#111121</color>
+    <color name="colorAppBg">#111121</color>
     <color name="colorCard">#1E2035</color>
     <color name="colorTextPrimary">#FFFFFF</color>
     <color name="colorTextSecondary">#94a3b8</color>
