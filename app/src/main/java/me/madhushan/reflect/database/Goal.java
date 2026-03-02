@@ -21,19 +21,14 @@ public class Goal {
     public int id;
 
     public int userId;
-
     public String title;
-
     public String description;
-
-    /** Comma-separated reflection notes, or empty string. */
+    public String category;      // personal, health, career, relationships
+    public String priority;      // low, medium, high
+    public String deadline;      // ISO date e.g. "2026-12-31"
     public String reflectionNotes;
-
-    /** 0 = in progress, 1 = achieved */
-    public int isAchieved;
-
-    public String createdAt;   // ISO date string e.g. "2026-03-02"
-
+    public int isAchieved;       // 0 = active, 1 = achieved
+    public String createdAt;
     public String updatedAt;
 }
 

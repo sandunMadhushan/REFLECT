@@ -25,6 +25,9 @@ public abstract class AppDatabase extends RoomDatabase {
                     "`userId` INTEGER NOT NULL," +
                     "`title` TEXT," +
                     "`description` TEXT," +
+                    "`category` TEXT," +
+                    "`priority` TEXT," +
+                    "`deadline` TEXT," +
                     "`reflectionNotes` TEXT," +
                     "`isAchieved` INTEGER NOT NULL DEFAULT 0," +
                     "`createdAt` TEXT," +

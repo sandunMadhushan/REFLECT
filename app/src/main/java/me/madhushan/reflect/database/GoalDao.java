@@ -21,6 +21,10 @@ public interface GoalDao {
     @Delete
     void deleteGoal(Goal goal);
 
+    /** Get a single goal by ID. */
+    @Query("SELECT * FROM goals WHERE id = :goalId LIMIT 1")
+    Goal getGoalById(int goalId);
+
     /** All goals for a user, newest first. */
     @Query("SELECT * FROM goals WHERE userId = :userId ORDER BY createdAt DESC")
     List<Goal> getGoalsForUser(int userId);

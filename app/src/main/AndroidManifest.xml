@@ -84,6 +84,22 @@
             android:name=".HelpSupportActivity"
             android:exported="false" />
 
+        <!-- Goals List Screen -->
+        <activity
+            android:name=".GoalsActivity"
+            android:exported="false" />
+
+        <!-- Add Goal Screen -->
+        <activity
+            android:name=".AddGoalActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Goal Details Screen -->
+        <activity
+            android:name=".GoalDetailsActivity"
+            android:exported="false" />
+
         <!-- FileProvider for camera capture temp files -->
         <provider
             android:name="androidx.core.content.FileProvider"
