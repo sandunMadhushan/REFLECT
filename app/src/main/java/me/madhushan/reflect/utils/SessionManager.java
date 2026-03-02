@@ -9,6 +9,11 @@ public class SessionManager {
     private static final String KEY_USER_ID   = "user_id";
     private static final String KEY_USER_NAME = "user_name";
     private static final String KEY_USER_EMAIL = "user_email";
+    // KEY_NOTIFICATIONS       = user's in-app ON/OFF choice
+    // KEY_NOTIF_DIALOG_SHOWN  = whether the FIRST-TIME system dialog has been shown
+    //                           (NEVER cleared when user toggles — only on full logout)
+    private static final String KEY_NOTIFICATIONS      = "notifications_enabled";
+    private static final String KEY_NOTIF_DIALOG_SHOWN = "notifications_dialog_shown";
     private static final int    NO_USER = -1;
 
     private final SharedPreferences prefs;
@@ -51,9 +56,57 @@ public class SessionManager {
         prefs.edit().putString(KEY_USER_NAME, newName).commit();
     }
 
+    // ── Notification preferences ────────────────────────────────────────────
+
+    /**
+     * The user's explicit in-app notification toggle choice.
+     * Default false = off until the user explicitly enables it.
+     */
+    public boolean getNotificationsEnabled() {
+        return prefs.getBoolean(KEY_NOTIFICATIONS, false);
+    }
+
+    /**
+     * Save the user's explicit toggle choice.
+     * Uses commit() (synchronous) so the value is immediately
+     * available when onResume reads it back.
+     */
+    public void setNotificationsEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_NOTIFICATIONS, enabled).commit();
+    }
+
+    /**
+     * Returns true if the first-time system permission dialog has already
+     * been shown to this user. This flag is NEVER cleared on toggle OFF —
+     * only on full logout/account delete.
+     */
+    public boolean hasNotifDialogBeenShown() {
+        return prefs.getBoolean(KEY_NOTIF_DIALOG_SHOWN, false);
+    }
+
+    /** Mark that the first-time system permission dialog has been shown. */
+    public void markNotifDialogShown() {
+        prefs.edit().putBoolean(KEY_NOTIF_DIALOG_SHOWN, true).commit();
+    }
+
+    // ── Legacy aliases (keep for compatibility) ──────────────────────────────
+    /** @deprecated use hasNotifDialogBeenShown() */
+    public boolean hasNotificationPreferenceBeenSet() {
+        return hasNotifDialogBeenShown();
+    }
+    /** @deprecated use markNotifDialogShown() */
+    public void markNotificationPreferenceSet() {
+        markNotifDialogShown();
+    }
+    /** Clears ONLY the ON/OFF value — does NOT clear the dialog-shown flag. */
+    public void clearNotificationPreference() {
+        prefs.edit().putBoolean(KEY_NOTIFICATIONS, false).commit();
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+
     /** Clear the session (logout). */
     public void clearSession() {
         prefs.edit().clear().apply();
     }
 }
-

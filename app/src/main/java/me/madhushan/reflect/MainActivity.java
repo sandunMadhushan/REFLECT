@@ -1,24 +1,40 @@
 package me.madhushan.reflect;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 
 import me.madhushan.reflect.ui.CircularProgressView;
 import me.madhushan.reflect.utils.SessionManager;
 
 public class MainActivity extends AppCompatActivity {
 
+    private SessionManager sessionManager;
+
+    // Launcher for the POST_NOTIFICATIONS permission dialog
+    private final ActivityResultLauncher<String> notifPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                sessionManager.setNotificationsEnabled(isGranted);
+                sessionManager.markNotifDialogShown();
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SessionManager sessionManager = new SessionManager(this);
+        sessionManager = new SessionManager(this);
 
         // Populate user name + avatar initials from session
         String fullName = sessionManager.getUserName();
@@ -30,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
         // Set circular progress (5/8 = 0.625)
         CircularProgressView circularProgress = findViewById(R.id.circular_progress);
         circularProgress.setProgress(0.625f);
+
+        // Request notification permission on first app open (Android 13+)
+        requestNotificationPermissionIfNeeded();
 
         // Bottom nav click listeners
         findViewById(R.id.nav_home).setOnClickListener(v ->
@@ -60,6 +79,25 @@ public class MainActivity extends AppCompatActivity {
                 // Do nothing — back is blocked on home screen
             }
         });
+    }
+
+    private void requestNotificationPermissionIfNeeded() {
+        // Only show the system dialog ONCE ever — never overwrite user's saved choice
+        if (sessionManager.hasNotifDialogBeenShown()) return;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    == PackageManager.PERMISSION_GRANTED) {
+                sessionManager.setNotificationsEnabled(true);
+                sessionManager.markNotifDialogShown();
+            } else {
+                notifPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        } else {
+            boolean enabled = NotificationManagerCompat.from(this).areNotificationsEnabled();
+            sessionManager.setNotificationsEnabled(enabled);
+            sessionManager.markNotifDialogShown();
+        }
     }
 
     /** Returns up-to-2-letter initials from a full name */
