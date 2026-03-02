@@ -35,11 +35,14 @@ It's about **thinking deeply**, not managing tasks. Each goal is a conversation 
 | Feature | Status | Description |
 |---|---|---|
 | 💫 **Splash Screen** | ✅ Done | Animated branded loading screen with progress bar |
+| 🎓 **Onboarding** | ✅ Done | 3-page swipeable intro with ViewPager2, skip support, shown only once |
 | 🔐 **Register** | ✅ Done | Full validation, SHA-256 password hashing, Room DB insert |
 | 🔑 **Login** | ✅ Done | Email/password auth against Room DB, session creation |
-| 🏠 **Home Dashboard** | ✅ Done | Stats cards, progress chart, recent activity, bottom nav |
+| 🔓 **Forgot Password** | ✅ Done | 2-step flow: verify email → set new password → success |
+| 🏠 **Home Dashboard** | ✅ Done | Stats cards, inspiration quote, progress chart, recent activity, bottom nav + FAB |
+| 👤 **Profile & Settings** | ✅ Done | Avatar, dark mode toggle, notifications toggle, account rows, logout |
 | 🌙 **Dark / Light Theme** | ✅ Done | Follows device system theme — switches live across all screens |
-| 📱 **Session Management** | ✅ Done | Persistent login via `SharedPreferences`, auto-skip splash |
+| 📱 **Session Management** | ✅ Done | Persistent login via `SharedPreferences`, auto-skip splash & onboarding |
 
 ---
 
@@ -48,60 +51,93 @@ It's about **thinking deeply**, not managing tasks. Each goal is a conversation 
 | Layer | Technology | Version |
 |---|---|---|
 | **Language** | Java | 11 |
-| **Platform** | Android | Min SDK 24 (Android 7.0+) |
+| **Platform** | Android | Min SDK 24 (Android 7.0+), Target SDK 36 |
 | **UI Framework** | XML Layouts, ConstraintLayout, CardView | — |
 | **Material Components** | Material Design 3 | `1.13.0` |
 | **AppCompat / DayNight** | `androidx.appcompat` | `1.7.1` |
 | **ConstraintLayout** | `androidx.constraintlayout` | `2.2.1` |
+| **ViewPager2** | `androidx.viewpager2` | `1.1.0` |
 | **Local Database** | Room Persistence Library | `2.6.1` |
 | **Password Security** | SHA-256 via `MessageDigest` | — |
 | **Session Handling** | `SharedPreferences` — `SessionManager` | — |
 | **Background Threading** | `ExecutorService` for all Room ops | — |
-| **Compile / Target SDK** | Android 36 | AGP `9.0.1` |
+| **Build Tool** | Android Gradle Plugin | `9.0.1` |
 | **IDE** | Android Studio | — |
 | **Version Control** | Git & GitHub | — |
 
 ---
 
-## 📱 Screens
+## 📱 App Flow & Screens
 
 ```
-┌──────────────────┐     ┌──────────────────┐     ┌──────────────────┐
-│  Splash Screen   │────▶│   Login Screen   │────▶│ Register Screen  │
-│                  │     │                  │     │                  │
-│  • Gradient bg   │     │  • App logo      │     │  • App logo      │
-│  • App logo      │     │  • Email field   │     │  • Full Name     │
-│  • "Reflect"     │     │  • Password      │     │  • Password      │
-│  • "Track.       │     │  • Log In btn    │     │  • Confirm pwd   │
-│    Reflect.Grow" │     │  • Google/Apple  │     │  • Terms check   │
-│                  │     │  • Register link │     │  • Terms check   │
-└──────────────────┘     └────────┬─────────┘     │  • Register btn  │
-         │                        │               │  • Log in link   │
-         │ (has session)          │◀──────────────┘
-         │                        │         (Log in link)
-         ▼                        ▼
-┌────────────────────────────────────────────────────────────────────┐
-│                        Home Dashboard                              │
-│                                                                    │
-│  • Top bar: avatar, welcome name, notification bell                │
-│  • Active Goals card (primary gradient)                            │
-│  • Completed count card                                            │
-│  • Today's Habits card with circular progress ring                 │
-│  • Daily Inspiration quote card                                    │
-│  • Weekly progress bar chart                                       │
-│  • Recent Activity feed                                            │
-│  • Bottom nav: Home | Goals | [+FAB] | Journal | Profile           │
-└────────────────────────────────────────────────────────────────────┘
-
-Navigation:
-  Splash  ──[no session]──▶  Login
-  Splash  ──[has session]──▶  Home  (auto-skip)
-  Login   ──[success]──────▶  Home
-  Login   ──[register]─────▶  Register
-  Register ──[success]─────▶  Home  (auto-login)
-  Register ──[log in]──────▶  Login
-  Home    ──[back btn]─────▶  blocked (must log out)
+┌──────────────────┐
+│  Splash Screen   │  2.8s animated loading bar
+└────────┬─────────┘
+         │
+         ├─── [Session exists] ──────────────────────────────▶ Home Dashboard
+         │
+         ├─── [Onboarding done, no session] ───────────────▶ Login Screen
+         │
+         └─── [First launch] ──────────────────────────────▶ Onboarding
+                                                                  │
+                              ┌───────────────────────────────────┤
+                              │                                   │
+                   ┌──────────▼─────────┐              ┌──────────▼──────────┐
+                   │  Page 1            │  Page 2       │  Page 3             │
+                   │  Set Meaningful    │──▶ Reflect on │──▶ See Your         │
+                   │  Goals             │   Your Journey│   Progress          │
+                   └────────────────────┘               └──────────┬──────────┘
+                                                                   │ Get Started
+                                                                   ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                              Login Screen                                    │
+│  • Logo + "Welcome Back"                                                     │
+│  • Email / Password fields (Material TextInputLayout)                        │
+│  • Log In button  •  Forgot Password?  •  Google / Apple (UI only)           │
+│  • "Register now" link                                                       │
+└──────────┬───────────────────────────┬───────────────────────────────────────┘
+           │                           │
+    [Login success]             [Forgot Password?]
+           │                           │
+           │              ┌────────────▼────────────────────┐
+           │              │      Forgot Password Screen      │
+           │              │  Step 1: Enter email → verify   │
+           │              │  Step 2: Set new password        │
+           │              │  Step 3: Success → Go to Login  │
+           │              └─────────────────────────────────┘
+           │
+           ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                           Home Dashboard                                     │
+│  • Top bar: avatar initials, "Welcome back, [Name]", notification bell       │
+│  • Active Goals card (primary gradient)                                      │
+│  • Completed count card  •  Today's Habits with circular progress ring       │
+│  • Daily Inspiration quote card                                              │
+│  • Weekly progress bar chart                                                 │
+│  • Recent Activity feed                                                      │
+│  • Bottom nav: Home | Goals | [+FAB] | Journal | Profile                     │
+└──────────────────────────────────────────────────────────────────────────────┘
+           │
+    [nav_profile tap]
+           │
+           ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         Profile & Settings Screen                            │
+│  • Avatar circle with initials + edit button                                 │
+│  • User name  •  "Goal Achiever · Reflect Member"  •  Pro Member badge       │
+│  • App Preferences: Dark Mode toggle, Notifications toggle                   │
+│  • Account: Personal Details, Subscription, Help & Support (chevron rows)   │
+│  • Log Out button (red border) with confirmation dialog                      │
+│  • Version text  •  Bottom nav (Profile active)                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
+
+**Navigation rules:**
+- Splash → auto-routes based on session & onboarding state
+- Onboarding → shown only on **first launch**, never again (stored in `SharedPreferences`)
+- Home → back button **blocked** (must log out explicitly)
+- Register success → **auto-login** → Home
+- Profile logout → confirmation dialog → clears session → Login
 
 ---
 
@@ -141,9 +177,10 @@ Reflect fully supports **system-driven dark and light mode**:
 
 - Follows the device theme automatically — no manual toggle needed
 - Switches **live** while the app is open (Activity recreates on `uiMode` config change)
-- Covers every screen: Splash → Login → Register → Home
+- Covers **every** screen: Splash → Onboarding → Login → Register → Forgot Password → Home → Profile
 - Implemented via `AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM` in `ReflectApp.java`
-- All colors defined as semantic names in `values/colors.xml` with dark overrides in `values-night/colors.xml`
+- Profile screen **Dark Mode toggle** lets users override to force dark/light
+- All colors defined as semantic names in `values/colors.xml` with overrides in `values-night/colors.xml`
 
 | Token | Light | Dark |
 |---|---|---|
@@ -162,39 +199,48 @@ Reflect fully supports **system-driven dark and light mode**:
 REFLECT/
 ├── app/src/main/
 │   ├── java/me/madhushan/reflect/
-│   │   ├── ReflectApp.java             # Application class — sets DayNight mode system-wide
-│   │   ├── SplashActivity.java         # Animated splash, auto-navigates (skip if session exists)
-│   │   ├── LoginActivity.java          # Email/password login, Room auth, session creation
-│   │   ├── RegisterActivity.java       # Full registration with validation, SHA-256 hashing
-│   │   ├── MainActivity.java           # Home dashboard — stats, chart, activity feed, bottom nav
+│   │   ├── ReflectApp.java                 # Application class — sets DayNight mode system-wide
+│   │   ├── SplashActivity.java             # Animated splash → routes to Onboarding/Login/Home
+│   │   ├── OnboardingActivity.java         # 3-page ViewPager2 intro (shown once only)
+│   │   ├── LoginActivity.java              # Email/password login, Room auth, session creation
+│   │   ├── RegisterActivity.java           # Full registration with validation + SHA-256 hashing
+│   │   ├── ForgotPasswordActivity.java     # 2-step password reset (verify email → new password)
+│   │   ├── MainActivity.java               # Home dashboard — stats, chart, activity feed, bottom nav
+│   │   ├── ProfileActivity.java            # Profile & Settings — avatar, toggles, account rows, logout
 │   │   ├── database/
-│   │   │   ├── AppDatabase.java        # @Database — Room singleton
-│   │   │   ├── User.java               # @Entity — users table
-│   │   │   └── UserDao.java            # @Dao — insert, login, emailExists queries
+│   │   │   ├── AppDatabase.java            # @Database — Room singleton
+│   │   │   ├── User.java                   # @Entity — users table
+│   │   │   └── UserDao.java                # @Dao — insert, login, emailExists, findByEmail, updatePassword
 │   │   ├── utils/
-│   │   │   ├── PasswordUtils.java      # SHA-256 password hashing
-│   │   │   └── SessionManager.java     # SharedPreferences login session handler
+│   │   │   ├── PasswordUtils.java          # SHA-256 password hashing
+│   │   │   └── SessionManager.java         # SharedPreferences login session handler
 │   │   └── ui/
-│   │       └── CircularProgressView.java  # Custom canvas view — circular progress ring
+│   │       └── CircularProgressView.java   # Custom canvas view — circular progress ring
 │   ├── res/
 │   │   ├── layout/
-│   │   │   ├── activity_splash.xml     # Gradient bg, logo, title, tagline, loading bar
-│   │   │   ├── activity_login.xml      # Login form — Material TextInputLayout, social btns
-│   │   │   ├── activity_register.xml   # Register form — 4 fields, terms checkbox
-│   │   │   └── activity_main.xml       # Home dashboard — all sections, bottom nav + FAB
-│   │   ├── drawable/                   # 40+ vector icons, shape backgrounds, gradients
+│   │   │   ├── activity_splash.xml         # Gradient bg, logo, title, tagline, loading bar
+│   │   │   ├── activity_onboarding.xml     # ViewPager2 host + dots + next/get-started button
+│   │   │   ├── fragment_onboarding_1.xml   # "Set Meaningful Goals" page
+│   │   │   ├── fragment_onboarding_2.xml   # "Reflect on Your Journey" page
+│   │   │   ├── fragment_onboarding_3.xml   # "See Your Progress" page
+│   │   │   ├── activity_login.xml          # Login form — Material TextInputLayout, social buttons
+│   │   │   ├── activity_register.xml       # Register form — 4 fields, terms checkbox
+│   │   │   ├── activity_forgot_password.xml# 3-step password reset layout
+│   │   │   ├── activity_main.xml           # Home dashboard — all sections, bottom nav + FAB
+│   │   │   └── activity_profile.xml        # Profile & Settings — avatar, toggles, rows, logout
+│   │   ├── drawable/                       # 50+ vector icons, shape backgrounds, gradients
 │   │   ├── values/
-│   │   │   ├── colors.xml              # Brand + semantic light-theme palette
-│   │   │   ├── strings.xml             # All UI strings
-│   │   │   ├── themes.xml              # Base.Theme.REFLECT (DayNight) + Splash theme
-│   │   │   └── attrs.xml               # Custom view attributes
+│   │   │   ├── colors.xml                  # Brand + semantic light-theme palette
+│   │   │   ├── strings.xml                 # All UI strings
+│   │   │   ├── themes.xml                  # Base.Theme.REFLECT (DayNight) + Splash theme
+│   │   │   └── attrs.xml                   # Custom view attributes
 │   │   └── values-night/
-│   │       ├── colors.xml              # Dark-mode color overrides
-│   │       └── themes.xml              # Dark surface/text theme overrides
-│   └── AndroidManifest.xml             # Activity declarations, ReflectApp registered
+│   │       ├── colors.xml                  # Dark-mode color overrides
+│   │       └── themes.xml                  # Dark surface/text theme overrides
+│   └── AndroidManifest.xml                 # All activity declarations, ReflectApp registered
 ├── gradle/
-│   └── libs.versions.toml              # Dependency version catalog
-├── .gitignore                          # UI_Screens/ and build outputs excluded
+│   └── libs.versions.toml                  # Dependency version catalog
+├── .gitignore                              # UI_Screens/ and build outputs excluded
 └── README.md
 ```
 
@@ -204,13 +250,14 @@ REFLECT/
 
 | Token | Value | Usage |
 |---|---|---|
-| `primary` | `#4E51E9` | Buttons, links, active states, FAB |
-| `primary_dark` | `#4040D0` | Pressed/hover states |
+| `primary` | `#4E51E9` | Buttons, links, active nav, FAB, dots |
+| `primary_dark` | `#4040D0` | Pressed states |
 | `gradient_end` | `#7A5CFF` | Splash, logo box, register button |
-| `colorAppBg` | `#F6F6F8` / `#111121` | Screen backgrounds (light / dark) |
-| `colorCard` | `#FFFFFF` / `#1E2035` | Cards, form containers |
+| `colorAppBg` | `#F6F6F8` / `#111121` | Screen backgrounds |
+| `colorCard` | `#FFFFFF` / `#1E2035` | Cards, form containers, settings rows |
 | `colorTextPrimary` | `#0F172A` / `#FFFFFF` | Headings, body text |
-| `colorTextSecondary` | `#64748B` / `#94A3B8` | Subtitles, hints, labels |
+| `colorTextSecondary` | `#64748B` / `#94A3B8` | Subtitles, hints, section labels |
+| `danger` | `#E63946` | Log out button border & text |
 
 **Typography:** `sans-serif` (system default) — letter-spacing and weight tuned per screen
 
@@ -252,8 +299,8 @@ git clone https://github.com/sandunMadhushan/REFLECT.git
 - [ ] 🏆 **Achievements** — milestone badges and completion tracking
 - [ ] 🗺️ **Vision Board** — visual inspiration board for goals
 - [ ] 🔔 **Reminders** — daily reflection push notifications
-- [ ] 👤 **Profile & Settings** — account details, avatar, preferences
-- [ ] 🔒 **Forgot Password** — email verification and reset flow
+- [ ] 🧩 **Habit Tracker** — daily habit check-ins with streaks
+- [ ] 🔒 **Personal Details** — edit profile name, email, password
 
 ---
 
@@ -273,8 +320,8 @@ git clone https://github.com/sandunMadhushan/REFLECT.git
 ## 🔒 Security Note
 
 Passwords are **never stored in plain text**.
-Reflect uses **SHA-256 hashing** (`MessageDigest`) in `PasswordUtils.java` before saving any password to the Room database.
-During login, the entered password is hashed and compared — the original password is never retained anywhere.
+Reflect uses **SHA-256 hashing** (`MessageDigest`) in `PasswordUtils.java` before saving to the Room database.
+During login and password reset, the entered password is hashed and compared — the original is never retained.
 
 All Room database operations run on a **background thread** via `ExecutorService`, following Android's strict main-thread policy.
 
@@ -291,5 +338,4 @@ This project is submitted as academic coursework for ICT3214.
   <i>"Track. Reflect. Grow."</i><br><br>
   Built with ❤️ for ICT3214 — Mobile Application Development
 </div>
-
 
