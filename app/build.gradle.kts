@@ -35,6 +35,18 @@ android {
     }
 }
 
+// After assembleDebug, copy the APK and rename it to REFLECT.apk
+tasks.register<Copy>("buildReflectApk") {
+    dependsOn("assembleDebug")
+    from(layout.buildDirectory.dir("outputs/apk/debug"))
+    include("*.apk")
+    into(layout.buildDirectory.dir("outputs/apk/release_share"))
+    rename { "REFLECT.apk" }
+    doLast {
+        println("✅ REFLECT.apk saved to: ${layout.buildDirectory.get()}/outputs/apk/release_share/REFLECT.apk")
+    }
+}
+
 dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
