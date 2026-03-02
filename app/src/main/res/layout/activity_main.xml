@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_dark">
+    android:background="?attr/colorBackground">
 
     <!-- ===== SCROLLABLE CONTENT ===== -->
     <ScrollView
@@ -72,13 +72,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/home_welcome"
-                            android:textColor="@color/text_secondary_dark"
+                            android:textColor="?attr/colorTextSecondary"
                             android:textSize="12sp" />
                         <TextView
                             android:id="@+id/tv_user_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/text_primary_dark"
+                            android:textColor="?attr/colorTextPrimary"
                             android:textSize="20sp"
                             android:textStyle="bold"
                             android:letterSpacing="-0.02" />
@@ -99,7 +99,7 @@
                         android:layout_height="22dp"
                         android:layout_gravity="center"
                         android:src="@drawable/ic_notifications"
-                        app:tint="@color/text_secondary_dark"/>
+                        app:tint="?attr/colorTextSecondary"/>
                     <!-- Red dot -->
                     <View
                         android:layout_width="8dp"
@@ -215,14 +215,14 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="12"
-                                    android:textColor="@color/text_primary_dark"
+                                    android:textColor="?attr/colorTextPrimary"
                                     android:textSize="24sp"
                                     android:textStyle="bold"/>
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/home_completed"
-                                    android:textColor="@color/text_secondary_dark"
+                                    android:textColor="?attr/colorTextSecondary"
                                     android:textSize="11sp"/>
                             </LinearLayout>
                             <FrameLayout
@@ -234,7 +234,7 @@
                                     android:layout_height="18dp"
                                     android:layout_gravity="center"
                                     android:src="@drawable/ic_check_circle"
-                                    app:tint="@color/green_icon"/>
+                                    app:tint="?attr/colorGreenIcon"/>
                             </FrameLayout>
                         </LinearLayout>
 
@@ -257,14 +257,14 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="5/8"
-                                    android:textColor="@color/text_primary_dark"
+                                    android:textColor="?attr/colorTextPrimary"
                                     android:textSize="24sp"
                                     android:textStyle="bold"/>
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/home_habits_today"
-                                    android:textColor="@color/text_secondary_dark"
+                                    android:textColor="?attr/colorTextSecondary"
                                     android:textSize="11sp"/>
                             </LinearLayout>
                             <!-- Circular progress (custom view via canvas) -->
@@ -343,7 +343,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/home_your_progress"
-                        android:textColor="@color/text_primary_dark"
+                        android:textColor="?attr/colorTextPrimary"
                         android:textSize="16sp"
                         android:textStyle="bold"/>
                     <TextView
@@ -425,7 +425,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/home_recent_activity"
-                    android:textColor="@color/text_primary_dark"
+                    android:textColor="?attr/colorTextPrimary"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="12dp"/>
@@ -449,7 +449,7 @@
                             android:layout_height="20dp"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_mindfulness"
-                            app:tint="@color/blue_icon"/>
+                            app:tint="?attr/colorBlueIcon"/>
                     </FrameLayout>
                     <LinearLayout
                         android:layout_width="0dp"
@@ -461,14 +461,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/home_activity_water"
-                            android:textColor="@color/text_primary_dark"
+                            android:textColor="?attr/colorTextPrimary"
                             android:textSize="13sp"
                             android:textStyle="bold"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/home_activity_water_sub"
-                            android:textColor="@color/text_secondary_dark"
+                            android:textColor="?attr/colorTextSecondary"
                             android:textSize="11sp"/>
                     </LinearLayout>
                     <TextView
@@ -499,7 +499,7 @@
                             android:layout_height="20dp"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_journal"
-                            app:tint="@color/purple_icon"/>
+                            app:tint="?attr/colorPurpleIcon"/>
                     </FrameLayout>
                     <LinearLayout
                         android:layout_width="0dp"
@@ -511,14 +511,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/home_activity_reflection"
-                            android:textColor="@color/text_primary_dark"
+                            android:textColor="?attr/colorTextPrimary"
                             android:textSize="13sp"
                             android:textStyle="bold"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/home_activity_reflection_sub"
-                            android:textColor="@color/text_secondary_dark"
+                            android:textColor="?attr/colorTextSecondary"
                             android:textSize="11sp"/>
                     </LinearLayout>
                     <ImageView
