@@ -123,11 +123,13 @@
 
                 <!-- ===== STATS ROW ===== -->
                 <LinearLayout
+                    android:id="@+id/stats_row"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginBottom="20dp"
-                    android:baselineAligned="false">
+                    android:baselineAligned="false"
+                    android:visibility="gone">
 
                     <!-- Active Goals card (primary gradient) -->
                     <LinearLayout
@@ -278,6 +280,75 @@
                     </LinearLayout>
                 </LinearLayout>
 
+                <!-- ===== EMPTY STATE (shown when no goals) ===== -->
+                <LinearLayout
+                    android:id="@+id/empty_state"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="24dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/bg_card_dark"
+                    android:elevation="2dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:src="@drawable/ic_flag"
+                        app:tint="@color/primary"
+                        android:alpha="0.4"
+                        android:layout_marginBottom="16dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No goals yet"
+                        android:textColor="@color/colorTextPrimary"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Start your journey by adding your first goal. Tap the + button below."
+                        android:textColor="@color/colorTextSecondary"
+                        android:textSize="13sp"
+                        android:gravity="center"
+                        android:lineSpacingExtra="4dp"
+                        android:layout_marginBottom="20dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/btn_add_first_goal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_btn_primary"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:paddingTop="12dp"
+                        android:paddingBottom="12dp"
+                        android:clickable="true"
+                        android:focusable="true">
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_add"
+                            app:tint="@color/white"
+                            android:layout_marginEnd="8dp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Add First Goal"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+                </LinearLayout>
+
                 <!-- ===== MOTIVATIONAL QUOTE CARD ===== -->
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -335,11 +406,13 @@
 
                 <!-- ===== PROGRESS SECTION ===== -->
                 <LinearLayout
+                    android:id="@+id/section_progress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp">
+                    android:layout_marginBottom="12dp"
+                    android:visibility="gone">
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -359,13 +432,15 @@
 
                 <!-- Bar Chart Card -->
                 <LinearLayout
+                    android:id="@+id/chart_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_card_dark"
                     android:orientation="vertical"
                     android:padding="16dp"
                     android:elevation="2dp"
-                    android:layout_marginBottom="24dp">
+                    android:layout_marginBottom="24dp"
+                    android:visibility="gone">
 
                     <!-- Bars -->
                     <LinearLayout
@@ -424,111 +499,23 @@
 
                 <!-- ===== RECENT ACTIVITY ===== -->
                 <TextView
+                    android:id="@+id/tv_recent_activity_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/home_recent_activity"
                     android:textColor="@color/colorTextPrimary"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:layout_marginBottom="12dp"/>
+                    android:layout_marginBottom="12dp"
+                    android:visibility="gone"/>
 
-                <!-- Activity item 1 -->
+                <!-- Dynamic recent goals container -->
                 <LinearLayout
+                    android:id="@+id/recent_activity_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_card_dark"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:padding="14dp"
-                    android:elevation="2dp"
-                    android:layout_marginBottom="10dp">
-                    <FrameLayout
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/bg_circle_blue">
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_mindfulness"
-                            app:tint="@color/colorBlueIcon"/>
-                    </FrameLayout>
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginStart="14dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/home_activity_water"
-                            android:textColor="@color/colorTextPrimary"
-                            android:textSize="13sp"
-                            android:textStyle="bold"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/home_activity_water_sub"
-                            android:textColor="@color/colorTextSecondary"
-                            android:textSize="11sp"/>
-                    </LinearLayout>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/home_xp"
-                        android:textColor="@color/primary"
-                        android:textSize="12sp"
-                        android:textStyle="bold"/>
-                </LinearLayout>
-
-                <!-- Activity item 2 -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_card_dark"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:padding="14dp"
-                    android:elevation="2dp"
-                    android:layout_marginBottom="16dp">
-                    <FrameLayout
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/bg_circle_purple">
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_journal"
-                            app:tint="@color/colorPurpleIcon"/>
-                    </FrameLayout>
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginStart="14dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/home_activity_reflection"
-                            android:textColor="@color/colorTextPrimary"
-                            android:textSize="13sp"
-                            android:textStyle="bold"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/home_activity_reflection_sub"
-                            android:textColor="@color/colorTextSecondary"
-                            android:textSize="11sp"/>
-                    </LinearLayout>
-                    <ImageView
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:src="@drawable/ic_arrow_forward"
-                        app:tint="@color/text_hint"/>
-                </LinearLayout>
+                    android:orientation="vertical"
+                    android:visibility="gone"/>
 
             </LinearLayout>
         </LinearLayout>
