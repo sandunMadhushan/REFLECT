@@ -43,6 +43,8 @@ dependencies {
     // Room Database
     implementation(libs.room.runtime)
     annotationProcessor(libs.room.compiler)
+    // ViewPager2 for onboarding
+    implementation(libs.viewpager2)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

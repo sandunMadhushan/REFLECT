@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:background="@color/colorAppBg"
+    android:paddingStart="28dp"
+    android:paddingEnd="28dp">
+
+    <!-- Illustration area -->
+    <FrameLayout
+        android:layout_width="280dp"
+        android:layout_height="280dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp">
+
+        <!-- Soft glow circle behind -->
+        <View
+            android:layout_width="280dp"
+            android:layout_height="280dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_onboarding_glow_blue"
+            android:alpha="0.4" />
+
+        <!-- Illustration card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="200dp"
+            android:layout_height="220dp"
+            android:layout_gravity="center"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="12dp"
+            app:cardBackgroundColor="@color/colorCard">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <!-- Icon row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <FrameLayout
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/bg_icon_primary_tint">
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_flag"
+                            android:contentDescription="Goals"
+                            app:tint="@color/primary"/>
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:orientation="vertical">
+                        <View android:layout_width="80dp" android:layout_height="8dp" android:background="@drawable/bg_skeleton_line" android:layout_marginBottom="6dp"/>
+                        <View android:layout_width="56dp" android:layout_height="6dp" android:background="@drawable/bg_skeleton_line"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Bar chart rows -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="bottom"
+                    android:paddingTop="8dp">
+
+                    <View android:layout_width="0dp" android:layout_height="40dp" android:layout_weight="1" android:layout_marginEnd="4dp" android:background="@drawable/bg_bar_onboarding_light"/>
+                    <View android:layout_width="0dp" android:layout_height="65dp" android:layout_weight="1" android:layout_marginEnd="4dp" android:background="@drawable/bg_bar_onboarding_light"/>
+                    <View android:layout_width="0dp" android:layout_height="50dp" android:layout_weight="1" android:layout_marginEnd="4dp" android:background="@drawable/bg_bar_onboarding_light"/>
+                    <View android:layout_width="0dp" android:layout_height="85dp" android:layout_weight="1" android:background="@drawable/bg_bar_active"/>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </FrameLayout>
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:fontFamily="sans-serif"
+        android:letterSpacing="-0.02"
+        android:text="@string/onboarding1_title"
+        android:textColor="@color/colorTextPrimary"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+    <Space android:layout_width="match_parent" android:layout_height="12dp"/>
+
+    <!-- Subtitle -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:lineSpacingMultiplier="1.4"
+        android:text="@string/onboarding1_subtitle"
+        android:textColor="@color/colorTextSecondary"
+        android:textSize="15sp" />
+
+</LinearLayout>
+
+

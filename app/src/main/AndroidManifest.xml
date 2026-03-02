@@ -36,6 +36,11 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <!-- Onboarding Screen -->
+        <activity
+            android:name=".OnboardingActivity"
+            android:exported="false" />
+
         <!-- Forgot Password Screen -->
         <activity
             android:name=".ForgotPasswordActivity"
