@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Bar chart bar views
     private View[] bars; // [0]=Mon ... [6]=Sun
+    private TextView[] dayLabels; // [0]=Mon ... [6]=Sun
 
     // Launcher for notification permission
     private final ActivityResultLauncher<String> notifPermissionLauncher =
@@ -101,6 +102,17 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.bar_fri),
             findViewById(R.id.bar_sat),
             findViewById(R.id.bar_sun)
+        };
+
+        // Day labels
+        dayLabels = new TextView[]{
+            findViewById(R.id.label_mon),
+            findViewById(R.id.label_tue),
+            findViewById(R.id.label_wed),
+            findViewById(R.id.label_thu),
+            findViewById(R.id.label_fri),
+            findViewById(R.id.label_sat),
+            findViewById(R.id.label_sun)
         };
 
         setupNavigation();
@@ -192,10 +204,24 @@ public class MainActivity extends AppCompatActivity {
 
     private void highlightTodayBar() {
         int dow = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        // Calendar.MONDAY=2 → index 0 ... Calendar.SUNDAY=1 → index 6
         int todayIndex = (dow == Calendar.SUNDAY) ? 6 : dow - 2;
+
+        int primaryColor = getResources().getColor(R.color.primary, null);
+        int hintColor    = getResources().getColor(R.color.text_hint, null);
+
         for (int i = 0; i < bars.length; i++) {
-            bars[i].setBackgroundResource(
-                i == todayIndex ? R.drawable.bg_bar_active : R.drawable.bg_bar_inactive_dark);
+            boolean isToday = (i == todayIndex);
+            // Bar color
+            bars[i].setBackgroundResource(isToday
+                    ? R.drawable.bg_bar_active
+                    : R.drawable.bg_bar_inactive_dark);
+            // Label color + bold
+            if (dayLabels[i] != null) {
+                dayLabels[i].setTextColor(isToday ? primaryColor : hintColor);
+                dayLabels[i].setTypeface(null,
+                        isToday ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
+            }
         }
     }
 
@@ -282,6 +308,10 @@ public class MainActivity extends AppCompatActivity {
         // Home — already here
         findViewById(R.id.nav_home).setOnClickListener(v -> { /* no-op */ });
 
+        // "View All" in progress section → GoalsActivity
+        findViewById(R.id.btn_view_all_goals).setOnClickListener(v ->
+                goalsLauncher.launch(new Intent(this, GoalsActivity.class)));
+
         // Goals nav → GoalsActivity
         findViewById(R.id.nav_goals).setOnClickListener(v ->
                 goalsLauncher.launch(new Intent(this, GoalsActivity.class)));
@@ -340,3 +370,4 @@ public class MainActivity extends AppCompatActivity {
         if (executor != null) executor.shutdown();
     }
 }
+
