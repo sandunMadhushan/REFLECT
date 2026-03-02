@@ -117,9 +117,9 @@ public class PersonalDetailsActivity extends AppCompatActivity {
 
                 // Update name and password
                 userDao.updateNameAndPassword(email, finalNewName, PasswordUtils.hash(newPwd));
-                sessionManager.setUserName(finalNewName);
 
                 runOnUiThread(() -> {
+                    sessionManager.setUserName(finalNewName);
                     tvAvatarInitials.setText(getInitials(finalNewName));
                     etCurrentPassword.setText("");
                     etNewPassword.setText("");
@@ -132,8 +132,8 @@ public class PersonalDetailsActivity extends AppCompatActivity {
             String finalNewName = newName;
             executor.execute(() -> {
                 userDao.updateName(email, finalNewName);
-                sessionManager.setUserName(finalNewName);
                 runOnUiThread(() -> {
+                    sessionManager.setUserName(finalNewName);
                     tvAvatarInitials.setText(getInitials(finalNewName));
                     Toast.makeText(this, getString(R.string.personal_details_success_name), Toast.LENGTH_SHORT).show();
                 });
@@ -180,6 +180,8 @@ public class PersonalDetailsActivity extends AppCompatActivity {
         if (executor != null) executor.shutdown();
     }
 }
+
+
 
 
 

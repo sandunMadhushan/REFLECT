@@ -48,7 +48,7 @@ public class SessionManager {
 
     /** Update the stored user name (after profile edit). */
     public void setUserName(String newName) {
-        prefs.edit().putString(KEY_USER_NAME, newName).apply();
+        prefs.edit().putString(KEY_USER_NAME, newName).commit();
     }
 
     /** Clear the session (logout). */

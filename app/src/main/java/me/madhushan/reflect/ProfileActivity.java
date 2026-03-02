@@ -30,9 +30,14 @@ public class ProfileActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this);
 
         initViews();
-        populateUserData();
         setupDarkModeSwitch();
         setupClickListeners();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        populateUserData();
     }
 
     private void initViews() {
