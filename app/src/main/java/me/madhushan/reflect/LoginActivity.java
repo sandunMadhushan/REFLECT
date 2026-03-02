@@ -141,7 +141,10 @@ public class LoginActivity extends AppCompatActivity {
         googleSignInHelper.signIn(new GoogleSignInHelper.Callback() {
             @Override
             public void onSuccess(String idToken, String displayName, String email, String photoUrl) {
-                // Find or create the user in local Room DB
+                // Save Google photo URL in session before navigating
+                if (photoUrl != null && !photoUrl.isEmpty()) {
+                    sessionManager.setPhotoUrl(photoUrl);
+                }
                 handleGoogleUser(displayName, email);
             }
 

@@ -44,13 +44,15 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp">
                         <ImageView
+                            android:id="@+id/iv_avatar_photo"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:background="@drawable/bg_avatar_border"
                             android:padding="2dp"
                             android:src="@drawable/bg_avatar_placeholder"
-                            android:scaleType="centerCrop" />
-                        <!-- Initials label -->
+                            android:scaleType="centerCrop"
+                            android:visibility="gone"/>
+                        <!-- Initials label (shown when no photo) -->
                         <TextView
                             android:id="@+id/tv_avatar_initials"
                             android:layout_width="44dp"

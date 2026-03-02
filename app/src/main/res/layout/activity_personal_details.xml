@@ -65,6 +65,7 @@
                         android:layout_height="96dp"
                         android:background="@drawable/bg_logo_gradient"
                         android:elevation="4dp">
+                        <!-- Initials fallback -->
                         <TextView
                             android:id="@+id/tv_avatar_initials"
                             android:layout_width="wrap_content"
@@ -74,6 +75,14 @@
                             android:textSize="32sp"
                             android:textStyle="bold"
                             android:text="AJ"/>
+                        <!-- Google profile photo -->
+                        <ImageView
+                            android:id="@+id/iv_avatar_photo"
+                            android:layout_width="96dp"
+                            android:layout_height="96dp"
+                            android:scaleType="centerCrop"
+                            android:visibility="gone"
+                            android:contentDescription="Profile photo"/>
                     </FrameLayout>
 
                     <FrameLayout
@@ -392,4 +401,5 @@
     </ScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 

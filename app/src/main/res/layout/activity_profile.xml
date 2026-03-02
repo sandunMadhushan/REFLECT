@@ -75,6 +75,7 @@
                         android:background="@drawable/bg_logo_gradient"
                         android:elevation="4dp">
 
+                        <!-- Initials (shown when no Google photo) -->
                         <TextView
                             android:id="@+id/tv_avatar_initials"
                             android:layout_width="wrap_content"
@@ -85,6 +86,15 @@
                             android:textSize="40sp"
                             android:textStyle="bold"
                             android:text="AJ"/>
+
+                        <!-- Google profile photo (shown when logged in via Google) -->
+                        <ImageView
+                            android:id="@+id/iv_avatar_photo"
+                            android:layout_width="128dp"
+                            android:layout_height="128dp"
+                            android:scaleType="centerCrop"
+                            android:visibility="gone"
+                            android:contentDescription="Profile photo"/>
                     </FrameLayout>
 
                     <!-- Edit button — bottom right -->

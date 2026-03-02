@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import me.madhushan.reflect.ui.CircularProgressView;
+import me.madhushan.reflect.utils.AvatarLoader;
 import me.madhushan.reflect.utils.SessionManager;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,12 +38,14 @@ public class MainActivity extends AppCompatActivity {
 
         sessionManager = new SessionManager(this);
 
-        // Populate user name + avatar initials from session
+        // Populate user name + avatar from session
         String fullName = sessionManager.getUserName();
-        TextView tvUserName = findViewById(R.id.tv_user_name);
-        TextView tvAvatarInitials = findViewById(R.id.tv_avatar_initials);
+        TextView tvUserName     = findViewById(R.id.tv_user_name);
+        TextView tvInitials     = findViewById(R.id.tv_avatar_initials);
+        ImageView ivAvatarPhoto = findViewById(R.id.iv_avatar_photo);
+
         tvUserName.setText(fullName);
-        tvAvatarInitials.setText(getInitials(fullName));
+        AvatarLoader.loadFromSession(this, ivAvatarPhoto, tvInitials, sessionManager);
 
         // Set circular progress (5/8 = 0.625)
         CircularProgressView circularProgress = findViewById(R.id.circular_progress);
@@ -98,13 +102,5 @@ public class MainActivity extends AppCompatActivity {
             sessionManager.setNotificationsEnabled(enabled);
             sessionManager.markNotifDialogShown();
         }
-    }
-
-    /** Returns up-to-2-letter initials from a full name */
-    private String getInitials(String fullName) {
-        if (fullName == null || fullName.isEmpty()) return "?";
-        String[] parts = fullName.trim().split("\\s+");
-        if (parts.length == 1) return String.valueOf(parts[0].charAt(0)).toUpperCase();
-        return (String.valueOf(parts[0].charAt(0)) + String.valueOf(parts[parts.length - 1].charAt(0))).toUpperCase();
     }
 }

@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
+import me.madhushan.reflect.utils.AvatarLoader;
 import me.madhushan.reflect.utils.SessionManager;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -28,6 +30,7 @@ public class ProfileActivity extends AppCompatActivity {
     private SessionManager sessionManager;
 
     private TextView tvUserName, tvAvatarInitials;
+    private ImageView ivAvatarPhoto;
     private SwitchMaterial switchDarkMode, switchNotifications;
     private LinearLayout rowPersonalDetails, rowSubscription, rowHelp, btnLogout;
 
@@ -71,6 +74,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void initViews() {
         tvUserName          = findViewById(R.id.tv_user_name);
         tvAvatarInitials    = findViewById(R.id.tv_avatar_initials);
+        ivAvatarPhoto       = findViewById(R.id.iv_avatar_photo);
         switchDarkMode      = findViewById(R.id.switch_dark_mode);
         switchNotifications = findViewById(R.id.switch_notifications);
         rowPersonalDetails  = findViewById(R.id.row_personal_details);
@@ -87,7 +91,7 @@ public class ProfileActivity extends AppCompatActivity {
         String fullName = sessionManager.getUserName();
         if (fullName == null || fullName.isEmpty()) fullName = "User";
         tvUserName.setText(fullName);
-        tvAvatarInitials.setText(getInitials(fullName));
+        AvatarLoader.loadFromSession(this, ivAvatarPhoto, tvAvatarInitials, sessionManager);
     }
 
     /** Called on onResume — shows correct toggle state without overwriting the user's choice. */
@@ -257,13 +261,6 @@ public class ProfileActivity extends AppCompatActivity {
                 })
                 .setNegativeButton(R.string.profile_logout_confirm_cancel, null)
                 .show();
-    }
-
-    private String getInitials(String fullName) {
-        if (fullName == null || fullName.isEmpty()) return "?";
-        String[] parts = fullName.trim().split("\\s+");
-        if (parts.length == 1) return String.valueOf(parts[0].charAt(0)).toUpperCase();
-        return (String.valueOf(parts[0].charAt(0)) + String.valueOf(parts[parts.length - 1].charAt(0))).toUpperCase();
     }
 }
 
