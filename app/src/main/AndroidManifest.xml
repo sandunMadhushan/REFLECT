@@ -100,6 +100,12 @@
             android:name=".GoalDetailsActivity"
             android:exported="false" />
 
+        <!-- Edit Goal Screen -->
+        <activity
+            android:name=".EditGoalActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <!-- FileProvider for camera capture temp files -->
         <provider
             android:name="androidx.core.content.FileProvider"
