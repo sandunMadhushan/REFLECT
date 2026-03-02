@@ -14,7 +14,8 @@ public class SessionManager {
     //                           (NEVER cleared when user toggles — only on full logout)
     private static final String KEY_NOTIFICATIONS      = "notifications_enabled";
     private static final String KEY_NOTIF_DIALOG_SHOWN = "notifications_dialog_shown";
-    private static final String KEY_PHOTO_URL          = "photo_url";
+    private static final String KEY_PHOTO_URL         = "photo_url";
+    private static final String KEY_LOCAL_PHOTO_PATH  = "local_photo_path";
     private static final int    NO_USER = -1;
 
     private final SharedPreferences prefs;
@@ -65,6 +66,24 @@ public class SessionManager {
     /** Save the Google profile photo URL. */
     public void setPhotoUrl(String url) {
         prefs.edit().putString(KEY_PHOTO_URL, url).apply();
+    }
+
+    /**
+     * Returns the local file path of a user-chosen/captured photo.
+     * Takes priority over Google photo URL in AvatarLoader.
+     */
+    public String getLocalPhotoPath() {
+        return prefs.getString(KEY_LOCAL_PHOTO_PATH, null);
+    }
+
+    /** Save the local file path of the user-chosen/captured photo. */
+    public void setLocalPhotoPath(String path) {
+        prefs.edit().putString(KEY_LOCAL_PHOTO_PATH, path).commit();
+    }
+
+    /** Clear the local photo (revert to Google photo or initials). */
+    public void clearLocalPhoto() {
+        prefs.edit().remove(KEY_LOCAL_PHOTO_PATH).apply();
     }
 
     // ── Notification preferences ────────────────────────────────────────────

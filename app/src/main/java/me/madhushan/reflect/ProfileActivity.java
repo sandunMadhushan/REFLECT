@@ -90,11 +90,8 @@ public class ProfileActivity extends AppCompatActivity {
     private void populateUserData() {
         String fullName = sessionManager.getUserName();
         if (fullName == null || fullName.isEmpty()) fullName = "User";
-        String photoUrl = sessionManager.getPhotoUrl();
-
         tvUserName.setText(fullName);
-        AvatarLoader.load(ivAvatarPhoto, tvAvatarInitials,
-                photoUrl, AvatarLoader.getInitials(fullName));
+        AvatarLoader.loadFromSession(this, ivAvatarPhoto, tvAvatarInitials, sessionManager);
     }
 
     /** Called on onResume — shows correct toggle state without overwriting the user's choice. */

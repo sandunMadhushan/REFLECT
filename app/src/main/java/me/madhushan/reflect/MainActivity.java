@@ -40,15 +40,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Populate user name + avatar from session
         String fullName = sessionManager.getUserName();
-        String photoUrl = sessionManager.getPhotoUrl();
-
         TextView tvUserName     = findViewById(R.id.tv_user_name);
         TextView tvInitials     = findViewById(R.id.tv_avatar_initials);
         ImageView ivAvatarPhoto = findViewById(R.id.iv_avatar_photo);
 
         tvUserName.setText(fullName);
-        AvatarLoader.load(ivAvatarPhoto, tvInitials,
-                photoUrl, AvatarLoader.getInitials(fullName));
+        AvatarLoader.loadFromSession(this, ivAvatarPhoto, tvInitials, sessionManager);
 
         // Set circular progress (5/8 = 0.625)
         CircularProgressView circularProgress = findViewById(R.id.circular_progress);
