@@ -27,10 +27,10 @@
 ## 📖 About Reflect
 
 **Reflect** is a mindful personal goal journaling app built for Android.
-It gives users a calm, distraction-free space to **write their goals**, **add periodic reflection notes**, and **track their personal growth** — all stored privately per user on the device using a local Room database.
+It gives users a calm, distraction-free space to **write their goals**, **add periodic reflection notes**, **log journal reflections with mood tracking**, and **track their personal growth** — all stored privately per user on the device using a local Room database.
 
 Unlike complex productivity apps, Reflect is intentionally minimal.
-It's about **thinking deeply**, not managing tasks. Each goal is a conversation with yourself — written when you set it, revisited as you grow, and celebrated when you reach it.
+It's about **thinking deeply**, not managing tasks.
 
 ---
 
@@ -45,19 +45,22 @@ It's about **thinking deeply**, not managing tasks. Each goal is a conversation 
 | 🔵 **Google Sign-In** | ✅ Done | One-tap Google sign-in via Credential Manager API — auto-registers on first use |
 | 🖼️ **Google Profile Photo** | ✅ Done | Google account photo loaded via Glide with CircleCrop on Home & Profile |
 | 🔓 **Forgot Password** | ✅ Done | 2-step flow: verify email → set new password → success screen |
-| 🏠 **Home Dashboard** | ✅ Done | Stats cards, inspiration quote, dynamic progress chart (today highlighted), recent activity from DB, bottom nav + FAB |
-| 🎯 **Goals Tab** | ✅ Done | In-app tab (no separate activity) — full goals list with filter chips (All / Active / Completed), goal cards with progress, FAB to add |
-| ➕ **Add Goal** | ✅ Done | Title, description, category dropdown, priority selector (Low/Medium/High), date picker for deadline, saves to Room DB |
-| ✏️ **Edit Goal** | ✅ Done | Full edit screen pre-filled with all existing goal data — title, description, category, priority, deadline |
-| 📋 **Goal Details** | ✅ Done | View full goal info, mark as achieved/active, add reflection notes, edit and delete goal |
-| 👤 **Profile & Settings** | ✅ Done | Avatar, dark mode toggle, notifications toggle, account rows, logout with dialog |
+| 🏠 **Home Dashboard** | ✅ Done | Stats cards, inspiration quote, dynamic progress chart (today highlighted), recent activity from DB |
+| 🎯 **Goals Tab** | ✅ Done | Fragment-based tab — full goals list with filter chips (All / Active / Completed), goal cards with progress |
+| ➕ **Add Goal** | ✅ Done | Title, description, category dropdown, priority selector (Low/Medium/High), date picker for deadline |
+| ✏️ **Edit Goal** | ✅ Done | Full edit screen pre-filled with all existing goal data |
+| 📋 **Goal Details** | ✅ Done | Full goal info, mark as achieved/active, add reflection notes inline, edit and delete |
+| 📓 **Reflection Journal** | ✅ Done | Fragment-based Journal tab — mood-tagged entries, filter chips (All / This Week / This Month / Favorites), long-press to favorite |
+| ➕ **Add Reflection** | ✅ Done | Title, mood picker (Happy / Calm / Neutral / Sad / Anxious), full content entry, saves to Room DB |
+| 👤 **Profile & Settings** | ✅ Done | Avatar, dark mode toggle, notifications toggle with runtime permission flow, account rows, logout |
 | 📸 **Profile Photo Update** | ✅ Done | Choose from gallery (Photo Picker) or capture with camera — saved to private storage |
-| 🪪 **Personal Details** | ✅ Done | Edit name, view email, change password with current password verification |
+| 🪪 **Personal Details** | ✅ Done | Edit name, view email, change password with current password verification, delete account |
 | 💳 **Subscription Screen** | ✅ Done | Plan overview UI screen |
 | ❓ **Help & Support** | ✅ Done | FAQ and support contact screen |
 | 🌙 **Dark / Light Theme** | ✅ Done | Follows device system theme live — switches across all screens instantly |
-| 🔔 **Notifications Toggle** | ✅ Done | Runtime permission request (Android 13+), toggle persists across app restarts, resets when turned off |
+| 🔔 **Notifications Toggle** | ✅ Done | Runtime permission request (Android 13+), toggle persists across app restarts |
 | 📱 **Session Management** | ✅ Done | Persistent login via `SharedPreferences`, auto-skip splash & onboarding |
+| 🧭 **Single-Activity Navigation** | ✅ Done | `MainActivity` hosts Home / Goals / Journal / Profile as Fragments with a shared bottom nav bar |
 
 ---
 
@@ -67,7 +70,7 @@ It's about **thinking deeply**, not managing tasks. Each goal is a conversation 
 |---|---|---|
 | **Language** | Java | 11 |
 | **Platform** | Android | Min SDK 24 (Android 7.0+), Target SDK 36 |
-| **UI Framework** | XML Layouts, ConstraintLayout, CardView | — |
+| **UI Framework** | XML Layouts + Fragments | — |
 | **Material Components** | Material Design 3 | `1.13.0` |
 | **AppCompat / DayNight** | `androidx.appcompat` | `1.7.1` |
 | **ConstraintLayout** | `androidx.constraintlayout` | `2.2.1` |
@@ -85,125 +88,127 @@ It's about **thinking deeply**, not managing tasks. Each goal is a conversation 
 
 ---
 
+## 📱 App Architecture — Single-Activity + Fragments
+
+`MainActivity` is a **single-Activity fragment host**. It owns the bottom navigation bar and the centre FAB. The four main tabs are **Fragments** swapped in and out of a `FrameLayout` container:
+
+```
+MainActivity (activity_main.xml)
+│
+├── FrameLayout (fragment_container)
+│   ├── HomeFragment      ← fragment_home.xml
+│   ├── GoalsFragment     ← fragment_goals.xml
+│   ├── JournalFragment   ← fragment_journal.xml
+│   └── ProfileFragment   ← fragment_profile.xml
+│
+└── Bottom Navigation Bar
+    ├── 🏠 Home
+    ├── 🎯 Goals
+    ├── [+] Centre FAB  ← opens AddGoalActivity or AddReflectionActivity (context-aware)
+    ├── 📓 Journal
+    └── 👤 Profile
+```
+
+**Fragment refresh:** the centre FAB uses `ActivityResultLauncher` so whichever fragment is currently displayed automatically calls `loadData()` when returning with `RESULT_OK`.
+
+**Back press:** if not already on Home, navigates back to Home tab. Home tab blocks exit — user must log out explicitly.
+
+---
+
 ## 📱 App Flow & Screens
 
 ```
 ┌──────────────────┐
 │  Splash Screen   │  2.8s animated loading bar
 └────────┬─────────┘
-         │
-         ├─── [Session exists] ──────────────────────────────▶ Home Dashboard
-         │
-         ├─── [Onboarding done, no session] ───────────────▶ Login Screen
-         │
-         └─── [First launch] ──────────────────────────────▶ Onboarding
-                                                                  │
-                   ┌──────────────────────┬─────────────────────┤
-                   │                      │                      │
-              Page 1                 Page 2                 Page 3
-         Set Meaningful          Reflect on Your         See Your Progress
-             Goals                  Journey               [Get Started]
-                                                               │
-                                                               ▼
+         ├─── [Session exists] ──────────────────────▶ MainActivity (Home tab)
+         ├─── [Onboarding done, no session] ─────────▶ Login Screen
+         └─── [First launch] ──────────────────────▶ Onboarding (3 pages)
+                                                           │
+                                          [Get Started] ──▶ Login Screen
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │                              Login Screen                                    │
-│  • Logo + "Welcome Back"                                                     │
-│  • Email / Password fields (Material TextInputLayout)                        │
-│  • Log In button  •  Forgot Password?                                        │
-│  • 🔵 Google Sign-In button (Credential Manager — fully functional)          │
+│  • Email / Password  •  Log In  •  Forgot Password?                          │
+│  • 🔵 Google Sign-In (Credential Manager — fully functional)                 │
 │  • "Register now" link                                                       │
-└──────────┬───────────────────────────┬───────────────────────────────────────┘
-           │                           │
-    [Email login]              [Google Sign-In]              [Forgot Password?]
-           │                           │                           │
-           │              ┌────────────▼──────────┐   ┌───────────▼──────────┐
-           │              │  Google Account Picker │   │  Forgot Password     │
-           │              │  (system bottom sheet) │   │  Step 1: verify email│
-           │              │  Auto-register if new  │   │  Step 2: new password│
-           │              │  Loads Google photo    │   │  Step 3: success     │
-           │              └────────────┬───────────┘   └──────────────────────┘
-           │                           │
-           └───────────────────────────┘
-                           │
-                           ▼
+└──────────┬──────────────────────────────────────────────────────────────────┘
+           │ [success]
+           ▼
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                           Home Dashboard  (Home Tab)                         │
-│  • Top bar: avatar, "Welcome back, [Name]", notification bell                │
-│  • If NO goals: empty state with "Add Your First Goal" button                │
-│  • Active Goals card  •  Completed count  •  Today's Habits (circular ring) │
-│  • Daily Inspiration quote card                                              │
-│  • Weekly bar chart — current day highlighted in primary colour              │
-│  • Recent Activity feed (last 5 goals from DB, clickable → Goal Details)    │
-│  • "View All" link → switches to Goals tab                                  │
-│  • Bottom nav: Home ● | Goals | [+FAB] | Journal | Profile                  │
-└────────────┬───────────────────────┬──────────────────────────────────────── ┘
-             │  [nav Goals]          │  [nav_add FAB / btn_add_first_goal]
-             ▼                       ▼
-┌──────────────────────────────────────────────────────────────────────────────┐
-│                           Goals Tab  (same activity)                         │
-│  • Header "My Goals"  •  Search icon                                        │
-│  • Filter chips: All Goals | Active | Completed                             │
-│  • Goal cards — icon, title, deadline/category, status badge (Active/Done)  │
-│  • Horizontal progress bar per goal (0% active, 100% achieved)              │
-│  • Empty state when no goals match filter                                   │
-│  • FAB (bottom-right) → Add Goal screen                                     │
-│  • Bottom nav: Home | Goals ● | [+FAB] | Journal | Profile                  │
-│  • Back button → returns to Home tab                                        │
-└────────────┬───────────────────────────────────────────────────────────────── ┘
-             │  [tap goal card]
-             ▼
+│                     MainActivity — Bottom Nav + Fragment Host                │
+│                                                                              │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  HOME TAB  (HomeFragment)                                           │    │
+│  │  • Avatar + "Welcome back, [Name]"  •  Notification bell           │    │
+│  │  • Empty state: "Add Your First Goal" button                        │    │
+│  │  • Active Goals  •  Completed  •  Habits (circular ring)           │    │
+│  │  • Daily Inspiration quote card                                     │    │
+│  │  • Weekly bar chart (Mon–Sun, today highlighted)                    │    │
+│  │  • Recent Activity feed — last 5 goals, tap → Goal Details          │    │
+│  │  • "View All" → switches to Goals tab                               │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                              │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  GOALS TAB  (GoalsFragment)                                         │    │
+│  │  • Header "My Goals"                                                │    │
+│  │  • Filter chips: All Goals | Active | Completed                     │    │
+│  │  • Goal cards — icon, title, deadline, status badge, progress bar   │    │
+│  │  • Tap card → GoalDetailsActivity                                   │    │
+│  │  • Empty state when no goals match filter                           │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                              │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  JOURNAL TAB  (JournalFragment)                                     │    │
+│  │  • Header "Reflection Journal"                                      │    │
+│  │  • Filter chips: All | This Week | This Month | ⭐ Favorites        │    │
+│  │  • Journal entry cards — mood icon, title, date/time, content preview│   │
+│  │  • Mood colour-coded icon boxes (Happy=Green, Sad=Amber,            │    │
+│  │    Neutral=Blue, Anxious=Purple, Calm=Blue)                         │    │
+│  │  • Long-press entry → toggle favorite (⭐)                          │    │
+│  │  • Empty state when no entries                                      │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                              │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  PROFILE TAB  (ProfileFragment)                                     │    │
+│  │  • Avatar  •  User name  •  "Pro Member" badge                      │    │
+│  │  • App Preferences: Dark Mode toggle, Notifications toggle          │    │
+│  │  • Account: Personal Details ▶  Subscription ▶  Help & Support ▶   │    │
+│  │  • Log Out button with confirmation dialog                          │    │
+│  │  • Version text                                                     │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                              │
+│  Bottom Nav: 🏠 Home | 🎯 Goals | [+FAB] | 📓 Journal | 👤 Profile          │
+└──────────────────────────────────────────────────────────────────────────────┘
+           │  [+ FAB on Goals/Home tab]          [+ FAB on Journal tab]
+           ▼                                              ▼
+┌──────────────────────────┐                ┌────────────────────────────────┐
+│   Add Goal Activity      │                │    Add Reflection Activity     │
+│  Title, Description,     │                │  Title, Mood picker            │
+│  Category dropdown,      │                │  (Happy/Calm/Neutral/Sad/      │
+│  Priority chips,         │                │   Anxious), full content       │
+│  Deadline date picker    │                │  Saves to Room DB → RESULT_OK  │
+│  → RESULT_OK → refresh   │                │  → refreshes JournalFragment   │
+└──────────────────────────┘                └────────────────────────────────┘
+           │  [tap goal card]
+           ▼
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │                           Goal Details Screen                                │
-│  • Title, description, category badge, priority, deadline, created date     │
-│  • Circular progress ring (0% / 100%)                                       │
-│  • Mark as Achieved / Mark as Active toggle button                          │
-│  • Add Reflection button → inline dialog to append a reflection note        │
-│  • Reflections list (each entry shown as a card)                            │
-│  • Edit button → opens full Edit Goal screen (pre-filled)                   │
-│  • Delete button → confirmation dialog then removes goal from DB            │
-└────────────┬───────────────────────────────────────────────────────────────── ┘
-             │  [Edit]
-             ▼
-┌──────────────────────────────────────────────────────────────────────────────┐
-│                           Edit Goal Screen                                   │
-│  • Pre-filled: Title, Description, Category (dropdown), Priority chips      │
-│  • Pre-selected deadline (date picker opens on existing date)               │
-│  • Save Changes → updates Room DB → returns to Goal Details refreshed       │
+│  Title, description, category badge, priority, deadline, created date       │
+│  Circular progress ring (0% / 100%)  •  Mark as Achieved / Active toggle    │
+│  Add Reflection button → inline dialog to append reflection note             │
+│  Reflections list (each shown as a card)                                    │
+│  Edit ▶ →  Edit Goal Screen (pre-filled, updates DB on save)                │
+│  Delete → confirmation dialog → removes from DB → back to Goals tab         │
 └──────────────────────────────────────────────────────────────────────────────┘
-             │  [nav Profile from any tab]
-             ▼
-┌──────────────────────────────────────────────────────────────────────────────┐
-│                         Profile & Settings Screen                            │
-│  • Avatar (Google photo / camera photo / gallery photo / initials fallback)  │
-│  • User name  •  "Goal Achiever · Reflect Member"  •  Pro Member badge       │
-│  • App Preferences: Dark Mode toggle, Notifications toggle (runtime perm)   │
-│  • Account rows: Personal Details ▶  Subscription ▶  Help & Support ▶       │
-│  • Log Out button (red border) with confirmation dialog                      │
-│  • Version text  •  Bottom nav (Profile active)                              │
-└──────────┬───────────────────────────────────────────────────────────────────┘
-           │
-    [Personal Details tap]
+           │  [Profile → Personal Details]
            ▼
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │                         Personal Details Screen                              │
-│  • Avatar with edit pencil — tap to change photo                             │
-│  • Options: Take Photo (camera) / Choose from Gallery / Remove Photo         │
-│  • Edit Full Name field                                                      │
-│  • Email (read-only)                                                         │
-│  • Change Password: current → new → confirm                                  │
-│  • Save Changes button  •  Delete Account (with confirmation)                │
+│  Avatar with edit pencil — Take Photo / Choose from Gallery / Remove Photo  │
+│  Edit Full Name  •  Email (read-only)                                       │
+│  Change Password: current → new → confirm  •  Delete Account                │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
-
-**Navigation rules:**
-- Splash → auto-routes based on session & onboarding state
-- Onboarding → shown only on **first launch**, never again
-- Google Sign-In → **auto-registers** new users on first Google sign-in + loads profile photo
-- Home → back button **blocked** (must log out explicitly)
-- Goals tab → back button returns to Home tab
-- Register success → **auto-login** → Home
-- Goal saved / edited / deleted → Home & Goals refresh automatically via `ActivityResultLauncher`
-- Profile logout → confirmation dialog → clears session → Login
 
 ---
 
@@ -211,32 +216,44 @@ It's about **thinking deeply**, not managing tasks. Each goal is a conversation 
 
 Reflect uses the **Room Persistence Library** backed by SQLite.
 
-### `users` table — `User.java` (`@Entity`)
+### `users` table — `User.java`
 
 | Column | Type | Description |
 |---|---|---|
-| `id` | `INTEGER PK` | Auto-generated user ID (`@PrimaryKey autoGenerate`) |
+| `id` | `INTEGER PK` | Auto-generated user ID |
 | `fullName` | `TEXT` | User's display name |
-| `email` | `TEXT UNIQUE` | Login identifier (enforced unique index) |
-| `passwordHash` | `TEXT` | SHA-256 hash for email/password users, or `GOOGLE_AUTH_<hash>` for Google users |
+| `email` | `TEXT UNIQUE` | Login identifier |
+| `passwordHash` | `TEXT` | SHA-256 hash, or `GOOGLE_AUTH_<hash>` for Google users |
 
-### `goals` table — `Goal.java` (`@Entity`)
+### `goals` table — `Goal.java`
 
 | Column | Type | Description |
 |---|---|---|
 | `id` | `INTEGER PK` | Auto-generated goal ID |
-| `userId` | `INTEGER FK` | References `users(id)` — all queries filtered per user |
+| `userId` | `INTEGER FK` | References `users(id)` |
 | `title` | `TEXT` | Goal title |
-| `description` | `TEXT` | Detailed goal description |
+| `description` | `TEXT` | Detailed description |
 | `category` | `TEXT` | e.g. Personal Growth, Health & Fitness, Career & Finance |
 | `priority` | `TEXT` | `low` / `medium` / `high` |
 | `deadline` | `TEXT` | Target date (yyyy-MM-dd), nullable |
-| `reflectionNotes` | `TEXT` | `\|\|`-delimited reflection entries |
+| `reflectionNotes` | `TEXT` | `\|\|`-delimited inline reflection entries |
 | `isAchieved` | `INTEGER` | `0` = in progress, `1` = achieved |
 | `createdAt` | `TEXT` | ISO date of creation |
-| `updatedAt` | `TEXT` | ISO date of last update (used for weekly chart & recent activity) |
+| `updatedAt` | `TEXT` | ISO date of last update |
 
-> 🔑 All goal queries are filtered by the logged-in user's ID — complete data privacy between accounts.
+### `reflections` table — `Reflection.java`
+
+| Column | Type | Description |
+|---|---|---|
+| `id` | `INTEGER PK` | Auto-generated reflection ID |
+| `userId` | `INTEGER FK` | References `users(id)` |
+| `title` | `TEXT` | Reflection title |
+| `mood` | `TEXT` | `happy` / `calm` / `neutral` / `sad` / `anxious` |
+| `content` | `TEXT` | Full reflection body text |
+| `isFavorite` | `INTEGER` | `0` = normal, `1` = favorited |
+| `createdAt` | `TEXT` | ISO datetime (`yyyy-MM-dd HH:mm:ss`) |
+
+> 🔑 All queries are filtered by the logged-in user's ID — complete data privacy between accounts.
 
 ---
 
@@ -244,12 +261,11 @@ Reflect uses the **Room Persistence Library** backed by SQLite.
 
 Reflect fully supports **system-driven dark and light mode**:
 
-- Follows the device theme automatically — no manual toggle needed
-- Switches **live** while the app is open (Activity recreates on `uiMode` config change)
-- Covers **every** screen: Splash → Onboarding → Login → Register → Forgot Password → Home → Goals → Goal Details → Edit Goal → Profile → Personal Details → Help & Support → Subscription
+- Follows device theme automatically
+- Switches **live** while the app is open
+- Covers **every** screen across all activities and fragments
 - Implemented via `AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM` in `ReflectApp.java`
 - Profile screen **Dark Mode toggle** lets users override to force dark/light
-- All colors defined as semantic names in `values/colors.xml` with overrides in `values-night/colors.xml`
 
 | Token | Light | Dark |
 |---|---|---|
@@ -268,67 +284,138 @@ Reflect fully supports **system-driven dark and light mode**:
 REFLECT/
 ├── app/src/main/
 │   ├── java/me/madhushan/reflect/
-│   │   ├── ReflectApp.java                 # Application class — sets DayNight mode system-wide
-│   │   ├── SplashActivity.java             # Animated splash → routes to Onboarding/Login/Home
-│   │   ├── OnboardingActivity.java         # 3-page ViewPager2 intro (shown once only)
-│   │   ├── LoginActivity.java              # Email/password + Google Sign-In, session creation
-│   │   ├── RegisterActivity.java           # Registration with validation + SHA-256 hashing
-│   │   ├── ForgotPasswordActivity.java     # 2-step password reset (verify email → new password)
-│   │   ├── MainActivity.java               # Home + Goals tabs — stats, chart, goals list, filter chips, bottom nav
-│   │   ├── AddGoalActivity.java            # Add new goal — title, description, category, priority, deadline
-│   │   ├── EditGoalActivity.java           # Edit existing goal — pre-filled form, updates Room DB
-│   │   ├── GoalDetailsActivity.java        # Goal detail view — progress, reflections, mark achieved, edit, delete
-│   │   ├── ProfileActivity.java            # Profile & Settings — avatar, toggles, account rows, logout
-│   │   ├── PersonalDetailsActivity.java    # Edit name/password, camera/gallery photo picker
-│   │   ├── SubscriptionActivity.java       # Subscription plan overview UI
-│   │   ├── HelpSupportActivity.java        # FAQ and support contact screen
+│   │   │
+│   │   ├── ── Core App ──
+│   │   ├── ReflectApp.java                   # Application class — sets DayNight mode system-wide
+│   │   ├── MainActivity.java                 # Single-Activity host — bottom nav + fragment switcher + FAB launchers
+│   │   │
+│   │   ├── ── Auth & Onboarding ──
+│   │   ├── SplashActivity.java               # Animated splash → routes to Onboarding / Login / Home
+│   │   ├── OnboardingActivity.java           # 3-page ViewPager2 intro (shown once only)
+│   │   ├── LoginActivity.java                # Email/password + Google Sign-In, session creation
+│   │   ├── RegisterActivity.java             # Registration with validation + SHA-256 hashing
+│   │   ├── ForgotPasswordActivity.java       # 2-step password reset (verify email → new password)
+│   │   │
+│   │   ├── ── Main Tab Fragments ──
+│   │   ├── HomeFragment.java                 # Home tab — stats, bar chart, recent activity, empty state
+│   │   ├── GoalsFragment.java                # Goals tab — filter chips, goal cards, progress bars
+│   │   ├── JournalFragment.java              # Journal tab — mood entries, filter chips, long-press favorite
+│   │   ├── ProfileFragment.java              # Profile tab — avatar, dark mode, notifications, logout
+│   │   │
+│   │   ├── ── Goal Screens ──
+│   │   ├── AddGoalActivity.java              # Add new goal — title, description, category, priority, deadline
+│   │   ├── EditGoalActivity.java             # Edit existing goal — pre-filled form, updates Room DB
+│   │   ├── GoalDetailsActivity.java          # Goal detail — progress, reflections, mark achieved, edit, delete
+│   │   │
+│   │   ├── ── Journal Screens ──
+│   │   ├── AddReflectionActivity.java        # Add reflection — title, mood picker, content body
+│   │   │
+│   │   ├── ── Profile Screens ──
+│   │   ├── PersonalDetailsActivity.java      # Edit name/password, camera/gallery photo picker, delete account
+│   │   ├── SubscriptionActivity.java         # Subscription plan overview UI
+│   │   ├── HelpSupportActivity.java          # FAQ and support contact screen
+│   │   │
+│   │   ├── ── Legacy (kept, not used in main nav) ──
+│   │   ├── GoalsActivity.java                # Standalone goals activity (superseded by GoalsFragment)
+│   │   ├── ReflectionJournalActivity.java    # Standalone journal activity (superseded by JournalFragment)
+│   │   ├── ProfileActivity.java              # Standalone profile activity (superseded by ProfileFragment)
+│   │   │
+│   │   ├── ── Database ──
 │   │   ├── database/
-│   │   │   ├── AppDatabase.java            # @Database — Room singleton
-│   │   │   ├── User.java                   # @Entity — users table
-│   │   │   ├── UserDao.java                # @Dao — insert, login, emailExists, findByEmail, updateNameAndPassword
-│   │   │   ├── Goal.java                   # @Entity — goals table
-│   │   │   └── GoalDao.java                # @Dao — insert, update, delete, getGoalsForUser, getActive/Completed counts, getRecentGoals, getActivityCountForDate
+│   │   │   ├── AppDatabase.java              # @Database — Room singleton, version 3
+│   │   │   ├── User.java                     # @Entity — users table
+│   │   │   ├── UserDao.java                  # @Dao — insert, login, emailExists, findByEmail, update
+│   │   │   ├── Goal.java                     # @Entity — goals table
+│   │   │   ├── GoalDao.java                  # @Dao — CRUD + getActive/Completed/Total counts, getRecentGoals, getActivityCountForDate
+│   │   │   ├── Reflection.java               # @Entity — reflections table
+│   │   │   └── ReflectionDao.java            # @Dao — insert, update, delete, getReflectionsForUser
+│   │   │
+│   │   ├── ── Utilities ──
 │   │   ├── utils/
-│   │   │   ├── AvatarLoader.java           # Glide-based avatar loader — local file / Google URL / initials
-│   │   │   ├── GoogleSignInHelper.java     # Credential Manager Google Sign-In wrapper
-│   │   │   ├── NotificationHelper.java     # Notification channel creation and helper
-│   │   │   ├── PasswordUtils.java          # SHA-256 password hashing
-│   │   │   └── SessionManager.java         # SharedPreferences — session, photo URL, local photo path, notif prefs
-│   │   └── ui/
-│   │       └── CircularProgressView.java   # Custom canvas view — circular progress ring
+│   │   │   ├── AvatarLoader.java             # Glide-based avatar — local file / Google URL / initials fallback
+│   │   │   ├── GoogleSignInHelper.java       # Credential Manager Google Sign-In wrapper
+│   │   │   ├── NotificationHelper.java       # Notification channel creation
+│   │   │   ├── PasswordUtils.java            # SHA-256 password hashing
+│   │   │   └── SessionManager.java           # SharedPreferences — session, photo paths, notif prefs
+│   │   │
+│   │   └── ── Custom Views ──
+│   │       └── ui/
+│   │           └── CircularProgressView.java # Custom canvas view — circular progress ring
+│   │
 │   ├── res/
 │   │   ├── layout/
+│   │   │   ├── ── Fragment Layouts ──
+│   │   │   ├── fragment_home.xml             # Home tab UI (stats, chart, recent activity)
+│   │   │   ├── fragment_goals.xml            # Goals tab UI (filter chips, goals list)
+│   │   │   ├── fragment_journal.xml          # Journal tab UI (filter chips, entries list)
+│   │   │   ├── fragment_profile.xml          # Profile tab UI (avatar, settings rows, logout)
+│   │   │   │
+│   │   │   ├── ── Main Host Layout ──
+│   │   │   ├── activity_main.xml             # Fragment container + bottom nav bar + FAB
+│   │   │   │
+│   │   │   ├── ── Auth Layouts ──
 │   │   │   ├── activity_splash.xml
 │   │   │   ├── activity_onboarding.xml
-│   │   │   ├── fragment_onboarding_1.xml   # "Set Meaningful Goals"
-│   │   │   ├── fragment_onboarding_2.xml   # "Reflect on Your Journey"
-│   │   │   ├── fragment_onboarding_3.xml   # "See Your Progress"
+│   │   │   ├── fragment_onboarding_1.xml     # "Set Meaningful Goals"
+│   │   │   ├── fragment_onboarding_2.xml     # "Reflect on Your Journey"
+│   │   │   ├── fragment_onboarding_3.xml     # "See Your Progress"
 │   │   │   ├── activity_login.xml
 │   │   │   ├── activity_register.xml
 │   │   │   ├── activity_forgot_password.xml
-│   │   │   ├── activity_main.xml           # Home tab + Goals tab (FrameLayout switcher) + bottom nav
+│   │   │   │
+│   │   │   ├── ── Goal Layouts ──
 │   │   │   ├── activity_add_goal.xml
 │   │   │   ├── activity_edit_goal.xml
 │   │   │   ├── activity_goal_details.xml
-│   │   │   ├── activity_profile.xml
-│   │   │   ├── activity_personal_details.xml
-│   │   │   ├── activity_subscription.xml
-│   │   │   └── activity_help_support.xml
-│   │   ├── drawable/                       # 50+ vector icons, shape backgrounds, gradients, logo
+│   │   │   │
+│   │   │   ├── ── Journal Layouts ──
+│   │   │   ├── activity_add_reflection.xml
+│   │   │   │
+│   │   │   └── ── Profile Layouts ──
+│   │   │       ├── activity_personal_details.xml
+│   │   │       ├── activity_subscription.xml
+│   │   │       └── activity_help_support.xml
+│   │   │
+│   │   ├── drawable/                         # 90+ vector icons, shape backgrounds, gradients
 │   │   ├── xml/
-│   │   │   ├── file_paths.xml              # FileProvider paths for camera capture
+│   │   │   ├── file_paths.xml                # FileProvider paths for camera capture
 │   │   │   ├── backup_rules.xml
 │   │   │   └── data_extraction_rules.xml
 │   │   ├── values/
-│   │   │   ├── colors.xml                  # Brand + semantic light-theme palette
-│   │   │   ├── strings.xml                 # All UI strings
-│   │   │   └── themes.xml                  # Base.Theme.REFLECT (DayNight) + Splash theme
+│   │   │   ├── colors.xml                    # Brand + semantic light-theme palette
+│   │   │   ├── strings.xml                   # All UI strings
+│   │   │   ├── attrs.xml                     # Custom view attributes
+│   │   │   └── themes.xml                    # Base.Theme.REFLECT (DayNight) + Splash theme
 │   │   └── values-night/
-│   │       └── colors.xml                  # Dark-mode color overrides
-│   └── AndroidManifest.xml                 # Activities, permissions, FileProvider declared
+│   │       └── colors.xml                    # Dark-mode color overrides
+│   │
+│   └── AndroidManifest.xml                   # Activities, permissions, FileProvider declared
+│
 ├── gradle/
-│   └── libs.versions.toml                  # Version catalog (Room, ViewPager2, Glide, Credential Manager)
-├── .gitignore                              # UI_Screens/ and build outputs excluded
+│   └── libs.versions.toml                    # Version catalog (Room, ViewPager2, Glide, Credential Manager)
+├── UI_Screens/                               # HTML/PNG UI reference screens (gitignored from build)
+│   ├── home_dashboard/
+│   ├── home_dashboard_dark_mode/
+│   ├── goal_list_screen/
+│   ├── goal_list_dark_mode/
+│   ├── goal_details/
+│   ├── goal_details_dark/
+│   ├── add_new_goal/
+│   ├── reflection_journal/
+│   ├── reflection_journal_dark_mode/
+│   ├── add_reflection/
+│   ├── profile_settings/
+│   ├── progress_analytics/
+│   ├── progress_analytics_dark_mode/
+│   ├── login_screen/
+│   ├── register_screen/
+│   ├── splash_screen/
+│   ├── onboarding_*/
+│   ├── achievements/
+│   ├── habit_tracker/
+│   ├── habit_tracker_dark_mode/
+│   └── vision_board/
+├── .gitignore
 └── README.md
 ```
 
@@ -336,64 +423,76 @@ REFLECT/
 
 ## 📸 Profile Photo System
 
-Reflect supports three levels of avatar display with automatic priority:
-
 | Priority | Source | When Used |
 |---|---|---|
 | 1st | 📁 Local file (camera / gallery) | User has set a custom photo |
-| 2nd | 🌐 Google profile photo (URL) | User logged in with Google, no custom photo set |
-| 3rd | 🔤 Initials (text fallback) | No photo available |
+| 2nd | 🌐 Google profile photo (URL) | Google login, no custom photo |
+| 3rd | 🔤 Initials fallback | No photo available |
 
-- **Camera capture** — uses `TakePicture` contract + `FileProvider` for secure temp file URI
-- **Gallery pick** — uses `PickVisualMedia` (Android 13+) or `OpenDocument` (Android 12 and below)
-- Images are **copied to app-private storage** (`/files/profile_photos/`) so they persist even if the original is deleted
-- Each save uses a **timestamped filename** to bust Glide's disk cache
-- `AvatarLoader.loadFromSession()` is called on every screen resume to keep the avatar in sync
+- Camera uses `TakePicture` contract + `FileProvider` for secure temp URI
+- Gallery uses `PickVisualMedia` (Android 13+) or `OpenDocument` (Android 12-)
+- Images copied to **app-private storage** (`/files/profile_photos/`) with timestamped filenames to bust Glide cache
+- `AvatarLoader.loadFromSession()` called on every screen resume
 
 ---
 
 ## 🎯 Goals System
 
-The Goals system is fully integrated into `MainActivity` as an **in-app tab** — no separate Activity, so the bottom navigation bar is always present.
-
-### How It Works
-
 | Action | Behaviour |
 |---|---|
-| Tap **Goals** in bottom nav | Switches to Goals tab (Home tab hides), Goals nav item highlights |
-| Tap **Home** in bottom nav | Returns to Home tab |
-| Press **back** on Goals tab | Returns to Home tab (does not exit app) |
-| Tap **+FAB** (Goals tab) | Opens `AddGoalActivity` |
-| Tap **+FAB** (Home tab) | Opens `AddGoalActivity` |
-| Tap **View All** on Home | Switches to Goals tab |
-| Add/Edit/Delete a goal | Both Home and Goals tabs refresh automatically |
+| Tap **Goals** in bottom nav | Switches to `GoalsFragment` |
+| Tap **+FAB** (Goals or Home tab) | Opens `AddGoalActivity` via `ActivityResultLauncher` |
+| Return from Add/Edit/Delete | Fragment `loadData()` called automatically → list refreshes |
+| Tap **View All** on Home | `MainActivity.switchToTab("goals")` |
+| Press **back** on any non-Home tab | Returns to Home tab |
 
 ### Filter Chips
 
 | Chip | Shows |
 |---|---|
 | All Goals | Every goal for the current user |
-| Active | Goals where `isAchieved = 0` |
-| Completed | Goals where `isAchieved = 1` |
+| Active | `isAchieved = 0` |
+| Completed | `isAchieved = 1` |
 
-### Goal Card
+---
 
-Each goal card shows:
-- Category icon (blue circle)
-- Goal title + deadline (or category as subtitle)
-- Status badge — **Active** (primary) or **Done** (green)
-- Horizontal progress bar — 0% for active, 100% for achieved
+## 📓 Reflection Journal System
+
+| Action | Behaviour |
+|---|---|
+| Tap **Journal** in bottom nav | Switches to `JournalFragment` |
+| Tap **+FAB** on Journal tab | Opens `AddReflectionActivity` via `ActivityResultLauncher` |
+| Return from Add Reflection | `JournalFragment.loadData()` called → list refreshes |
+| Long-press entry card | Toggles ⭐ favorite — immediate DB update + list refresh |
+
+### Filter Chips
+
+| Chip | Shows |
+|---|---|
+| All | All reflections for the user |
+| This Week | Entries from Monday of the current week |
+| This Month | Entries from the current calendar month |
+| ⭐ Favorites | Entries where `isFavorite = 1` |
+
+### Mood Types
+
+| Mood | Icon | Colour |
+|---|---|---|
+| Happy | `ic_sentiment_satisfied` | Green |
+| Calm | `ic_sentiment_satisfied` | Blue |
+| Neutral | `ic_sentiment_neutral` | Blue |
+| Sad | `ic_sentiment_dissatisfied` | Amber |
+| Anxious | `ic_psychology` | Purple |
 
 ---
 
 ## 🔔 Notification System
 
-- **Android 13+** — runtime `POST_NOTIFICATIONS` permission requested on first app launch
+- **Android 13+** — runtime `POST_NOTIFICATIONS` permission requested on first launch via `MainActivity`
 - **Android 12 and below** — reads system notification setting automatically
-- Toggle in Profile screen persists across app restarts via `SessionManager`
-- Turning toggle **OFF** saves the preference immediately (synchronous `commit()`)
-- Turning toggle **ON** after being OFF shows a confirmation dialog
-- System permission revoked externally (via System Settings) → toggle auto-corrects to OFF on next resume
+- Toggle in Profile tab persists via `SessionManager.setNotificationsEnabled()` (synchronous `commit()`)
+- System permission revoked externally → toggle auto-corrects to OFF on next `onResume`
+- Turning toggle **OFF** saves preference without clearing the dialog-shown flag (prevents re-triggering system dialog)
 
 ---
 
@@ -403,14 +502,11 @@ Each goal card shows:
 |---|---|---|
 | `primary` | `#4E51E9` | Buttons, links, active nav, FAB, dots |
 | `primary_dark` | `#4040D0` | Pressed states |
-| `gradient_end` | `#7A5CFF` | Splash, logo box, register button |
 | `colorAppBg` | `#F6F6F8` / `#111121` | Screen backgrounds |
 | `colorCard` | `#FFFFFF` / `#1E2035` | Cards, form containers, settings rows |
 | `colorTextPrimary` | `#0F172A` / `#FFFFFF` | Headings, body text |
 | `colorTextSecondary` | `#64748B` / `#94A3B8` | Subtitles, hints, section labels |
 | `danger` | `#E63946` | Log out button border & text |
-
-**Typography:** `sans-serif` (system default) — letter-spacing and weight tuned per screen
 
 ---
 
@@ -438,79 +534,46 @@ git clone https://github.com/sandunMadhushan/REFLECT.git
 #    Run → Run 'app'
 ```
 
-> Basic email/password features work offline with no setup needed.
+> Email/password features work offline with no setup needed.
 > Google Sign-In requires additional configuration below.
 
 ---
 
 ## 🔵 Google Sign-In Setup Guide
 
-Google Sign-In uses the **Android Credential Manager API** with a Google OAuth2 Web Client ID.
-Follow these steps to enable it:
+### Step 1 — Create a Firebase Project
 
-### Step 1 — Create a Firebase Project (or use Google Cloud Console)
-
-1. Go to **[Firebase Console](https://console.firebase.google.com)**
-2. Click **Add project** → name it `Reflect` → Continue
-3. Disable Google Analytics (optional) → **Create project**
+1. Go to **[Firebase Console](https://console.firebase.google.com)** → Add project → name it `Reflect`
 
 ### Step 2 — Register your Android App
 
-1. In Firebase Console → click the **Android** icon (`</>`)
-2. Enter package name: `me.madhushan.reflect`
-3. Enter app nickname: `Reflect`
-4. Get your **SHA-1 fingerprint**:
+1. Click the **Android** icon → enter package name `me.madhushan.reflect`
+2. Get your SHA-1:
    ```bash
-   # Windows
    keytool -list -v -keystore "%USERPROFILE%\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android
    ```
-   Copy the `SHA1:` value from the output
-5. Paste the SHA-1 into Firebase → **Register app**
-6. Download **`google-services.json`** → place it in `/app/` folder
+3. Paste SHA-1 → Register app → Download **`google-services.json`** → place in `/app/`
 
-### Step 3 — Enable Google Sign-In in Firebase
+### Step 3 — Enable Google Sign-In
 
-1. Firebase Console → **Authentication** → **Sign-in method**
-2. Click **Google** → toggle **Enable** → Save
-3. Copy the **Web Client ID** shown (ends in `.apps.googleusercontent.com`)
+Firebase Console → **Authentication** → **Sign-in method** → **Google** → Enable → Copy Web Client ID
 
-### Step 4 — Add Web Client ID to the app
+### Step 4 — Add Web Client ID
 
-Open `app/src/main/res/values/strings.xml` and replace:
-
+`app/src/main/res/values/strings.xml`:
 ```xml
-<string name="default_web_client_id">YOUR_WEB_CLIENT_ID_HERE.apps.googleusercontent.com</string>
+<string name="default_web_client_id">YOUR_WEB_CLIENT_ID.apps.googleusercontent.com</string>
 ```
-
-### Step 5 — Build & Run
-
-Sync Gradle, then run the app. Tap **Google** on the login screen — the system account picker will appear.
-
-> **Note:** Google Sign-In works on physical devices and emulators with a Google account configured.
 
 ---
 
 ## 🔮 Upcoming Features
 
-- [ ] 📝 **Reflection Journal** — write and browse full reflection entries with tags
 - [ ] 📊 **Progress Analytics** — charts and streaks for goal completion across time
 - [ ] 🏆 **Achievements** — milestone badges and completion tracking
 - [ ] 🗺️ **Vision Board** — visual inspiration board for goals
 - [ ] 🔔 **Reminders** — daily reflection push notifications (channel already set up)
 - [ ] 🧩 **Habit Tracker** — daily habit check-ins with streaks
-
-<!--
----
-
-## 👥 Team Members
-
-
-| Name | Role | Screens / Contribution |
-|---|---|---|
-| **Sandun Madhushan** | Lead Developer | Splash, Onboarding, Login, Register, Forgot Password, Home Dashboard, Goals Tab, Add Goal, Edit Goal, Goal Details, Profile, Personal Details, Help & Support, Subscription, Google Sign-In, Profile Photo, Notifications, Dark/Light Theme |
-| **Chathurika Sandamali** | UI/UX Designer & Developer | View Goal UI, Goal Details UI, New Reflection UI |
-| **Chanika Kavindi** | Developer & Tester | Analytics, Recent Activity, Account Settings |
--->
 
 ---
 
@@ -529,22 +592,10 @@ Sync Gradle, then run the app. Tap **Google** on the login screen — the system
 
 ## 🔒 Security Note
 
-### Email / Password Authentication
-Passwords are **never stored in plain text**.
-Reflect uses **SHA-256 hashing** (`MessageDigest`) in `PasswordUtils.java` before saving to the Room database.
-During login and password reset, the entered password is hashed and compared — the original is never retained.
-
-### Google Sign-In Authentication
-Google Sign-In is implemented using the **Android Credential Manager API** (`androidx.credentials`).
-The Google **ID Token** is verified locally via `GoogleIdTokenCredential` — no password is stored.
-Google users are identified by a `GOOGLE_AUTH_<hash>` marker in the `passwordHash` column.
-
-### Profile Photos
-Profile photos are stored in **app-private internal storage** (`/files/profile_photos/`).
-They are never accessible to other apps and are deleted when the account is deleted.
-
-### Thread Safety
-All Room database operations and file I/O run on a **background thread** via `ExecutorService`, following Android's strict main-thread policy.
+- **Passwords** — SHA-256 hashed via `PasswordUtils.java`, never stored plain text
+- **Google Sign-In** — ID Token verified via `GoogleIdTokenCredential`, stored as `GOOGLE_AUTH_<hash>`
+- **Profile Photos** — stored in app-private internal storage, inaccessible to other apps
+- **Database ops** — all Room operations run on background threads via `ExecutorService`
 
 ---
 
@@ -559,4 +610,3 @@ This project is submitted as academic coursework for ICT3214.
   <i>"Track. Reflect. Grow."</i><br><br>
   Built with ❤️ for ICT3214 — Mobile Application Development
 </div>
-
