@@ -62,8 +62,29 @@ public class ReflectionJournalActivity extends AppCompatActivity {
         filterMonth.setOnClickListener(v     -> setFilter("month"));
         filterFavorites.setOnClickListener(v -> setFilter("favorites"));
 
+        // FAB — write new reflection
         findViewById(R.id.fab_add).setOnClickListener(v ->
                 addLauncher.launch(new Intent(this, AddReflectionActivity.class)));
+
+        // Bottom navigation
+        findViewById(R.id.nav_home).setOnClickListener(v -> {
+            startActivity(new Intent(this, MainActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        });
+        findViewById(R.id.nav_goals).setOnClickListener(v -> {
+            Intent i = new Intent(this, MainActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            i.putExtra("open_tab", "goals");
+            startActivity(i);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        });
+        // Journal tab — already here, just stay (or re-apply filter)
+        findViewById(R.id.nav_journal).setOnClickListener(v -> { /* already on journal */ });
+        findViewById(R.id.nav_profile).setOnClickListener(v -> {
+            startActivity(new Intent(this, ProfileActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        });
 
         loadData();
     }
@@ -330,4 +351,5 @@ public class ReflectionJournalActivity extends AppCompatActivity {
         if (executor != null) executor.shutdown();
     }
 }
+
 

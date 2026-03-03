@@ -11,7 +11,7 @@
         android:id="@+id/journal_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="88dp"
+        android:paddingBottom="110dp"
         android:clipToPadding="false"
         android:scrollbars="none"
         android:fillViewport="true">
@@ -191,26 +191,155 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- ===== FAB ===== -->
+    <!-- ===== BOTTOM NAVIGATION ===== -->
     <FrameLayout
-        android:id="@+id/fab_add"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="100dp"
-        android:background="@drawable/bg_fab_primary"
-        android:elevation="8dp"
-        android:clickable="true"
-        android:focusable="true">
-        <ImageView
-            android:layout_width="26dp"
-            android:layout_height="26dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_add"
-            android:contentDescription="@null"
-            app:tint="@color/white"/>
+        android:layout_width="match_parent"
+        android:layout_height="102dp"
+        android:layout_gravity="bottom"
+        android:elevation="12dp">
+
+        <!-- Nav bar background -->
+        <LinearLayout
+            android:id="@+id/bottom_nav"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/bg_bottom_nav_curved"
+            android:orientation="horizontal"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:elevation="8dp">
+
+            <!-- Home -->
+            <LinearLayout
+                android:id="@+id/nav_home"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+                <ImageView
+                    android:id="@+id/nav_home_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_home"
+                    android:contentDescription="@null"
+                    app:tint="@color/text_hint"/>
+                <TextView
+                    android:id="@+id/nav_home_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/home_nav_home"
+                    android:textColor="@color/text_hint"
+                    android:textSize="10sp"
+                    android:layout_marginTop="3dp"/>
+            </LinearLayout>
+
+            <!-- Goals -->
+            <LinearLayout
+                android:id="@+id/nav_goals"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+                <ImageView
+                    android:id="@+id/nav_goals_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_goals"
+                    android:contentDescription="@null"
+                    app:tint="@color/text_hint"/>
+                <TextView
+                    android:id="@+id/nav_goals_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/home_nav_goals"
+                    android:textColor="@color/text_hint"
+                    android:textSize="10sp"
+                    android:layout_marginTop="3dp"/>
+            </LinearLayout>
+
+            <!-- Center spacer for FAB -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <!-- Journal (active) -->
+            <LinearLayout
+                android:id="@+id/nav_journal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+                <ImageView
+                    android:id="@+id/nav_journal_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_journal"
+                    android:contentDescription="@null"
+                    app:tint="@color/primary"/>
+                <TextView
+                    android:id="@+id/nav_journal_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/home_nav_journal"
+                    android:textColor="@color/primary"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="3dp"/>
+            </LinearLayout>
+
+            <!-- Profile -->
+            <LinearLayout
+                android:id="@+id/nav_profile"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+                <ImageView
+                    android:id="@+id/nav_profile_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_profile"
+                    android:contentDescription="@null"
+                    app:tint="@color/text_hint"/>
+                <TextView
+                    android:id="@+id/nav_profile_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/home_nav_profile"
+                    android:textColor="@color/text_hint"
+                    android:textSize="10sp"
+                    android:layout_marginTop="3dp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- FAB — center above nav bar -->
+        <FrameLayout
+            android:id="@+id/fab_add"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="top|center_horizontal"
+            android:background="@drawable/bg_fab_primary"
+            android:elevation="16dp"
+            android:clickable="true"
+            android:focusable="true">
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_add"
+                android:contentDescription="@null"
+                app:tint="@color/white"/>
+        </FrameLayout>
+
     </FrameLayout>
+    <!-- ===== END BOTTOM NAVIGATION ===== -->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

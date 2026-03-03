@@ -185,6 +185,19 @@ public class MainActivity extends AppCompatActivity {
         loadHomeData();
         loadGoalsData();
         loadJournalData();
+
+        // Handle deep-link tab from other Activities (e.g. Journal → Goals)
+        String openTab = getIntent().getStringExtra("open_tab");
+        if ("goals".equals(openTab)) switchTab("goals");
+    }
+
+    @Override
+    protected void onNewIntent(android.content.Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        String openTab = intent.getStringExtra("open_tab");
+        if ("goals".equals(openTab)) switchTab("goals");
+        else switchTab("home");
     }
 
     @Override
