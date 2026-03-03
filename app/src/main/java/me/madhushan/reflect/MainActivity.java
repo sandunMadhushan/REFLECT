@@ -31,6 +31,8 @@ import java.util.concurrent.Executors;
 import me.madhushan.reflect.database.AppDatabase;
 import me.madhushan.reflect.database.Goal;
 import me.madhushan.reflect.database.GoalDao;
+import me.madhushan.reflect.database.Reflection;
+import me.madhushan.reflect.database.ReflectionDao;
 import me.madhushan.reflect.ui.CircularProgressView;
 import me.madhushan.reflect.utils.AvatarLoader;
 import me.madhushan.reflect.utils.SessionManager;
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SessionManager sessionManager;
     private GoalDao goalDao;
+    private ReflectionDao reflectionDao;
     private ExecutorService executor;
 
     // ── Home tab views ────────────────────────────────────────────────────
@@ -51,17 +54,22 @@ public class MainActivity extends AppCompatActivity {
     private TextView[] dayLabels;
 
     // ── Goals tab views ───────────────────────────────────────────────────
-    private View tabHome, tabGoals;
+    private View tabHome, tabGoals, tabJournal;
     private LinearLayout goalsContainer, goalsEmptyState;
     private TextView goalsFilterAll, goalsFilterActive, goalsFilterCompleted;
     private String currentGoalFilter = "all";
 
+    // ── Journal tab views ─────────────────────────────────────────────────
+    private LinearLayout journalEntriesContainer, journalEmptyState;
+    private TextView journalFilterAll, journalFilterWeek, journalFilterMonth, journalFilterFavorites;
+    private String currentJournalFilter = "all";
+
     // ── Nav bar items ─────────────────────────────────────────────────────
-    private ImageView navHomeIcon, navGoalsIcon;
-    private TextView navHomeLabel, navGoalsLabel;
+    private ImageView navHomeIcon, navGoalsIcon, navJournalIcon, navProfileIcon;
+    private TextView navHomeLabel, navGoalsLabel, navJournalLabel, navProfileLabel;
 
     // ── Current tab ───────────────────────────────────────────────────────
-    private String currentTab = "home"; // "home" or "goals"
+    private String currentTab = "home"; // "home", "goals", "journal"
 
     // ── Launchers ─────────────────────────────────────────────────────────
     private final ActivityResultLauncher<String> notifPermissionLauncher =
@@ -78,6 +86,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+    private final ActivityResultLauncher<Intent> journalLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    loadJournalData();
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
         sessionManager = new SessionManager(this);
         goalDao        = AppDatabase.getInstance(this).goalDao();
+        reflectionDao  = AppDatabase.getInstance(this).reflectionDao();
         executor       = Executors.newSingleThreadExecutor();
 
         // ── Avatar + name ─────────────────────────────────────────────────
@@ -136,16 +152,39 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.goals_fab).setOnClickListener(v ->
                 goalLauncher.launch(new Intent(this, AddGoalActivity.class)));
 
+        // ── Journal tab views ──────────────────────────────────────────────
+        tabJournal              = findViewById(R.id.tab_journal);
+        journalEntriesContainer = findViewById(R.id.journal_entries_container);
+        journalEmptyState       = findViewById(R.id.journal_empty_state);
+        journalFilterAll        = findViewById(R.id.journal_filter_all);
+        journalFilterWeek       = findViewById(R.id.journal_filter_week);
+        journalFilterMonth      = findViewById(R.id.journal_filter_month);
+        journalFilterFavorites  = findViewById(R.id.journal_filter_favorites);
+
+        journalFilterAll.setOnClickListener(v       -> { currentJournalFilter = "all";       applyJournalFilterUI(); loadJournalData(); });
+        journalFilterWeek.setOnClickListener(v      -> { currentJournalFilter = "week";      applyJournalFilterUI(); loadJournalData(); });
+        journalFilterMonth.setOnClickListener(v     -> { currentJournalFilter = "month";     applyJournalFilterUI(); loadJournalData(); });
+        journalFilterFavorites.setOnClickListener(v -> { currentJournalFilter = "favorites"; applyJournalFilterUI(); loadJournalData(); });
+
+        // Journal FAB
+        findViewById(R.id.journal_fab).setOnClickListener(v ->
+                journalLauncher.launch(new Intent(this, AddReflectionActivity.class)));
+
         // ── Nav bar items ──────────────────────────────────────────────────
-        navHomeIcon   = findViewById(R.id.nav_home_icon);
-        navHomeLabel  = findViewById(R.id.nav_home_label);
-        navGoalsIcon  = findViewById(R.id.nav_goals_icon);
-        navGoalsLabel = findViewById(R.id.nav_goals_label);
+        navHomeIcon    = findViewById(R.id.nav_home_icon);
+        navHomeLabel   = findViewById(R.id.nav_home_label);
+        navGoalsIcon   = findViewById(R.id.nav_goals_icon);
+        navGoalsLabel  = findViewById(R.id.nav_goals_label);
+        navJournalIcon  = findViewById(R.id.nav_journal_icon);
+        navJournalLabel = findViewById(R.id.nav_journal_label);
+        navProfileIcon  = findViewById(R.id.nav_profile_icon);
+        navProfileLabel = findViewById(R.id.nav_profile_label);
 
         setupNavigation();
         requestNotificationPermissionIfNeeded();
         loadHomeData();
         loadGoalsData();
+        loadJournalData();
     }
 
     @Override
@@ -153,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         loadHomeData();
         loadGoalsData();
+        loadJournalData();
         AvatarLoader.loadFromSession(this,
                 findViewById(R.id.iv_avatar_photo),
                 findViewById(R.id.tv_avatar_initials),
@@ -164,22 +204,26 @@ public class MainActivity extends AppCompatActivity {
     private void switchTab(String tab) {
         currentTab = tab;
 
-        tabHome.setVisibility(tab.equals("home")  ? View.VISIBLE : View.GONE);
-        tabGoals.setVisibility(tab.equals("goals") ? View.VISIBLE : View.GONE);
+        tabHome.setVisibility(tab.equals("home")    ? View.VISIBLE : View.GONE);
+        tabGoals.setVisibility(tab.equals("goals")  ? View.VISIBLE : View.GONE);
+        tabJournal.setVisibility(tab.equals("journal") ? View.VISIBLE : View.GONE);
 
-        int primary   = getResources().getColor(R.color.primary,    null);
-        int hint      = getResources().getColor(R.color.text_hint,  null);
+        int primary = getResources().getColor(R.color.primary,   null);
+        int hint    = getResources().getColor(R.color.text_hint, null);
 
-        // Home nav item
         navHomeIcon.setColorFilter(tab.equals("home") ? primary : hint);
         navHomeLabel.setTextColor(tab.equals("home") ? primary : hint);
         navHomeLabel.setTypeface(null, tab.equals("home")
                 ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
 
-        // Goals nav item
         navGoalsIcon.setColorFilter(tab.equals("goals") ? primary : hint);
         navGoalsLabel.setTextColor(tab.equals("goals") ? primary : hint);
         navGoalsLabel.setTypeface(null, tab.equals("goals")
+                ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
+
+        navJournalIcon.setColorFilter(tab.equals("journal") ? primary : hint);
+        navJournalLabel.setTextColor(tab.equals("journal") ? primary : hint);
+        navJournalLabel.setTypeface(null, tab.equals("journal")
                 ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
     }
 
@@ -442,9 +486,8 @@ public class MainActivity extends AppCompatActivity {
         // "View All" in progress section → switch to Goals tab
         findViewById(R.id.btn_view_all_goals).setOnClickListener(v -> switchTab("goals"));
 
-        // Journal — coming soon
-        findViewById(R.id.nav_journal).setOnClickListener(v ->
-                Toast.makeText(this, "Journal — coming soon", Toast.LENGTH_SHORT).show());
+        // Journal tab — switch in-app
+        findViewById(R.id.nav_journal).setOnClickListener(v -> switchTab("journal"));
 
         // Profile
         findViewById(R.id.nav_profile).setOnClickListener(v -> {
@@ -456,11 +499,11 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_notifications).setOnClickListener(v ->
                 Toast.makeText(this, "Notifications — coming soon", Toast.LENGTH_SHORT).show());
 
-        // Block back — when on Goals tab go back to Home, else block
+        // Back press — non-home tabs go back to home; home is blocked
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                if (currentTab.equals("goals")) {
+                if (!currentTab.equals("home")) {
                     switchTab("home");
                 }
                 // else blocked — user must log out explicitly
@@ -532,6 +575,238 @@ public class MainActivity extends AppCompatActivity {
             goalLauncher.launch(intent);
         });
         return row;
+    }
+
+    // ── Journal tab data ───────────────────────────────────────────────────
+
+    private void loadJournalData() {
+        int userId = sessionManager.getUserId();
+        executor.execute(() -> {
+            List<Reflection> all = reflectionDao.getReflectionsForUser(userId);
+            List<Reflection> filtered = new ArrayList<>();
+
+            if (currentJournalFilter.equals("all")) {
+                filtered.addAll(all);
+            } else if (currentJournalFilter.equals("week")) {
+                // Get Monday of current week
+                Calendar cal = Calendar.getInstance();
+                int dow = cal.get(Calendar.DAY_OF_WEEK);
+                int daysFromMon = (dow == Calendar.SUNDAY) ? 6 : dow - 2;
+                cal.add(Calendar.DAY_OF_YEAR, -daysFromMon);
+                String weekStart = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(cal.getTime());
+                for (Reflection r : all) {
+                    if (r.createdAt != null && r.createdAt.compareTo(weekStart) >= 0) filtered.add(r);
+                }
+            } else if (currentJournalFilter.equals("month")) {
+                String monthStart = new SimpleDateFormat("yyyy-MM", Locale.getDefault())
+                        .format(Calendar.getInstance().getTime());
+                for (Reflection r : all) {
+                    if (r.createdAt != null && r.createdAt.startsWith(monthStart)) filtered.add(r);
+                }
+            } else if (currentJournalFilter.equals("favorites")) {
+                for (Reflection r : all) {
+                    if (r.isFavorite == 1) filtered.add(r);
+                }
+            }
+
+            final List<Reflection> result = filtered;
+            runOnUiThread(() -> renderJournalEntries(result));
+        });
+    }
+
+    private void applyJournalFilterUI() {
+        int white    = getResources().getColor(R.color.white,              null);
+        int inactive = getResources().getColor(R.color.colorTextSecondary, null);
+
+        journalFilterAll.setBackgroundResource(currentJournalFilter.equals("all")       ? R.drawable.bg_chip_active : R.drawable.bg_chip_inactive);
+        journalFilterAll.setTextColor(currentJournalFilter.equals("all")                ? white : inactive);
+        journalFilterWeek.setBackgroundResource(currentJournalFilter.equals("week")     ? R.drawable.bg_chip_active : R.drawable.bg_chip_inactive);
+        journalFilterWeek.setTextColor(currentJournalFilter.equals("week")              ? white : inactive);
+        journalFilterMonth.setBackgroundResource(currentJournalFilter.equals("month")   ? R.drawable.bg_chip_active : R.drawable.bg_chip_inactive);
+        journalFilterMonth.setTextColor(currentJournalFilter.equals("month")            ? white : inactive);
+        journalFilterFavorites.setBackgroundResource(currentJournalFilter.equals("favorites") ? R.drawable.bg_chip_active : R.drawable.bg_chip_inactive);
+        journalFilterFavorites.setTextColor(currentJournalFilter.equals("favorites")    ? white : inactive);
+    }
+
+    private void renderJournalEntries(List<Reflection> entries) {
+        journalEntriesContainer.removeAllViews();
+        if (entries.isEmpty()) {
+            journalEmptyState.setVisibility(View.VISIBLE);
+            return;
+        }
+        journalEmptyState.setVisibility(View.GONE);
+        float density = getResources().getDisplayMetrics().density;
+
+        for (Reflection r : entries) {
+            // ── Card ──────────────────────────────────────────────────────
+            LinearLayout card = new LinearLayout(this);
+            card.setOrientation(LinearLayout.HORIZONTAL);
+            card.setBackgroundResource(R.drawable.bg_card_dark);
+            card.setElevation(2 * density);
+            LinearLayout.LayoutParams cardLp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            cardLp.setMargins(0, 0, 0, (int)(12 * density));
+            card.setLayoutParams(cardLp);
+            int pad = (int)(14 * density);
+            card.setPadding(pad, pad, pad, pad);
+            card.setClickable(true);
+            card.setFocusable(true);
+
+            // ── Mood icon box ─────────────────────────────────────────────
+            FrameLayout iconBox = new FrameLayout(this);
+            int iconSize = (int)(48 * density);
+            LinearLayout.LayoutParams ibLp = new LinearLayout.LayoutParams(iconSize, iconSize);
+            ibLp.setMarginEnd((int)(12 * density));
+            ibLp.gravity = android.view.Gravity.CENTER_VERTICAL;
+            iconBox.setLayoutParams(ibLp);
+            iconBox.setBackgroundResource(moodBackground(r.mood));
+
+            TextView emojiTv = new TextView(this);
+            FrameLayout.LayoutParams eLp = new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            eLp.gravity = android.view.Gravity.CENTER;
+            emojiTv.setLayoutParams(eLp);
+            emojiTv.setText(moodEmoji(r.mood));
+            emojiTv.setTextSize(22f);
+            iconBox.addView(emojiTv);
+            card.addView(iconBox);
+
+            // ── Text column ───────────────────────────────────────────────
+            LinearLayout textCol = new LinearLayout(this);
+            textCol.setOrientation(LinearLayout.VERTICAL);
+            textCol.setLayoutParams(new LinearLayout.LayoutParams(0,
+                    LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+
+            // Title row: title + time
+            LinearLayout titleRow = new LinearLayout(this);
+            titleRow.setOrientation(LinearLayout.HORIZONTAL);
+            titleRow.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
+            TextView tvTitle = new TextView(this);
+            tvTitle.setLayoutParams(new LinearLayout.LayoutParams(0,
+                    LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+            tvTitle.setText(r.title != null ? r.title : "Reflection");
+            tvTitle.setTextColor(getResources().getColor(R.color.colorTextPrimary, null));
+            tvTitle.setTextSize(14f);
+            tvTitle.setTypeface(null, android.graphics.Typeface.BOLD);
+            tvTitle.setMaxLines(1);
+            titleRow.addView(tvTitle);
+
+            TextView tvTime = new TextView(this);
+            tvTime.setText(formatTime(r.createdAt));
+            tvTime.setTextColor(getResources().getColor(R.color.colorTextSecondary, null));
+            tvTime.setTextSize(11f);
+            LinearLayout.LayoutParams timeLp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            timeLp.gravity = android.view.Gravity.CENTER_VERTICAL;
+            tvTime.setLayoutParams(timeLp);
+            titleRow.addView(tvTime);
+            textCol.addView(titleRow);
+
+            // Date (in primary colour)
+            TextView tvDate = new TextView(this);
+            tvDate.setText(formatDate(r.createdAt));
+            tvDate.setTextColor(getResources().getColor(R.color.primary, null));
+            tvDate.setTextSize(11f);
+            tvDate.setTypeface(null, android.graphics.Typeface.BOLD);
+            LinearLayout.LayoutParams dateLp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            dateLp.setMargins(0, (int)(2 * density), 0, (int)(4 * density));
+            tvDate.setLayoutParams(dateLp);
+            textCol.addView(tvDate);
+
+            // Content preview
+            if (r.content != null && !r.content.isEmpty()) {
+                TextView tvContent = new TextView(this);
+                tvContent.setText(r.content);
+                tvContent.setTextColor(getResources().getColor(R.color.colorTextSecondary, null));
+                tvContent.setTextSize(13f);
+                tvContent.setMaxLines(2);
+                tvContent.setEllipsize(android.text.TextUtils.TruncateAt.END);
+                textCol.addView(tvContent);
+            }
+
+            card.addView(textCol);
+
+            // Favorite star (trailing)
+            if (r.isFavorite == 1) {
+                TextView starTv = new TextView(this);
+                starTv.setText("★");
+                starTv.setTextColor(getResources().getColor(R.color.primary, null));
+                starTv.setTextSize(18f);
+                LinearLayout.LayoutParams starLp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                starLp.gravity = android.view.Gravity.CENTER_VERTICAL;
+                starLp.setMarginStart((int)(8 * density));
+                starTv.setLayoutParams(starLp);
+                card.addView(starTv);
+            }
+
+            // Long-press to toggle favorite
+            card.setOnLongClickListener(v -> {
+                executor.execute(() -> {
+                    r.isFavorite = (r.isFavorite == 1) ? 0 : 1;
+                    reflectionDao.updateReflection(r);
+                    runOnUiThread(() -> {
+                        String msg = r.isFavorite == 1 ? "Added to favorites" : "Removed from favorites";
+                        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                        loadJournalData();
+                    });
+                });
+                return true;
+            });
+
+            journalEntriesContainer.addView(card);
+        }
+    }
+
+    private int moodBackground(String mood) {
+        if (mood == null) return R.drawable.bg_circle_blue;
+        switch (mood) {
+            case "happy":   return R.drawable.bg_circle_green;
+            case "anxious": return R.drawable.bg_circle_purple;
+            case "neutral":
+            case "sad":
+            case "calm":
+            default:        return R.drawable.bg_circle_blue;
+        }
+    }
+
+    private String moodEmoji(String mood) {
+        if (mood == null) return "😌";
+        switch (mood) {
+            case "happy":   return "😄";
+            case "calm":    return "😌";
+            case "neutral": return "😐";
+            case "sad":     return "😔";
+            case "anxious": return "😰";
+            default:        return "😌";
+        }
+    }
+
+    /** Returns "9:41 AM" from "2026-03-04 09:41:00" */
+    private String formatTime(String createdAt) {
+        if (createdAt == null || createdAt.length() < 16) return "";
+        try {
+            SimpleDateFormat in  = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            SimpleDateFormat out = new SimpleDateFormat("h:mm a", Locale.getDefault());
+            return out.format(in.parse(createdAt));
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    /** Returns "Mar 4" from "2026-03-04 09:41:00" */
+    private String formatDate(String createdAt) {
+        if (createdAt == null || createdAt.length() < 10) return "";
+        try {
+            SimpleDateFormat in  = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            SimpleDateFormat out = new SimpleDateFormat("MMM d", Locale.getDefault());
+            return out.format(in.parse(createdAt.substring(0, 10)));
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     // ── Notification permission ────────────────────────────────────────────

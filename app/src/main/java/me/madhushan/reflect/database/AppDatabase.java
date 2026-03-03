@@ -8,13 +8,14 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = { User.class, Goal.class }, version = 2, exportSchema = false)
+@Database(entities = { User.class, Goal.class, Reflection.class }, version = 3, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase INSTANCE;
 
     public abstract UserDao userDao();
     public abstract GoalDao goalDao();
+    public abstract ReflectionDao reflectionDao();
 
     /** Migration from v1 (users only) → v2 (adds goals table). */
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
@@ -37,6 +38,23 @@ public abstract class AppDatabase extends RoomDatabase {
         }
     };
 
+    /** Migration from v2 → v3 (adds reflections table). */
+    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(SupportSQLiteDatabase db) {
+            db.execSQL("CREATE TABLE IF NOT EXISTS `reflections` (" +
+                    "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                    "`userId` INTEGER NOT NULL," +
+                    "`title` TEXT," +
+                    "`mood` TEXT," +
+                    "`content` TEXT," +
+                    "`isFavorite` INTEGER NOT NULL DEFAULT 0," +
+                    "`createdAt` TEXT," +
+                    "FOREIGN KEY(`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE)");
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_reflections_userId` ON `reflections` (`userId`)");
+        }
+    };
+
     public static AppDatabase getInstance(Context context) {
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
@@ -46,7 +64,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             AppDatabase.class,
                             "reflect_db"
                     )
-                    .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                     .build();
                 }
             }

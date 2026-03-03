@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reflection Journal is implemented as a tab inside activity_main.xml (tab_journal).
+     This file is a placeholder to avoid empty-file build errors. -->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
+
