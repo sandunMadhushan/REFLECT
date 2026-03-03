@@ -10,7 +10,7 @@
         android:id="@+id/journal_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="16dp"
+        android:paddingBottom="100dp"
         android:clipToPadding="false"
         android:scrollbars="none"
         android:fillViewport="true">
@@ -177,5 +177,6 @@
     <!-- FAB removed — centre FAB in bottom nav bar handles add reflection -->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 
 

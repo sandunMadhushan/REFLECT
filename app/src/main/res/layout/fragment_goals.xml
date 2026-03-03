@@ -9,7 +9,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="16dp"
+        android:paddingBottom="100dp"
         android:clipToPadding="false"
         android:fillViewport="true">
 
@@ -139,5 +139,6 @@
     <!-- Goals FAB removed — centre FAB in bottom nav bar handles this -->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 
 

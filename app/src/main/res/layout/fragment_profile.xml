@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:paddingBottom="16dp"
+    android:paddingBottom="100dp"
     android:clipToPadding="false"
     android:background="@color/colorAppBg">
 
@@ -433,7 +433,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_marginTop="20dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="32dp"
                 android:text="@string/profile_version"
                 android:textColor="@color/colorTextSecondary"
                 android:textSize="12sp"/>
@@ -441,5 +441,7 @@
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
+
+
 
 
