@@ -185,6 +185,19 @@ public class MainActivity extends AppCompatActivity {
         loadHomeData();
         loadGoalsData();
         loadJournalData();
+
+        // Handle deep-link tab from other Activities (e.g. Journal → Goals)
+        String openTab = getIntent().getStringExtra("open_tab");
+        if ("goals".equals(openTab)) switchTab("goals");
+    }
+
+    @Override
+    protected void onNewIntent(android.content.Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        String openTab = intent.getStringExtra("open_tab");
+        if ("goals".equals(openTab)) switchTab("goals");
+        else switchTab("home");
     }
 
     @Override
@@ -486,8 +499,11 @@ public class MainActivity extends AppCompatActivity {
         // "View All" in progress section → switch to Goals tab
         findViewById(R.id.btn_view_all_goals).setOnClickListener(v -> switchTab("goals"));
 
-        // Journal tab — switch in-app
-        findViewById(R.id.nav_journal).setOnClickListener(v -> switchTab("journal"));
+        // Journal tab — launch dedicated activity
+        findViewById(R.id.nav_journal).setOnClickListener(v -> {
+            startActivity(new Intent(this, ReflectionJournalActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        });
 
         // Profile
         findViewById(R.id.nav_profile).setOnClickListener(v -> {
