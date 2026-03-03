@@ -112,6 +112,11 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <!-- Reflection Journal Screen -->
+        <activity
+            android:name=".ReflectionJournalActivity"
+            android:exported="false" />
+
         <!-- FileProvider for camera capture temp files -->
         <provider
             android:name="androidx.core.content.FileProvider"
