@@ -90,6 +90,7 @@ public class JournalFragment extends Fragment {
     }
 
     public void loadData() {
+        if (!isAdded() || sessionManager == null) return;
         int userId = sessionManager.getUserId();
         executor.execute(() -> {
             List<Reflection> all = reflectionDao.getReflectionsForUser(userId);
@@ -112,7 +113,12 @@ public class JournalFragment extends Fragment {
                 default:
                     filtered.addAll(all);
             }
-            requireActivity().runOnUiThread(() -> renderEntries(filtered));
+            // Guard: only update UI if fragment is still attached
+            if (!isAdded()) return;
+            requireActivity().runOnUiThread(() -> {
+                if (!isAdded()) return;
+                renderEntries(filtered);
+            });
         });
     }
 
@@ -190,7 +196,9 @@ public class JournalFragment extends Fragment {
                 executor.execute(() -> {
                     r.isFavorite = r.isFavorite == 1 ? 0 : 1;
                     reflectionDao.updateReflection(r);
+                    if (!isAdded()) return;
                     requireActivity().runOnUiThread(() -> {
+                        if (!isAdded()) return;
                         Toast.makeText(requireContext(), r.isFavorite == 1 ? "⭐ Favorited" : "Removed from favorites", Toast.LENGTH_SHORT).show();
                         loadData();
                     });

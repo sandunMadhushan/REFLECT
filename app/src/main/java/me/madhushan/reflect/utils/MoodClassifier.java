@@ -1,65 +1,143 @@
 package me.madhushan.reflect.utils;
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.util.Log;
 
-import java.util.Locale;
+import org.tensorflow.lite.Interpreter;
 
-/**
- * MoodClassifier — On-device AI mood detection from journal text.
- *
- * Currently uses a keyword-based approach that works without any model file.
- * To enable TFLite mode: train the model in Google Colab (see colab/mood_classifier_colab.ipynb),
- * add mood_classifier.tflite + mood_vocab.txt to app/src/main/assets/, then
- * add `implementation("org.tensorflow:tensorflow-lite:2.13.0")` to build.gradle.kts
- * and uncomment the TFLite code sections below.
- *
- * Output labels (in order): happy, calm, neutral, sad, anxious
- */
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 public class MoodClassifier {
 
     private static final String TAG = "MoodClassifier";
 
-    // Label order MUST match Colab training label encoding
     public static final String[] LABELS = {"happy", "calm", "neutral", "sad", "anxious"};
 
-    // TFLite is disabled until model is trained — keyword fallback always active
-    private final boolean modelLoaded = false;
+    private static final String MODEL_FILE = "mood_classifier.tflite";
+    private static final String VOCAB_FILE = "mood_vocab.txt";
+    private static final int MAX_SEQ_LEN  = 50;
+
+    private Interpreter tflite;
+    private final Map<String, Integer> wordToId = new HashMap<>();
+    private boolean modelLoaded = false;
 
     public MoodClassifier(Context context) {
-        Log.i(TAG, "MoodClassifier initialized — using keyword-based mood detection.");
-        Log.i(TAG, "To enable AI mode: train model in Colab and add .tflite to assets/");
+        try {
+            List<String> vocab = loadVocab(context);
+            if (!vocab.isEmpty()) {
+                for (int i = 0; i < vocab.size(); i++) {
+                    wordToId.put(vocab.get(i), i);
+                }
+                MappedByteBuffer modelBuffer = loadModelFile(context);
+                // Use plain constructor — avoids dependency on InterpreterApi
+                tflite = new Interpreter(modelBuffer);
+                // Quick test run to verify model works at runtime
+                int[][] testInput  = new int[1][MAX_SEQ_LEN];
+                float[][] testOut  = new float[1][5];
+                tflite.run(testInput, testOut);
+                modelLoaded = true;
+                Log.i(TAG, "✅ TFLite model loaded — AI mood detection active!");
+            } else {
+                Log.i(TAG, "ℹ️  mood_vocab.txt not found — using keyword fallback");
+            }
+        } catch (Throwable e) {
+            Log.i(TAG, "ℹ️  TFLite model unavailable — using keyword fallback. Reason: " + e.getMessage());
+            modelLoaded = false;
+            tflite = null;
+        }
     }
 
-    /**
-     * Predict mood from text.
-     * @param text  User's journal entry content
-     * @return  One of: "happy", "calm", "neutral", "sad", "anxious"
-     */
     public String predict(String text) {
         if (text == null || text.trim().isEmpty()) return "neutral";
+        if (modelLoaded) {
+            try {
+                float[] scores = runModel(text);
+                int best = 0;
+                for (int i = 1; i < scores.length; i++) {
+                    if (scores[i] > scores[best]) best = i;
+                }
+                return LABELS[best];
+            } catch (Throwable e) {
+                Log.w(TAG, "Model inference failed, using keyword fallback: " + e.getMessage());
+                modelLoaded = false;
+            }
+        }
         return predictWithKeywords(text);
     }
 
-    /**
-     * Returns confidence scores for all moods (0.0 – 1.0).
-     * Useful to show a confidence bar in the UI.
-     */
     public float[] getScores(String text) {
         if (text == null || text.trim().isEmpty()) {
             return new float[]{0.2f, 0.2f, 0.2f, 0.2f, 0.2f};
         }
+        if (modelLoaded) {
+            try {
+                return runModel(text);
+            } catch (Throwable e) {
+                Log.w(TAG, "Model inference failed, using keyword fallback: " + e.getMessage());
+                modelLoaded = false;
+            }
+        }
         return keywordScores(text.toLowerCase(Locale.getDefault()));
     }
 
-    /** Returns true if the TFLite model is loaded */
-    public boolean isModelLoaded() {
-        return modelLoaded;
+    public boolean isModelLoaded() { return modelLoaded; }
+
+    public void close() {
+        try {
+            if (tflite != null) { tflite.close(); tflite = null; }
+        } catch (Throwable e) { /* ignore */ }
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // Keyword-based fallback (no model needed)
-    // ──────────────────────────────────────────────────────────────────────────
+    // ── TFLite inference ─────────────────────────────────────────────────────
+
+    private float[] runModel(String text) {
+        int[] input = encodeText(text);
+        int[][] inputArr   = {input};
+        float[][] outputArr = new float[1][5];
+        tflite.run(inputArr, outputArr);
+        return outputArr[0];
+    }
+
+    private int[] encodeText(String text) {
+        String[] tokens = text.toLowerCase(Locale.getDefault())
+                .replaceAll("[^a-z ]", " ").trim().split("\\s+");
+        int[] ids = new int[MAX_SEQ_LEN];
+        for (int i = 0; i < Math.min(tokens.length, MAX_SEQ_LEN); i++) {
+            Integer id = wordToId.get(tokens[i]);
+            ids[i] = (id != null) ? id : 1;
+        }
+        return ids;
+    }
+
+    private MappedByteBuffer loadModelFile(Context ctx) throws IOException {
+        AssetFileDescriptor fd = ctx.getAssets().openFd(MODEL_FILE);
+        FileInputStream fis = new FileInputStream(fd.getFileDescriptor());
+        FileChannel channel = fis.getChannel();
+        return channel.map(FileChannel.MapMode.READ_ONLY, fd.getStartOffset(), fd.getDeclaredLength());
+    }
+
+    private List<String> loadVocab(Context ctx) {
+        List<String> vocab = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(ctx.getAssets().open(VOCAB_FILE)))) {
+            String line;
+            while ((line = reader.readLine()) != null) vocab.add(line.trim());
+        } catch (IOException e) { /* not present — use keyword fallback */ }
+        return vocab;
+    }
+
+    // ── Keyword fallback (no model needed) ───────────────────────────────────
 
     private static final String[] HAPPY_WORDS = {
         "happy","joy","excited","amazing","great","wonderful","fantastic","love",
@@ -80,47 +158,35 @@ public class MoodClassifier {
     private static final String[] ANXIOUS_WORDS = {
         "anxious","worried","nervous","stressed","scared","fear","panic","overwhelmed",
         "tense","uneasy","afraid","dread","pressure","rushing","busy","deadline",
-        "exhausted","tired","too much","can't","cannot","struggling","failing","fail",
-        "uncertain","insecure","restless","jittery","freaking"
+        "exhausted","tired","struggling","failing","fail","uncertain","insecure",
+        "restless","jittery","freaking","cannot","can't"
     };
 
     private String predictWithKeywords(String text) {
         float[] scores = keywordScores(text.toLowerCase(Locale.getDefault()));
         int best = 0;
-        for (int i = 1; i < scores.length; i++) {
-            if (scores[i] > scores[best]) best = i;
-        }
+        for (int i = 1; i < scores.length; i++) if (scores[i] > scores[best]) best = i;
         return LABELS[best];
     }
 
     private float[] keywordScores(String lower) {
-        float[] scores = new float[5]; // happy, calm, neutral, sad, anxious
+        float[] scores = new float[5];
         scores[0] = countMatches(lower, HAPPY_WORDS);
         scores[1] = countMatches(lower, CALM_WORDS);
-        scores[2] = 0.3f; // slight neutral baseline
+        scores[2] = 0.3f;
         scores[3] = countMatches(lower, SAD_WORDS);
         scores[4] = countMatches(lower, ANXIOUS_WORDS);
-
-        // Normalize
         float sum = 0;
         for (float s : scores) sum += s;
-        if (sum < 0.01f) {
-            scores[2] = 1f; // pure neutral if no keywords matched
-            sum = 1f;
-        }
+        if (sum < 0.01f) { scores[2] = 1f; sum = 1f; }
         for (int i = 0; i < scores.length; i++) scores[i] /= sum;
         return scores;
     }
 
     private float countMatches(String text, String[] keywords) {
         float count = 0;
-        for (String kw : keywords) {
-            if (text.contains(kw)) count += 1f;
-        }
+        for (String kw : keywords) if (text.contains(kw)) count++;
         return count;
     }
-
-    public void close() {
-        // Nothing to close — TFLite not loaded
-    }
 }
+

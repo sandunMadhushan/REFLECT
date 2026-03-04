@@ -33,6 +33,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    androidResources {
+        noCompress += "tflite"
+    }
 }
 
 // After assembleDebug, copy the APK and rename it to REFLECT.apk
@@ -63,6 +66,9 @@ dependencies {
     implementation(libs.googleid)
     // Glide — image loading for Google profile photo
     implementation(libs.glide)
+    // TensorFlow Lite — on-device AI mood detection
+    // v2.4.0 bundles everything in one jar (no -api split), so no duplicate namespace conflict
+    implementation("org.tensorflow:tensorflow-lite:2.4.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
