@@ -20,20 +20,16 @@
         <!-- ===== HEADER ===== -->
 
         <!-- Logo Icon -->
-        <FrameLayout
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:background="@drawable/bg_logo_gradient"
-            android:elevation="8dp">
-
-            <ImageView
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:layout_gravity="center"
-                android:contentDescription="@string/content_desc_logo"
-                android:src="@drawable/reflect_logo"
-                android:scaleType="centerInside" />
-        </FrameLayout>
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:elevation="8dp"
+            android:src="@drawable/reflect_logo"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/content_desc_logo"
+            app:shapeAppearanceOverlay="@style/RoundedLogoShape"
+            app:strokeColor="#33FFFFFF"
+            app:strokeWidth="1.5dp" />
 
         <Space android:layout_width="match_parent" android:layout_height="20dp" />
 

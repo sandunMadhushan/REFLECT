@@ -23,4 +23,10 @@
         <item name="android:statusBarColor">@color/primary</item>
         <item name="android:navigationBarColor">#7A5CFF</item>
     </style>
+
+    <!-- Rounded corners for logo ShapeableImageView (matches 24dp box radius) -->
+    <style name="RoundedLogoShape">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">18dp</item>
+    </style>
 </resources>
