@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="app/src/main/res/drawable/reflect_logo-rounded.png" width="110" alt="Reflect Logo"/>
+<img src="app/src/main/res/drawable/reflect_logo_rounded.png" width="110" alt="Reflect Logo"/>
 
 # Reflect
 
@@ -700,7 +700,7 @@ This project is submitted as academic coursework for ICT3214.
 ---
 
 <div align="center">
-  <img src="app/src/main/res/drawable/reflect_logo-rounded.png" width="48" alt="Reflect Logo"/><br><br>
+  <img src="app/src/main/res/drawable/reflect_logo_rounded.png" width="48" alt="Reflect Logo"/><br><br>
   <i>"Track. Reflect. Grow."</i><br><br>
   Built with ❤️ for ICT3214 — Mobile Application Development
 </div>
