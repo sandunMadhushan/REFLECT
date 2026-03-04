@@ -1,8 +1,8 @@
 <div align="center">
 
-<!-- <img src="app/src/main/res/drawable/logo.png" width="110" alt="Reflect Lotus Logo"/> -->
+<img src="app/src/main/res/drawable/reflect_logo-rounded.png" width="110" alt="Reflect Logo"/>
 
-# 🌿 Reflect
+# Reflect
 
 ### *Track. Reflect. Grow.*
 
@@ -39,7 +39,7 @@ It's about **thinking deeply**, not managing tasks.
 
 | Feature | Status | Description |
 |---|---|---|
-| 💫 **Splash Screen** | ✅ Done | Animated branded loading screen with progress bar, routes by session/onboarding state |
+| 💫 **Splash Screen** | ✅ Done | Animated branded loading screen with the Reflect logo, progress bar, routes by session/onboarding state |
 | 🎓 **Onboarding** | ✅ Done | 3-page swipeable intro with ViewPager2, skip support, shown only once |
 | 🔐 **Register** | ✅ Done | Full validation, SHA-256 password hashing, Room DB insert, auto-login on success |
 | 🔑 **Login** | ✅ Done | Email/password auth against Room DB, session creation |
@@ -63,6 +63,7 @@ It's about **thinking deeply**, not managing tasks.
 | 🔔 **Notifications Toggle** | ✅ Done | Runtime permission request (Android 13+), toggle persists across app restarts |
 | 📱 **Session Management** | ✅ Done | Persistent login via `SharedPreferences`, auto-skip splash & onboarding |
 | 🧭 **Single-Activity Navigation** | ✅ Done | `MainActivity` hosts Home / Goals / Journal / Profile as Fragments with a shared bottom nav bar |
+| 🎨 **Reflect Logo** | ✅ Done | Custom `reflect_logo.png` applied as app launcher icon (all mipmap densities) and on every auth screen (Splash, Login, Register, Forgot Password) with rounded corners via `ShapeableImageView` |
 
 ---
 
@@ -123,7 +124,7 @@ MainActivity (activity_main.xml)
 
 ```
 ┌──────────────────┐
-│  Splash Screen   │  2.8s animated loading bar
+│  Splash Screen   │  Reflect logo + animated loading bar
 └────────┬─────────┘
          ├─── [Session exists] ──────────────────────▶ MainActivity (Home tab)
          ├─── [Onboarding done, no session] ─────────▶ Login Screen
@@ -132,6 +133,7 @@ MainActivity (activity_main.xml)
                                           [Get Started] ──▶ Login Screen
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │                              Login Screen                                    │
+│  • Reflect logo (rounded ShapeableImageView)                                 │
 │  • Email / Password  •  Log In  •  Forgot Password?                          │
 │  • 🔵 Google Sign-In (Credential Manager — fully functional)                 │
 │  • "Register now" link                                                       │
@@ -285,6 +287,22 @@ Reflect fully supports **system-driven dark and light mode**:
 
 ---
 
+## 🎨 Logo & Branding
+
+The `reflect_logo.png` is used as the app's visual identity across all entry points:
+
+| Location | Implementation |
+|---|---|
+| **App launcher icon** | `reflect_logo.png` in all mipmap densities (`mdpi` → `xxxhdpi`) + adaptive icon foreground for API 26+ |
+| **Splash Screen** | `ShapeableImageView` 68×68dp, `centerCrop`, `18dp` rounded corners, inside gradient logo box |
+| **Login Screen** | `ShapeableImageView` 72×72dp, `centerCrop`, `18dp` rounded corners |
+| **Register Screen** | `ShapeableImageView` 72×72dp, `centerCrop`, `18dp` rounded corners |
+| **Forgot Password Screen** | `ShapeableImageView` 72×72dp, `centerCrop`, `18dp` rounded corners |
+
+Rounded corners are applied via `@style/RoundedLogoShape` (`cornerFamily=rounded`, `cornerSize=18dp`) in `themes.xml`, ensuring the logo image is **pixel-perfectly clipped** — not just a rounded background behind a square image.
+
+---
+
 ## 🗂️ Project Structure
 
 ```
@@ -348,7 +366,7 @@ REFLECT/
 │   │   │
 │   │   └── ── Custom Views ──
 │   │       └── ui/
-│   │       └── CircularProgressView.java # Custom canvas view — circular progress ring
+│   │           └── CircularProgressView.java # Custom canvas view — circular progress ring
 │   │
 │   ├── assets/                               # ← place TFLite model files here
 │   │   ├── mood_classifier.tflite            # TFLite model (train in Colab, then copy here)
@@ -366,14 +384,14 @@ REFLECT/
 │   │   │   ├── activity_main.xml             # Fragment container + bottom nav bar + FAB
 │   │   │   │
 │   │   │   ├── ── Auth Layouts ──
-│   │   │   ├── activity_splash.xml
+│   │   │   ├── activity_splash.xml           # Reflect logo + gradient box + progress bar
 │   │   │   ├── activity_onboarding.xml
 │   │   │   ├── fragment_onboarding_1.xml     # "Set Meaningful Goals"
 │   │   │   ├── fragment_onboarding_2.xml     # "Reflect on Your Journey"
 │   │   │   ├── fragment_onboarding_3.xml     # "See Your Progress"
-│   │   │   ├── activity_login.xml
-│   │   │   ├── activity_register.xml
-│   │   │   ├── activity_forgot_password.xml
+│   │   │   ├── activity_login.xml            # Reflect logo (ShapeableImageView, rounded)
+│   │   │   ├── activity_register.xml         # Reflect logo (ShapeableImageView, rounded)
+│   │   │   ├── activity_forgot_password.xml  # Reflect logo (ShapeableImageView, rounded)
 │   │   │   │
 │   │   │   ├── ── Goal Layouts ──
 │   │   │   ├── activity_add_goal.xml
@@ -388,7 +406,16 @@ REFLECT/
 │   │   │       ├── activity_subscription.xml
 │   │   │       └── activity_help_support.xml
 │   │   │
-│   │   ├── drawable/                         # 90+ vector icons, shape backgrounds, gradients
+│   │   ├── drawable/
+│   │   │   ├── reflect_logo.png              # ← App logo (used in launcher + all auth screens)
+│   │   │   ├── ic_launcher_foreground_logo.xml  # Adaptive icon foreground wrapping reflect_logo.png
+│   │   │   └── ...90+ vector icons, shape backgrounds, gradients
+│   │   ├── mipmap-mdpi/                      # reflect_logo.png → ic_launcher.png + ic_launcher_round.png
+│   │   ├── mipmap-hdpi/                      # reflect_logo.png → ic_launcher.png + ic_launcher_round.png
+│   │   ├── mipmap-xhdpi/                     # reflect_logo.png → ic_launcher.png + ic_launcher_round.png
+│   │   ├── mipmap-xxhdpi/                    # reflect_logo.png → ic_launcher.png + ic_launcher_round.png
+│   │   ├── mipmap-xxxhdpi/                   # reflect_logo.png → ic_launcher.png + ic_launcher_round.png
+│   │   ├── mipmap-anydpi-v26/                # Adaptive icon XML (background gradient + logo foreground)
 │   │   ├── xml/
 │   │   │   ├── file_paths.xml                # FileProvider paths for camera capture
 │   │   │   ├── backup_rules.xml
@@ -397,7 +424,7 @@ REFLECT/
 │   │   │   ├── colors.xml                    # Brand + semantic light-theme palette
 │   │   │   ├── strings.xml                   # All UI strings
 │   │   │   ├── attrs.xml                     # Custom view attributes
-│   │   │   └── themes.xml                    # Base.Theme.REFLECT (DayNight) + Splash theme
+│   │   │   └── themes.xml                    # Base.Theme.REFLECT (DayNight) + Splash theme + RoundedLogoShape
 │   │   └── values-night/
 │   │       └── colors.xml                    # Dark-mode color overrides
 │   │
@@ -673,6 +700,7 @@ This project is submitted as academic coursework for ICT3214.
 ---
 
 <div align="center">
+  <img src="app/src/main/res/drawable/reflect_logo-rounded.png" width="48" alt="Reflect Logo"/><br><br>
   <i>"Track. Reflect. Grow."</i><br><br>
   Built with ❤️ for ICT3214 — Mobile Application Development
 </div>
