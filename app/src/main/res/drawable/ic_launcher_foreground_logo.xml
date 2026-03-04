@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Inset the logo so it fits nicely within the adaptive icon safe zone -->
+    <item
+        android:drawable="@drawable/reflect_logo"
+        android:inset="20%" />
+</layer-list>
+
