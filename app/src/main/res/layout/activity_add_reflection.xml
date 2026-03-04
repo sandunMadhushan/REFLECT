@@ -290,7 +290,186 @@
                 android:padding="14dp"
                 android:gravity="top"
                 android:inputType="textMultiLine|textCapSentences"
-                android:layout_marginBottom="24dp"/>
+                android:layout_marginBottom="12dp"/>
+
+            <!-- ── AI Mood Detection ──────────────────────────────────── -->
+            <LinearLayout
+                android:id="@+id/ai_mood_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card_primary"
+                android:padding="14dp"
+                android:layout_marginBottom="24dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="10dp">
+
+                    <!-- AI chip label -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🤖"
+                            android:textSize="16sp"
+                            android:layout_marginEnd="6dp"/>
+                        <TextView
+                            android:id="@+id/tv_ai_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="AI Mood Detect"
+                            android:textColor="@color/primary"
+                            android:textSize="13sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+
+                    <!-- Detect button -->
+                    <LinearLayout
+                        android:id="@+id/btn_ai_detect"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:background="@drawable/bg_btn_primary"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:clickable="true"
+                        android:focusable="true">
+                        <TextView
+                            android:id="@+id/tv_btn_detect_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ai_detect_btn"
+                            android:textColor="@color/white"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Result row -->
+                <LinearLayout
+                    android:id="@+id/ai_result_row"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Detected:"
+                        android:textColor="@color/colorTextSecondary"
+                        android:textSize="12sp"/>
+
+                    <TextView
+                        android:id="@+id/tv_ai_detected_mood"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/primary"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="8dp"/>
+
+                    <TextView
+                        android:id="@+id/tv_ai_confidence"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorTextSecondary"
+                        android:textSize="11sp"/>
+                </LinearLayout>
+
+                <!-- Confidence bars -->
+                <LinearLayout
+                    android:id="@+id/ai_bars_row"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone">
+
+                    <!-- happy bar -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="4dp">
+                        <TextView android:layout_width="60dp" android:layout_height="wrap_content"
+                            android:text="😄 Happy" android:textSize="11sp" android:textColor="@color/colorTextSecondary"/>
+                        <ProgressBar
+                            android:id="@+id/bar_happy"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="0dp" android:layout_height="6dp" android:layout_weight="1"
+                            android:progressTint="@color/primary" android:max="100"/>
+                        <TextView android:id="@+id/pct_happy" android:layout_width="36dp" android:layout_height="wrap_content"
+                            android:textSize="10sp" android:textColor="@color/colorTextSecondary" android:gravity="end"/>
+                    </LinearLayout>
+
+                    <!-- calm bar -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="4dp">
+                        <TextView android:layout_width="60dp" android:layout_height="wrap_content"
+                            android:text="😌 Calm" android:textSize="11sp" android:textColor="@color/colorTextSecondary"/>
+                        <ProgressBar
+                            android:id="@+id/bar_calm"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="0dp" android:layout_height="6dp" android:layout_weight="1"
+                            android:progressTint="@color/primary" android:max="100"/>
+                        <TextView android:id="@+id/pct_calm" android:layout_width="36dp" android:layout_height="wrap_content"
+                            android:textSize="10sp" android:textColor="@color/colorTextSecondary" android:gravity="end"/>
+                    </LinearLayout>
+
+                    <!-- neutral bar -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="4dp">
+                        <TextView android:layout_width="60dp" android:layout_height="wrap_content"
+                            android:text="😐 Neutral" android:textSize="11sp" android:textColor="@color/colorTextSecondary"/>
+                        <ProgressBar
+                            android:id="@+id/bar_neutral"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="0dp" android:layout_height="6dp" android:layout_weight="1"
+                            android:progressTint="@color/primary" android:max="100"/>
+                        <TextView android:id="@+id/pct_neutral" android:layout_width="36dp" android:layout_height="wrap_content"
+                            android:textSize="10sp" android:textColor="@color/colorTextSecondary" android:gravity="end"/>
+                    </LinearLayout>
+
+                    <!-- sad bar -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="4dp">
+                        <TextView android:layout_width="60dp" android:layout_height="wrap_content"
+                            android:text="😔 Sad" android:textSize="11sp" android:textColor="@color/colorTextSecondary"/>
+                        <ProgressBar
+                            android:id="@+id/bar_sad"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="0dp" android:layout_height="6dp" android:layout_weight="1"
+                            android:progressTint="@color/primary" android:max="100"/>
+                        <TextView android:id="@+id/pct_sad" android:layout_width="36dp" android:layout_height="wrap_content"
+                            android:textSize="10sp" android:textColor="@color/colorTextSecondary" android:gravity="end"/>
+                    </LinearLayout>
+
+                    <!-- anxious bar -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="horizontal" android:gravity="center_vertical">
+                        <TextView android:layout_width="60dp" android:layout_height="wrap_content"
+                            android:text="😰 Anxious" android:textSize="11sp" android:textColor="@color/colorTextSecondary"/>
+                        <ProgressBar
+                            android:id="@+id/bar_anxious"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="0dp" android:layout_height="6dp" android:layout_weight="1"
+                            android:progressTint="@color/primary" android:max="100"/>
+                        <TextView android:id="@+id/pct_anxious" android:layout_width="36dp" android:layout_height="wrap_content"
+                            android:textSize="10sp" android:textColor="@color/colorTextSecondary" android:gravity="end"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
