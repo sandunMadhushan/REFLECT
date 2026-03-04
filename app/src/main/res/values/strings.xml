@@ -192,4 +192,12 @@
     <string name="help_privacy_title">Privacy Policy</string>
     <string name="help_privacy_sub">How we handle your data</string>
     <string name="help_made_with_love">Made with ❤️ by Team Reflect · ICT3214</string>
+
+    <!-- AI Mood Detection -->
+    <string name="ai_mode_tflite">🤖 AI Mood Detect</string>
+    <string name="ai_mode_smart">🤖 Smart Mood Detect</string>
+    <string name="ai_write_first">Write something first, then detect your mood 😊</string>
+    <string name="ai_detecting">Detecting…</string>
+    <string name="ai_redetect">Re-detect</string>
+    <string name="ai_detect_btn">Detect</string>
 </resources>
