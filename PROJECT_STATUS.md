@@ -48,20 +48,32 @@
 | **Full Journal Screen** | `ReflectionJournalActivity.java` + `activity_reflection_journal.xml` | ✅ Done |
 | **Add New Reflection** | `AddReflectionActivity.java` + `activity_add_reflection.xml` | ✅ Done |
 | **Mood selector** | 5 moods: happy, calm, neutral, sad, anxious | ✅ Done |
-| **Favorite reflections** | Toggle favorite | ✅ Done |
+| **Favorite reflections** | Long-press to toggle favorite | ✅ Done |
 | **Filter: All / Week / Month / Favorites** | JournalFragment | ✅ Done |
+
+### 🤖 AI Mood Detection
+| Screen / Feature | File(s) | Status |
+|---|---|---|
+| **TFLite MoodClassifier wrapper** | `MoodClassifier.java` | ✅ Done |
+| **"🤖 Detect Mood" button in Add Reflection** | `AddReflectionActivity.java` | ✅ Done |
+| **On-device inference (int[1][50] → float[1][5])** | TFLite Interpreter | ✅ Done |
+| **Confidence bar chart (5 moods)** | `AddReflectionActivity.java` | ✅ Done |
+| **Auto-select mood chip from AI result** | `AddReflectionActivity.java` | ✅ Done |
+| **Keyword fallback when no model loaded** | `MoodClassifier.java` | ✅ Done |
+| **Colab training notebook** | `REFLECT_Mood_Classifier_TFLite.ipynb` | ✅ Done |
+| **Model files (assets)** | `mood_classifier.tflite` + `mood_vocab.txt` | ✅ Done |
 
 ### 👤 Profile & Settings
 | Screen / Feature | File(s) | Status |
 |---|---|---|
 | **Profile Screen (fragment)** | `ProfileFragment.java` + `fragment_profile.xml` | ✅ Done |
 | **Profile Activity (full)** | `ProfileActivity.java` + `activity_profile.xml` | ✅ Done |
-| **Personal Details (edit name/email)** | `PersonalDetailsActivity.java` + `activity_personal_details.xml` | ✅ Done |
+| **Personal Details (edit name/password)** | `PersonalDetailsActivity.java` + `activity_personal_details.xml` | ✅ Done |
 | **Dark / Light mode toggle** | Follows device theme + manual toggle | ✅ Done |
-| **Notification toggle** | Permission request on toggle-on | ✅ Done |
+| **Notification toggle** | Runtime permission request + persistent preference | ✅ Done |
 | **Profile photo — Camera** | FileProvider + Camera Intent | ✅ Done |
-| **Profile photo — Gallery** | READ_MEDIA_IMAGES permission | ✅ Done |
-| **Google profile photo display** | Glide image loading | ✅ Done |
+| **Profile photo — Gallery** | Photo Picker / READ_MEDIA_IMAGES | ✅ Done |
+| **Google profile photo display** | Glide image loading with CircleCrop | ✅ Done |
 | **Avatar initials fallback** | Auto-generated from name | ✅ Done |
 | **Help & Support** | `HelpSupportActivity.java` + `activity_help_support.xml` | ✅ Done |
 | **Subscription / Pro screen** | `SubscriptionActivity.java` + `activity_subscription.xml` | ✅ Done |
@@ -76,7 +88,7 @@
 | **UserDao** | `UserDao.java` | ✅ Done |
 | **GoalDao** | `GoalDao.java` | ✅ Done |
 | **ReflectionDao** | `ReflectionDao.java` | ✅ Done |
-| **AppDatabase** | `AppDatabase.java` | ✅ Done |
+| **AppDatabase** | `AppDatabase.java` (version 3) | ✅ Done |
 | **SHA-256 password hashing** | `PasswordUtils.java` | ✅ Done |
 
 ---
@@ -151,7 +163,7 @@ These screens exist in `UI_Screens/` folder with full designs (HTML + image) but
 | `goal_details/` | Goal details page (light) | ✅ Yes |
 | `goal_details_dark/` | Goal details page (dark) | ✅ Yes |
 | `add_new_goal/` | Add new goal form | ✅ Yes |
-| `add_reflection/` | Add reflection journal entry | ✅ Yes |
+| `add_reflection/` | Add reflection journal entry + 🤖 AI mood detect | ✅ Yes |
 | `reflection_journal/` | Journal list (light) | ✅ Yes |
 | `reflection_journal_dark_mode/` | Journal list (dark) | ✅ Yes |
 | `profile_settings/` | Profile & settings page | ✅ Yes |
@@ -195,11 +207,10 @@ MainActivity (BottomNav Host)
     ├── [Home Tab]    ─▶ HomeFragment
     ├── [Goals Tab]   ─▶ GoalsFragment ──▶ AddGoalActivity / GoalDetailsActivity / EditGoalActivity
     ├── [+FAB]        ─▶ AddGoalActivity (quick add) OR AddReflectionActivity
-    ├── [Journal Tab] ─▶ JournalFragment ──▶ ReflectionJournalActivity / AddReflectionActivity
-    └── [Profile Tab] ─▶ ProfileFragment ──▶ ProfileActivity
-                                                ├── PersonalDetailsActivity
-                                                ├── HelpSupportActivity
-                                                └── SubscriptionActivity
+    ├── [Journal Tab] ─▶ JournalFragment ──▶ AddReflectionActivity (🤖 AI mood detect inside)
+    └── [Profile Tab] ─▶ ProfileFragment ──▶ PersonalDetailsActivity
+                                           ├── HelpSupportActivity
+                                           └── SubscriptionActivity
 
 HomeFragment
     └── [View All Progress] ──▶ ❌ MISSING — should go to ProgressAnalyticsActivity
@@ -213,42 +224,64 @@ HomeFragment
 
 | # | Task | Effort | Notes |
 |---|---|---|---|
-| 1 | **Progress Analytics Screen** | Medium | Has full UI design in `progress_analytics/`. Link from Home "View All". |
+| 1 | **Progress Analytics Screen** | Medium | Has full UI design in `progress_analytics/`. Wire "View All" in Home. |
 | 2 | **Habit Tracker Screen** | High | Needs new DB entities (`Habit`, `HabitLog`) + full screen UI. |
 | 3 | **Add New Habit Screen** | Medium | Form for creating habits. |
-| 4 | **Achievements Screen** | Medium | Mostly UI — can calculate from existing Goal/Reflection data. |
+| 4 | **Achievements Screen** | Medium | Mostly UI — calculate from existing Goal/Reflection data. |
 | 5 | **Vision Board Screen** | Low | Image-based, gallery pick, masonry layout. |
-| 6 | **"View All" Progress link** | Low | Just wire the button in HomeFragment to ProgressAnalyticsActivity. |
+| 6 | **"View All" Progress link** | Low | Wire button in HomeFragment to ProgressAnalyticsActivity. |
 
 ---
 
 ## 🐛 Known Issues / Things to Watch
 
-| Issue | Where | Notes |
+| Issue | Where | Status |
 |---|---|---|
-| "View All" near Your Progress | `HomeFragment` | Not yet linked — needs `ProgressAnalyticsActivity` first |
-| Habit Tracker tab/button | `MainActivity` | No Habit screen exists yet |
-| Notification toggle persistence | `ProfileFragment` | Should survive process death |
+| "View All" near Your Progress | `HomeFragment` | ❌ Not yet linked — needs `ProgressAnalyticsActivity` first |
+| Habit Tracker tab/button | `MainActivity` | ❌ No Habit screen exists yet |
+| Notification toggle persistence | `ProfileFragment` | ✅ Fixed — `commit()` used, toggle reads system permission on `onResume` |
+| TFLite duplicate namespace (manifest merger) | `build.gradle.kts` | ✅ Fixed — using `implementation` only (no `tensorflow-lite-api` separately) |
 
 ---
 
 ## 📦 Tech Stack Summary
 
-| Layer | Technology |
-|---|---|
-| Language | Java |
-| Min SDK | 24 (Android 7.0) |
-| Target SDK | 35 (Android 15) |
-| Database | Room Persistence Library `2.6.1` |
-| Auth | SHA-256 hashing + `SharedPreferences` session |
-| Google Sign-In | `play-services-auth` |
-| Image Loading | Glide |
-| UI | XML Layouts, ConstraintLayout, MaterialComponents |
-| Theme | Dynamic dark/light following device system theme |
-| Notifications | `NotificationManagerCompat` + `POST_NOTIFICATIONS` permission |
-| Camera / Gallery | FileProvider + `ActivityResultContracts` |
+| Layer | Technology | Version |
+|---|---|---|
+| Language | Java | 11 |
+| Min SDK | 24 (Android 7.0) | — |
+| Target SDK | 36 (Android 16) | — |
+| Database | Room Persistence Library | `2.6.1` |
+| Auth | SHA-256 hashing + `SharedPreferences` session | — |
+| Google Sign-In | Credential Manager API | `1.5.0` |
+| Image Loading | Glide | `4.16.0` |
+| UI | XML Layouts, ConstraintLayout, MaterialComponents | `1.13.0` |
+| Theme | Dynamic dark/light — follows device system theme | — |
+| Notifications | `NotificationManagerCompat` + `POST_NOTIFICATIONS` | — |
+| Camera / Gallery | FileProvider + `ActivityResultContracts` | — |
+| On-Device AI | TensorFlow Lite | `2.9.0` |
+| Model Training | Google Colab (Python / TF Keras → `.tflite`) | — |
 
 ---
 
-*Last Updated: March 4, 2026 04:25 AM*
+## 📊 Overall Completion
+
+| Category | Done | Total | Progress |
+|---|---|---|---|
+| Auth & Onboarding | 9 | 9 | 🟢 100% |
+| Home Dashboard | 7 | 7 | 🟢 100% |
+| Goals | 8 | 8 | 🟢 100% |
+| Reflection Journal | 6 | 6 | 🟢 100% |
+| AI Mood Detection | 8 | 8 | 🟢 100% |
+| Profile & Settings | 12 | 12 | 🟢 100% |
+| Database | 8 | 8 | 🟢 100% |
+| Progress Analytics | 0 | 5 | 🔴 0% |
+| Habit Tracker | 0 | 6 | 🔴 0% |
+| Achievements | 0 | 4 | 🔴 0% |
+| Vision Board | 0 | 3 | 🟡 0% |
+| **TOTAL** | **58** | **76** | **🟡 76%** |
+
+---
+
+*Last Updated: March 4, 2026 — 07:10 PM*
 
