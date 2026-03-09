@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Calendar card background for Habit Tracker — dark rounded rectangle -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/ht_card" />
+    <corners android:radius="20dp" />
+</shape>
+

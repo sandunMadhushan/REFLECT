@@ -108,10 +108,10 @@ public class MainActivity extends AppCompatActivity {
 
         Fragment fragment;
         switch (tab) {
-            case "goals":   fragment = new GoalsFragment();   break;
-            case "journal": fragment = new JournalFragment(); break;
-            case "profile": fragment = new ProfileFragment(); break;
-            default:        fragment = new HomeFragment();    break;
+            case "goals":   fragment = new HabitTrackerFragment(); break;
+            case "journal": fragment = new JournalFragment();      break;
+            case "profile": fragment = new ProfileFragment();      break;
+            default:        fragment = new HomeFragment();         break;
         }
 
         getSupportFragmentManager().beginTransaction()
@@ -128,9 +128,9 @@ public class MainActivity extends AppCompatActivity {
      */
     private void refreshCurrentFragment() {
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (f instanceof HomeFragment)    ((HomeFragment)    f).loadData();
-        else if (f instanceof GoalsFragment)   ((GoalsFragment)   f).loadData();
-        else if (f instanceof JournalFragment) ((JournalFragment) f).loadData();
+        if (f instanceof HomeFragment)              ((HomeFragment)              f).loadData();
+        else if (f instanceof HabitTrackerFragment) ((HabitTrackerFragment)      f).loadData();
+        else if (f instanceof JournalFragment)      ((JournalFragment)           f).loadData();
     }
 
     private void updateNavHighlight(String tab) {

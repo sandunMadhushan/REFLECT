@@ -59,4 +59,34 @@
     <color name="colorBlueIcon">#2563EB</color>
     <color name="colorPurpleIcon">#9333EA</color>
     <color name="colorProgressTrack">#E2E8F0</color>
+
+    <!-- ── Habit Tracker Fragment ── -->
+    <color name="ht_bg">#13131F</color>
+    <color name="ht_card">#1E1F35</color>
+    <color name="ht_card2">#252640</color>
+    <color name="ht_teal">#2DD4BF</color>
+    <color name="ht_teal_dim">#1A3D39</color>
+    <color name="ht_selected_day_bg">#2DD4BF</color>
+    <color name="ht_selected_day_text">#FFFFFF</color>
+    <color name="ht_day_text">#94A3B8</color>
+    <color name="ht_date_text">#FFFFFF</color>
+    <color name="ht_streak_icon">#F97316</color>
+    <color name="ht_icon_indigo_bg">#2D2F6B</color>
+    <color name="ht_icon_green_bg">#1B3B2D</color>
+    <color name="ht_icon_pink_bg">#3B1B2D</color>
+    <color name="ht_icon_orange_bg">#3B2B1B</color>
+    <color name="ht_dashed_border">#2DD4BF</color>
+
+    <!-- ── Achievement Fragment ── -->
+    <color name="ach_bg">#13131F</color>
+    <color name="ach_card">#1E1F35</color>
+    <color name="ach_teal">#2DD4BF</color>
+    <color name="ach_badge_bg">#1A3D39</color>
+    <color name="ach_text_primary">#FFFFFF</color>
+    <color name="ach_text_secondary">#94A3B8</color>
+    <color name="ach_locked_gray">#4B5563</color>
+    <color name="ach_locked_text">#6B7280</color>
+    <color name="ach_icon_teal_bg">#1A3D39</color>
+    <color name="ach_icon_locked_bg">#252636</color>
+    <color name="ach_progress_track">#2A2B40</color>
 </resources>

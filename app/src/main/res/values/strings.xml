@@ -193,6 +193,105 @@
     <string name="help_privacy_sub">How we handle your data</string>
     <string name="help_made_with_love">Made with ❤️ by Team Reflect · ICT3214</string>
 
+    <!-- Add New Habit Screen -->
+    <string name="add_habit_title">Add New Habit</string>
+    <string name="add_habit_label_name">HABIT NAME</string>
+    <string name="add_habit_hint_name">e.g. Morning Meditation</string>
+    <string name="add_habit_label_frequency">FREQUENCY</string>
+    <string name="add_habit_freq_daily">Daily</string>
+    <string name="add_habit_freq_weekly">Weekly</string>
+    <string name="add_habit_freq_specific">Specific</string>
+    <string name="add_habit_label_link_goal">LINK TO GOAL</string>
+    <string name="add_habit_select_goal">Select a goal…</string>
+    <string name="add_habit_goal_tip">Linking a habit to a goal increases success rate by 40%.</string>
+    <string name="add_habit_reminders">Reminders</string>
+    <string name="add_habit_reminder_sub">Get notified at 09:00 AM</string>
+    <string name="add_habit_save">Save Habit</string>
+    <string name="add_habit_error_name">Please enter a habit name.</string>
+    <string name="add_habit_saved">Habit saved!</string>
+    <string name="add_habit_reminder_time_format">Get notified at %1$s</string>
+
+    <!-- Habit Tracker Fragment -->
+    <string name="ht_title">Habit Tracker</string>
+    <string name="ht_subtitle">Keep up the momentum!</string>
+    <string name="ht_current_streak">CURRENT\nSTREAK</string>
+    <string name="ht_completion">COMPLETION</string>
+    <string name="ht_today_habits">Today\'s Habits</string>
+    <string name="ht_manage">Manage</string>
+    <string name="ht_add_new_habit">+ Add New Habit</string>
+    <string name="ht_streak_days">%1$d Days</string>
+    <string name="ht_completion_pct">%1$d%%</string>
+    <string name="ht_streak_fire">🔥</string>
+    <string name="nav_habits">Habits</string>
+    <string name="ht_prev_month">Previous week</string>
+    <string name="ht_next_month">Next week</string>
+    <string name="ht_no_habits">No habits yet. Add your first habit below!</string>
+    <string name="ht_bullet"> • </string>
+    <string name="ht_day_sun">S</string>
+    <string name="ht_day_mon_label">M</string>
+    <string name="ht_day_tue_label">T</string>
+    <string name="ht_day_wed_label">W</string>
+    <string name="ht_day_thu_label">T</string>
+    <string name="ht_day_fri_label">F</string>
+    <string name="ht_day_sat_label">S</string>
+    <string name="add_habit_day_mon">M</string>
+    <string name="add_habit_day_tue">T</string>
+    <string name="add_habit_day_wed">W</string>
+    <string name="add_habit_day_thu">T</string>
+    <string name="add_habit_day_fri">F</string>
+    <string name="add_habit_day_sat">S</string>
+    <string name="add_habit_day_sun">S</string>
+
+    <!-- Progress Analytics Screen -->
+    <string name="analytics_title">Progress Analytics</string>
+    <string name="analytics_subtitle">Track your growth journey</string>
+    <string name="analytics_back">Back</string>
+    <string name="analytics_total_goals">Total Goals</string>
+    <string name="analytics_completed">Completed</string>
+    <string name="analytics_reflections">Reflections</string>
+    <string name="analytics_active">Active</string>
+    <string name="analytics_completion_rate">Goal Completion Rate</string>
+    <string name="analytics_success_rate">Success Rate</string>
+    <string name="analytics_weekly_activity">Weekly Activity</string>
+    <string name="analytics_this_week">This Week</string>
+    <string name="analytics_day_mon">Mon</string>
+    <string name="analytics_day_tue">Tue</string>
+    <string name="analytics_day_wed">Wed</string>
+    <string name="analytics_day_thu">Thu</string>
+    <string name="analytics_day_fri">Fri</string>
+    <string name="analytics_day_sat">Sat</string>
+    <string name="analytics_day_sun">Sun</string>
+    <string name="analytics_mood_distribution">Mood Distribution</string>
+    <string name="analytics_mood_happy">Happy</string>
+    <string name="analytics_mood_calm">Calm</string>
+    <string name="analytics_mood_neutral">Neutral</string>
+    <string name="analytics_mood_sad">Sad</string>
+    <string name="analytics_mood_anxious">Anxious</string>
+    <string name="analytics_category_breakdown">Category Breakdown</string>
+    <string name="analytics_cat_personal">Personal Growth</string>
+    <string name="analytics_cat_health">Health &amp; Fitness</string>
+    <string name="analytics_cat_career">Career &amp; Finance</string>
+    <string name="analytics_cat_relationships">Relationships</string>
+    <string name="analytics_key_insights">Key Insights</string>
+    <string name="analytics_most_active_day">Most Active Day</string>
+    <string name="analytics_top_mood">Most Common Mood</string>
+    <string name="analytics_favorites">Favourite Reflections</string>
+    <string name="analytics_priority_breakdown">Priority Breakdown</string>
+    <string name="analytics_priority_high">High</string>
+    <string name="analytics_priority_medium">Medium</string>
+    <string name="analytics_priority_low">Low</string>
+
+    <!-- Achievement Fragment -->
+    <string name="ach_title">Achievements</string>
+    <string name="ach_subtitle">Keep pushing forward!</string>
+    <string name="ach_level">Level 12</string>
+    <string name="ach_xp">1,240 XP</string>
+    <string name="ach_total_progress">Total Progress</string>
+    <string name="ach_unlocked">14/30 Unlocked</string>
+    <string name="ach_section_streaks">Streaks</string>
+    <string name="ach_section_reflection">Reflection Depth</string>
+    <string name="ach_nav">Achievements</string>
+
     <!-- AI Mood Detection -->
     <string name="ai_mode_tflite">🤖 AI Mood Detect</string>
     <string name="ai_mode_smart">🤖 Smart Mood Detect</string>
