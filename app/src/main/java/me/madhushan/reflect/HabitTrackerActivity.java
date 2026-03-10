@@ -251,8 +251,8 @@ public class HabitTrackerActivity extends AppCompatActivity {
             tvDesc.setText(habit.description != null ? habit.description : "");
             tvStreak.setText(String.valueOf(habit.streakCount));
 
-            // Apply icon color
-            applyIconStyle(iconBg, icon, habit.iconColor);
+            // Apply icon color and icon independently
+            applyIconStyle(iconBg, icon, habit.iconColor, habit.iconName);
 
             // Set toggle state based on completion for selected date
             executor.execute(() -> {
@@ -282,34 +282,52 @@ public class HabitTrackerActivity extends AppCompatActivity {
         }
     }
 
-    private void applyIconStyle(FrameLayout bg, ImageView icon, String color) {
-        if (color == null) color = "indigo";
-        switch (color) {
+    private void applyIconStyle(FrameLayout bg, ImageView icon, String color, String iconName) {
+        // ── Background color ──────────────────────────────────────────────
+        int bgDrawable;
+        int tintColor;
+        switch (color == null ? "indigo" : color) {
             case "emerald":
-                bg.setBackground(androidx.appcompat.content.res.AppCompatResources.getDrawable(this, R.drawable.bg_habit_icon_emerald));
-                icon.setColorFilter(0xFF10B981);
-                icon.setImageResource(R.drawable.ic_water_drop);
+                bgDrawable = R.drawable.bg_habit_icon_emerald;
+                tintColor  = 0xFF10B981;
                 break;
             case "pink":
-                bg.setBackground(androidx.appcompat.content.res.AppCompatResources.getDrawable(this, R.drawable.bg_habit_icon_pink));
-                icon.setColorFilter(0xFFEC4899);
-                icon.setImageResource(R.drawable.ic_journal);
+                bgDrawable = R.drawable.bg_habit_icon_pink;
+                tintColor  = 0xFFEC4899;
                 break;
             case "orange":
-                bg.setBackground(androidx.appcompat.content.res.AppCompatResources.getDrawable(this, R.drawable.bg_habit_icon_orange));
-                icon.setColorFilter(0xFFF97316);
-                icon.setImageResource(R.drawable.ic_fitness_center);
+                bgDrawable = R.drawable.bg_habit_icon_orange;
+                tintColor  = 0xFFF97316;
                 break;
             case "primary":
-                bg.setBackground(androidx.appcompat.content.res.AppCompatResources.getDrawable(this, R.drawable.bg_habit_icon_primary));
-                icon.setColorFilter(getResources().getColor(R.color.primary, getTheme()));
-                icon.setImageResource(R.drawable.ic_check_circle);
+                bgDrawable = R.drawable.bg_habit_icon_primary;
+                tintColor  = getResources().getColor(R.color.primary, getTheme());
                 break;
             default: // indigo
-                bg.setBackground(androidx.appcompat.content.res.AppCompatResources.getDrawable(this, R.drawable.bg_habit_icon_indigo));
-                icon.setColorFilter(0xFF6366f1);
-                icon.setImageResource(R.drawable.ic_self_improvement);
+                bgDrawable = R.drawable.bg_habit_icon_indigo;
+                tintColor  = 0xFF6366F1;
                 break;
+        }
+        bg.setBackground(androidx.appcompat.content.res.AppCompatResources.getDrawable(this, bgDrawable));
+        icon.setColorFilter(tintColor);
+
+        // ── Icon drawable (independent of color) ──────────────────────────
+        icon.setImageResource(getIconDrawable(iconName));
+    }
+
+    private int getIconDrawable(String iconName) {
+        if (iconName == null) return R.drawable.ic_self_improvement;
+        switch (iconName) {
+            case "water_drop":      return R.drawable.ic_water_drop;
+            case "fitness_center":  return R.drawable.ic_fitness_center;
+            case "menu_book":       return R.drawable.ic_menu_book;
+            case "favorite":        return R.drawable.ic_favorite;
+            case "mindfulness":     return R.drawable.ic_mindfulness;
+            case "psychology":      return R.drawable.ic_psychology;
+            case "calendar":        return R.drawable.ic_calendar;
+            case "check_circle":    return R.drawable.ic_check_circle;
+            case "journal":         return R.drawable.ic_journal;
+            default:                return R.drawable.ic_self_improvement;
         }
     }
 
@@ -412,6 +430,8 @@ public class HabitTrackerActivity extends AppCompatActivity {
         if (executor != null) executor.shutdown();
     }
 }
+
+
 
 
 

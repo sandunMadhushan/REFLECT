@@ -247,6 +247,120 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="ICON"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.1"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Icon Picker grid (2 rows x 4 cols) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <FrameLayout android:id="@+id/icon_self_improvement"
+                    android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
+                    android:background="@drawable/bg_btn_primary"
+                    android:layout_marginEnd="8dp" android:clickable="true" android:focusable="true">
+                    <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                        android:layout_gravity="center" android:src="@drawable/ic_self_improvement"
+                        android:contentDescription="@null"
+                        app:tint="@color/white"
+                        android:tag="icon_img_0"/>
+                </FrameLayout>
+
+                <FrameLayout android:id="@+id/icon_water_drop"
+                    android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
+                    android:background="@drawable/bg_icon_picker_unselected"
+                    android:layout_marginEnd="8dp" android:clickable="true" android:focusable="true">
+                    <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                        android:layout_gravity="center" android:src="@drawable/ic_water_drop"
+                        android:contentDescription="@null"
+                        app:tint="@color/colorTextSecondary"
+                        android:tag="icon_img_1"/>
+                </FrameLayout>
+
+                <FrameLayout android:id="@+id/icon_fitness_center"
+                    android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
+                    android:background="@drawable/bg_icon_picker_unselected"
+                    android:layout_marginEnd="8dp" android:clickable="true" android:focusable="true">
+                    <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                        android:layout_gravity="center" android:src="@drawable/ic_fitness_center"
+                        android:contentDescription="@null"
+                        app:tint="@color/colorTextSecondary"
+                        android:tag="icon_img_2"/>
+                </FrameLayout>
+
+                <FrameLayout android:id="@+id/icon_menu_book"
+                    android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
+                    android:background="@drawable/bg_icon_picker_unselected"
+                    android:clickable="true" android:focusable="true">
+                    <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                        android:layout_gravity="center" android:src="@drawable/ic_menu_book"
+                        android:contentDescription="@null"
+                        app:tint="@color/colorTextSecondary"
+                        android:tag="icon_img_3"/>
+                </FrameLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp">
+
+                <FrameLayout android:id="@+id/icon_favorite"
+                    android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
+                    android:background="@drawable/bg_icon_picker_unselected"
+                    android:layout_marginEnd="8dp" android:clickable="true" android:focusable="true">
+                    <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                        android:layout_gravity="center" android:src="@drawable/ic_favorite"
+                        android:contentDescription="@null"
+                        app:tint="@color/colorTextSecondary"
+                        android:tag="icon_img_4"/>
+                </FrameLayout>
+
+                <FrameLayout android:id="@+id/icon_mindfulness"
+                    android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
+                    android:background="@drawable/bg_icon_picker_unselected"
+                    android:layout_marginEnd="8dp" android:clickable="true" android:focusable="true">
+                    <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                        android:layout_gravity="center" android:src="@drawable/ic_mindfulness"
+                        android:contentDescription="@null"
+                        app:tint="@color/colorTextSecondary"
+                        android:tag="icon_img_5"/>
+                </FrameLayout>
+
+                <FrameLayout android:id="@+id/icon_psychology"
+                    android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
+                    android:background="@drawable/bg_icon_picker_unselected"
+                    android:layout_marginEnd="8dp" android:clickable="true" android:focusable="true">
+                    <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                        android:layout_gravity="center" android:src="@drawable/ic_psychology"
+                        android:contentDescription="@null"
+                        app:tint="@color/colorTextSecondary"
+                        android:tag="icon_img_6"/>
+                </FrameLayout>
+
+                <FrameLayout android:id="@+id/icon_calendar"
+                    android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
+                    android:background="@drawable/bg_icon_picker_unselected"
+                    android:clickable="true" android:focusable="true">
+                    <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                        android:layout_gravity="center" android:src="@drawable/ic_calendar"
+                        android:contentDescription="@null"
+                        app:tint="@color/colorTextSecondary"
+                        android:tag="icon_img_7"/>
+                </FrameLayout>
+            </LinearLayout>
+
+            <!-- Frequency -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="FREQUENCY"
                 android:textColor="@color/colorTextSecondary"
                 android:textSize="11sp"
@@ -429,6 +543,9 @@
     </LinearLayout>
 
 </LinearLayout>
+
+
+
 
 
 
