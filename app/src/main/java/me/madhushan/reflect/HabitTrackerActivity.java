@@ -55,6 +55,11 @@ public class HabitTrackerActivity extends AppCompatActivity {
                 if (result.getResultCode() == RESULT_OK) loadHabits();
             });
 
+    private final ActivityResultLauncher<Intent> editHabitLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK) loadHabits();
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +82,7 @@ public class HabitTrackerActivity extends AppCompatActivity {
         findViewById(R.id.btn_add_habit).setOnClickListener(v ->
                 addHabitLauncher.launch(new Intent(this, AddHabitActivity.class)));
         findViewById(R.id.btn_manage).setOnClickListener(v ->
-                Toast.makeText(this, "Long-press a habit to delete it", Toast.LENGTH_SHORT).show());
+                Toast.makeText(this, "Tap a habit to edit · Long-press to delete", Toast.LENGTH_SHORT).show());
 
         buildCalendarStrip();
         loadHabits();
@@ -260,9 +265,16 @@ public class HabitTrackerActivity extends AppCompatActivity {
                 });
             });
 
-            // Long press to delete
+            // Toggle should NOT trigger item click
+            toggle.setClickable(true);
+            toggle.setFocusable(true);
+
+            // Tap item (non-toggle area) → Edit
+            itemView.setOnClickListener(v -> openEditHabit(habit));
+
+            // Long press → Edit / Delete options dialog
             itemView.setOnLongClickListener(v -> {
-                showDeleteDialog(habit);
+                showOptionsDialog(habit);
                 return true;
             });
 
@@ -359,6 +371,27 @@ public class HabitTrackerActivity extends AppCompatActivity {
         return streak;
     }
 
+    private void openEditHabit(Habit habit) {
+        Intent intent = new Intent(this, AddHabitActivity.class);
+        intent.putExtra(AddHabitActivity.EXTRA_HABIT_ID, habit.id);
+        editHabitLauncher.launch(intent);
+    }
+
+    private void showOptionsDialog(Habit habit) {
+        String[] options = {"✏️  Edit Habit", "🗑️  Delete Habit"};
+        new AlertDialog.Builder(this)
+                .setTitle(habit.title)
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        openEditHabit(habit);
+                    } else {
+                        showDeleteDialog(habit);
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
     private void showDeleteDialog(Habit habit) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Habit")
@@ -379,6 +412,11 @@ public class HabitTrackerActivity extends AppCompatActivity {
         if (executor != null) executor.shutdown();
     }
 }
+
+
+
+
+
 
 
 
