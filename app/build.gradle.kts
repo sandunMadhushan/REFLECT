@@ -1,6 +1,17 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
 }
+
+// ─── Load local.properties (gitignored — never committed) ────────────────────
+val localProps = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) load(f.inputStream())
+}
+
+fun localProp(key: String, fallback: String = "MISSING_$key"): String =
+    localProps.getProperty(key, fallback)
 
 android {
     namespace = "me.madhushan.reflect"
@@ -18,6 +29,30 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // ── Facebook credentials injected from local.properties ──────────────
+        // These become BuildConfig.FACEBOOK_APP_ID / BuildConfig.FACEBOOK_CLIENT_TOKEN
+        // and are also exposed as string resources for the AndroidManifest meta-data.
+        val fbAppId       = localProp("FACEBOOK_APP_ID")
+        val fbClientToken = localProp("FACEBOOK_CLIENT_TOKEN")
+
+        buildConfigField("String", "FACEBOOK_APP_ID",      "\"$fbAppId\"")
+        buildConfigField("String", "FACEBOOK_CLIENT_TOKEN", "\"$fbClientToken\"")
+
+        // resValues make the values available as @string/... in AndroidManifest.xml
+        resValue("string", "facebook_app_id",          fbAppId)
+        resValue("string", "facebook_client_token",    fbClientToken)
+        resValue("string", "fb_login_protocol_scheme", "fb$fbAppId")
+
+        // ── Google Sign-In Web Client ID injected from local.properties ──────
+        val googleWebClientId = localProp("GOOGLE_WEB_CLIENT_ID")
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleWebClientId\"")
+        resValue("string", "default_web_client_id", googleWebClientId)
+    }
+
+    buildFeatures {
+        buildConfig = true
+        resValues  = true
     }
 
     buildTypes {

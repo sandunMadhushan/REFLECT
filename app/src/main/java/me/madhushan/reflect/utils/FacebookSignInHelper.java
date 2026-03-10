@@ -12,6 +12,8 @@ import com.facebook.GraphRequest;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 
+import me.madhushan.reflect.BuildConfig;
+
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -94,6 +96,13 @@ public class FacebookSignInHelper {
     public void signIn(Callback callback) {
         this.currentCallback = callback;
 
+        // Guard: check that the App ID has been set in local.properties
+        if (BuildConfig.FACEBOOK_APP_ID.startsWith("YOUR_") ||
+                BuildConfig.FACEBOOK_APP_ID.startsWith("MISSING_")) {
+            callback.onFailure("Facebook Sign-In is not configured.\n\nAdd FACEBOOK_APP_ID and FACEBOOK_CLIENT_TOKEN to local.properties.");
+            return;
+        }
+
         // If the user is already logged in via Facebook, use the cached token
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken != null && !accessToken.isExpired()) {
@@ -160,5 +169,8 @@ public class FacebookSignInHelper {
         LoginManager.getInstance().logOut();
     }
 }
+
+
+
 
 
