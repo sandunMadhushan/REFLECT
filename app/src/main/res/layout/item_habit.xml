@@ -34,7 +34,7 @@
         android:layout_weight="1"
         android:orientation="vertical"
         android:layout_marginStart="14dp"
-        android:layout_marginEnd="8dp">
+        android:layout_marginEnd="12dp">
 
         <TextView
             android:id="@+id/tv_habit_title"
@@ -69,7 +69,6 @@
 
             <!-- Streak -->
             <LinearLayout
-                android:id="@+id/streak_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -93,14 +92,26 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Toggle Switch -->
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/habit_toggle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:checked="false"
-        app:thumbTint="@color/white"
-        app:trackTint="@color/switch_track_tint"/>
+    <!-- Circular Check Button -->
+    <FrameLayout
+        android:id="@+id/habit_check_btn"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:background="@drawable/bg_habit_check_unchecked"
+        android:clickable="true"
+        android:focusable="true">
+
+        <!-- Checkmark icon — hidden when unchecked, shown when checked -->
+        <ImageView
+            android:id="@+id/habit_check_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_check_circle"
+            android:contentDescription="@null"
+            app:tint="@color/white"
+            android:visibility="invisible"/>
+    </FrameLayout>
 
 </LinearLayout>
 
