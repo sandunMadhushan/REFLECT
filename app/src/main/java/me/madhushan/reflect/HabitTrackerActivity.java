@@ -47,9 +47,8 @@ public class HabitTrackerActivity extends AppCompatActivity {
     private TextView tvStreakCount;
     private TextView tvCompletionRate;
 
-    private String selectedDate;   // "yyyy-MM-dd" of the currently viewed day
+    private String selectedDate;
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-    private final SimpleDateFormat monthSdf = new SimpleDateFormat("MMM yyyy", Locale.getDefault());
 
     private final ActivityResultLauncher<Intent> addHabitLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -102,12 +101,16 @@ public class HabitTrackerActivity extends AppCompatActivity {
         String todayStr = sdf.format(Calendar.getInstance().getTime());
         float dp = getResources().getDisplayMetrics().density;
 
+        int colorTextPrimary   = getResources().getColor(R.color.colorTextPrimary, getTheme());
+        int colorTextSecondary = getResources().getColor(R.color.colorTextSecondary, getTheme());
+        int colorPrimary       = getResources().getColor(R.color.primary, getTheme());
+
         for (int i = 0; i < 7; i++) {
             String dateStr = sdf.format(cal.getTime());
-            int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK); // 1=Sun
+            int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
             String dayLabel = dayLabels[dayOfWeek - 1];
             int dayNum = cal.get(Calendar.DAY_OF_MONTH);
-            boolean isToday = dateStr.equals(todayStr);
+            boolean isToday    = dateStr.equals(todayStr);
             boolean isSelected = dateStr.equals(selectedDate);
 
             LinearLayout dayView = new LinearLayout(this);
@@ -116,18 +119,20 @@ public class HabitTrackerActivity extends AppCompatActivity {
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams((int)(60 * dp), (int)(80 * dp));
             lp.setMarginEnd((int)(6 * dp));
             dayView.setLayoutParams(lp);
-            dayView.setBackground(isSelected ?
-                    getDrawable(R.drawable.bg_card_dark) : null);
+            if (isSelected) {
+                dayView.setBackground(androidx.appcompat.content.res.AppCompatResources
+                        .getDrawable(this, R.drawable.bg_cal_day_selected));
+            }
             dayView.setClickable(true);
             dayView.setFocusable(true);
 
-            // Day label (e.g. "M")
+            // Day label
             TextView tvLabel = new TextView(this);
             tvLabel.setText(dayLabel);
             tvLabel.setTextSize(11f);
             tvLabel.setGravity(Gravity.CENTER);
             tvLabel.setTypeface(null, Typeface.BOLD);
-            tvLabel.setTextColor(isSelected || isToday ? Color.WHITE : 0xFF9495c7);
+            tvLabel.setTextColor((isSelected || isToday) ? colorTextPrimary : colorTextSecondary);
             LinearLayout.LayoutParams tlp = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             tlp.setMargins(0, 0, 0, (int)(4 * dp));
@@ -138,23 +143,28 @@ public class HabitTrackerActivity extends AppCompatActivity {
             FrameLayout numBg = new FrameLayout(this);
             int circleSize = (int)(44 * dp);
             numBg.setLayoutParams(new LinearLayout.LayoutParams(circleSize, circleSize));
-            numBg.setBackground(isToday ?
-                    getDrawable(R.drawable.bg_cal_day_today) :
-                    getDrawable(R.drawable.bg_card_dark));
+            if (isToday) {
+                numBg.setBackground(androidx.appcompat.content.res.AppCompatResources
+                        .getDrawable(this, R.drawable.bg_cal_day_today));
+            } else {
+                numBg.setBackground(androidx.appcompat.content.res.AppCompatResources
+                        .getDrawable(this, R.drawable.bg_calendar_card));
+            }
 
             TextView tvNum = new TextView(this);
             tvNum.setText(String.valueOf(dayNum));
             tvNum.setTextSize(16f);
             tvNum.setGravity(Gravity.CENTER);
             tvNum.setTypeface(null, Typeface.BOLD);
-            tvNum.setTextColor(isToday ? Color.WHITE : (isSelected ? Color.WHITE : 0xFF9495c7));
+            tvNum.setTextColor(isToday ? Color.WHITE : (isSelected ? colorPrimary : colorTextSecondary));
             FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             flp.gravity = Gravity.CENTER;
             tvNum.setLayoutParams(flp);
             numBg.addView(tvNum);
+            dayView.addView(numBg);
 
-            // Dot below number for today
+            // Dot below for today
             if (isToday) {
                 View dot = new View(this);
                 LinearLayout.LayoutParams dotLp = new LinearLayout.LayoutParams(
@@ -162,14 +172,11 @@ public class HabitTrackerActivity extends AppCompatActivity {
                 dotLp.setMargins(0, (int)(4 * dp), 0, 0);
                 dotLp.gravity = Gravity.CENTER_HORIZONTAL;
                 dot.setLayoutParams(dotLp);
-                dot.setBackground(getDrawable(R.drawable.bg_day_chip_active));
-                dayView.addView(numBg);
+                dot.setBackground(androidx.appcompat.content.res.AppCompatResources
+                        .getDrawable(this, R.drawable.bg_day_chip_active));
                 dayView.addView(dot);
-            } else {
-                dayView.addView(numBg);
             }
 
-            // Click selects this date
             final String clickDate = dateStr;
             dayView.setOnClickListener(v -> {
                 selectedDate = clickDate;
@@ -267,27 +274,27 @@ public class HabitTrackerActivity extends AppCompatActivity {
         if (color == null) color = "indigo";
         switch (color) {
             case "emerald":
-                bg.setBackground(getDrawable(R.drawable.bg_habit_icon_emerald));
+                bg.setBackground(androidx.appcompat.content.res.AppCompatResources.getDrawable(this, R.drawable.bg_habit_icon_emerald));
                 icon.setColorFilter(0xFF10B981);
                 icon.setImageResource(R.drawable.ic_water_drop);
                 break;
             case "pink":
-                bg.setBackground(getDrawable(R.drawable.bg_habit_icon_pink));
+                bg.setBackground(androidx.appcompat.content.res.AppCompatResources.getDrawable(this, R.drawable.bg_habit_icon_pink));
                 icon.setColorFilter(0xFFEC4899);
                 icon.setImageResource(R.drawable.ic_journal);
                 break;
             case "orange":
-                bg.setBackground(getDrawable(R.drawable.bg_habit_icon_orange));
+                bg.setBackground(androidx.appcompat.content.res.AppCompatResources.getDrawable(this, R.drawable.bg_habit_icon_orange));
                 icon.setColorFilter(0xFFF97316);
                 icon.setImageResource(R.drawable.ic_fitness_center);
                 break;
             case "primary":
-                bg.setBackground(getDrawable(R.drawable.bg_habit_icon_primary));
-                icon.setColorFilter(0xFF4e51e9);
+                bg.setBackground(androidx.appcompat.content.res.AppCompatResources.getDrawable(this, R.drawable.bg_habit_icon_primary));
+                icon.setColorFilter(getResources().getColor(R.color.primary, getTheme()));
                 icon.setImageResource(R.drawable.ic_check_circle);
                 break;
             default: // indigo
-                bg.setBackground(getDrawable(R.drawable.bg_habit_icon_indigo));
+                bg.setBackground(androidx.appcompat.content.res.AppCompatResources.getDrawable(this, R.drawable.bg_habit_icon_indigo));
                 icon.setColorFilter(0xFF6366f1);
                 icon.setImageResource(R.drawable.ic_self_improvement);
                 break;
@@ -372,4 +379,7 @@ public class HabitTrackerActivity extends AppCompatActivity {
         if (executor != null) executor.shutdown();
     }
 }
+
+
+
 

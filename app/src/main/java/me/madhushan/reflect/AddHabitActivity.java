@@ -3,11 +3,13 @@ package me.madhushan.reflect;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
+
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -22,13 +24,13 @@ import me.madhushan.reflect.utils.SessionManager;
 
 public class AddHabitActivity extends AppCompatActivity {
 
-    private EditText etHabitName, etHabitDescription;
+    private TextInputEditText etHabitName, etHabitDescription;
     private TextView freqDaily, freqWeekly, freqSpecific;
     private TextView[] dayViews;
 
     private String selectedFrequency = "daily";
     private String selectedColor = "indigo";
-    private boolean[] activeDays = {true, true, true, true, true, true, true}; // Mon–Sun
+    private final boolean[] activeDays = {true, true, true, true, true, true, true};
 
     private HabitDao habitDao;
     private SessionManager sessionManager;
@@ -49,17 +51,16 @@ public class AddHabitActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_habit);
 
-        habitDao    = AppDatabase.getInstance(this).habitDao();
+        habitDao       = AppDatabase.getInstance(this).habitDao();
         sessionManager = new SessionManager(this);
-        executor    = Executors.newSingleThreadExecutor();
+        executor       = Executors.newSingleThreadExecutor();
 
         etHabitName        = findViewById(R.id.et_habit_name);
         etHabitDescription = findViewById(R.id.et_habit_description);
-        freqDaily   = findViewById(R.id.freq_daily);
-        freqWeekly  = findViewById(R.id.freq_weekly);
-        freqSpecific = findViewById(R.id.freq_specific);
+        freqDaily          = findViewById(R.id.freq_daily);
+        freqWeekly         = findViewById(R.id.freq_weekly);
+        freqSpecific       = findViewById(R.id.freq_specific);
 
-        // Day buttons
         int[] dayIds = {R.id.day_mon, R.id.day_tue, R.id.day_wed,
                         R.id.day_thu, R.id.day_fri, R.id.day_sat, R.id.day_sun};
         dayViews = new TextView[7];
@@ -69,12 +70,10 @@ public class AddHabitActivity extends AppCompatActivity {
             dayViews[i].setOnClickListener(v -> toggleDay(idx));
         }
 
-        // Frequency buttons
-        freqDaily.setOnClickListener(v   -> selectFrequency("daily"));
-        freqWeekly.setOnClickListener(v  -> selectFrequency("weekly"));
+        freqDaily.setOnClickListener(v    -> selectFrequency("daily"));
+        freqWeekly.setOnClickListener(v   -> selectFrequency("weekly"));
         freqSpecific.setOnClickListener(v -> selectFrequency("specific"));
 
-        // Color buttons
         for (int i = 0; i < colorViewIds.length; i++) {
             final int idx = i;
             findViewById(colorViewIds[i]).setOnClickListener(v -> selectColor(idx));
@@ -90,26 +89,24 @@ public class AddHabitActivity extends AppCompatActivity {
     private void selectFrequency(String freq) {
         selectedFrequency = freq;
         updateFrequencyUI();
-        // Show/hide days based on frequency
-        View daysRow = findViewById(R.id.active_days_row);
-        daysRow.setVisibility(freq.equals("weekly") ? View.GONE : View.VISIBLE);
+        findViewById(R.id.active_days_row)
+                .setVisibility(freq.equals("weekly") ? View.GONE : View.VISIBLE);
     }
 
     private void updateFrequencyUI() {
-        int primary = getResources().getColor(R.color.primary, null);
-        int hint    = 0xFF9495c7;
-        int white   = getResources().getColor(R.color.white, null);
+        int white   = getResources().getColor(R.color.white, getTheme());
+        int textSec = getResources().getColor(R.color.colorTextSecondary, getTheme());
 
-        freqDaily.setTextColor(selectedFrequency.equals("daily") ? white : hint);
-        freqWeekly.setTextColor(selectedFrequency.equals("weekly") ? white : hint);
-        freqSpecific.setTextColor(selectedFrequency.equals("specific") ? white : hint);
+        freqDaily.setTextColor(selectedFrequency.equals("daily")    ? white : textSec);
+        freqWeekly.setTextColor(selectedFrequency.equals("weekly")  ? white : textSec);
+        freqSpecific.setTextColor(selectedFrequency.equals("specific") ? white : textSec);
 
-        freqDaily.setBackground(selectedFrequency.equals("daily") ?
-                getDrawable(R.drawable.bg_btn_primary) : null);
-        freqWeekly.setBackground(selectedFrequency.equals("weekly") ?
-                getDrawable(R.drawable.bg_btn_primary) : null);
-        freqSpecific.setBackground(selectedFrequency.equals("specific") ?
-                getDrawable(R.drawable.bg_btn_primary) : null);
+        freqDaily.setBackground(selectedFrequency.equals("daily")
+                ? AppCompatResources.getDrawable(this, R.drawable.bg_btn_primary) : null);
+        freqWeekly.setBackground(selectedFrequency.equals("weekly")
+                ? AppCompatResources.getDrawable(this, R.drawable.bg_btn_primary) : null);
+        freqSpecific.setBackground(selectedFrequency.equals("specific")
+                ? AppCompatResources.getDrawable(this, R.drawable.bg_btn_primary) : null);
     }
 
     private void toggleDay(int idx) {
@@ -118,13 +115,15 @@ public class AddHabitActivity extends AppCompatActivity {
     }
 
     private void updateDayChips() {
+        int white   = getResources().getColor(R.color.white, getTheme());
+        int textSec = getResources().getColor(R.color.colorTextSecondary, getTheme());
         for (int i = 0; i < 7; i++) {
             if (activeDays[i]) {
-                dayViews[i].setBackground(getDrawable(R.drawable.bg_day_chip_active));
-                dayViews[i].setTextColor(getResources().getColor(R.color.white, null));
+                dayViews[i].setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_day_chip_active));
+                dayViews[i].setTextColor(white);
             } else {
-                dayViews[i].setBackground(getDrawable(R.drawable.bg_day_chip_inactive));
-                dayViews[i].setTextColor(0xFF9495c7);
+                dayViews[i].setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_day_chip_inactive));
+                dayViews[i].setTextColor(textSec);
             }
         }
     }
@@ -146,7 +145,6 @@ public class AddHabitActivity extends AppCompatActivity {
             return;
         }
 
-        // Build activeDays string "1111111" (1=active, 0=inactive)
         StringBuilder days = new StringBuilder();
         for (boolean d : activeDays) days.append(d ? "1" : "0");
 
