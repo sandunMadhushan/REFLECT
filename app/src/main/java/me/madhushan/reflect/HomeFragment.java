@@ -28,6 +28,8 @@ import java.util.concurrent.Executors;
 import me.madhushan.reflect.database.AppDatabase;
 import me.madhushan.reflect.database.Goal;
 import me.madhushan.reflect.database.GoalDao;
+import me.madhushan.reflect.database.HabitDao;
+import me.madhushan.reflect.database.HabitCompletionDao;
 import me.madhushan.reflect.ui.CircularProgressView;
 import me.madhushan.reflect.utils.AvatarLoader;
 import me.madhushan.reflect.utils.SessionManager;
@@ -35,6 +37,8 @@ import me.madhushan.reflect.utils.SessionManager;
 public class HomeFragment extends Fragment {
 
     private GoalDao goalDao;
+    private HabitDao habitDao;
+    private HabitCompletionDao habitCompletionDao;
     private SessionManager sessionManager;
     private ExecutorService executor;
 
@@ -60,6 +64,8 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
         sessionManager = new SessionManager(requireContext());
         goalDao        = AppDatabase.getInstance(requireContext()).goalDao();
+        habitDao       = AppDatabase.getInstance(requireContext()).habitDao();
+        habitCompletionDao = AppDatabase.getInstance(requireContext()).habitCompletionDao();
         executor       = Executors.newSingleThreadExecutor();
 
         // Avatar
@@ -95,6 +101,10 @@ public class HomeFragment extends Fragment {
         v.findViewById(R.id.btn_notifications).setOnClickListener(b ->
                 Toast.makeText(requireContext(), "Notifications — coming soon", Toast.LENGTH_SHORT).show());
 
+        // Habits card → open Habit Tracker
+        v.findViewById(R.id.card_habits).setOnClickListener(b ->
+                startActivity(new Intent(requireContext(), HabitTrackerActivity.class)));
+
         loadData();
     }
 
@@ -113,16 +123,24 @@ public class HomeFragment extends Fragment {
 
     public void loadData() {
         int userId = sessionManager.getUserId();
+        String todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                .format(Calendar.getInstance().getTime());
         executor.execute(() -> {
             int active    = goalDao.getActiveGoalsCount(userId);
             int completed = goalDao.getCompletedGoalsCount(userId);
             int total     = goalDao.getTotalGoalsCount(userId);
             List<Goal> recent = goalDao.getRecentGoals(userId, 5);
-            int[] bars    = getWeeklyBarCounts(userId);
+            int[] barCounts = getWeeklyBarCounts(userId);
             int maxBar    = 1;
-            for (int c : bars) if (c > maxBar) maxBar = c;
+            for (int c : barCounts) if (c > maxBar) maxBar = c;
             final int fMax = maxBar;
-            requireActivity().runOnUiThread(() -> updateUI(active, completed, total, recent, bars, fMax));
+
+            // Habit stats
+            int totalHabits     = habitDao.getTotalHabitsCount(userId);
+            int completedHabits = habitCompletionDao.getCompletedCountForUserOnDate(userId, todayDate);
+
+            requireActivity().runOnUiThread(() ->
+                    updateUI(active, completed, total, recent, barCounts, fMax, totalHabits, completedHabits));
         });
     }
 
@@ -139,7 +157,8 @@ public class HomeFragment extends Fragment {
         return counts;
     }
 
-    private void updateUI(int active, int completed, int total, List<Goal> recent, int[] barCounts, int maxBar) {
+    private void updateUI(int active, int completed, int total, List<Goal> recent,
+                          int[] barCounts, int maxBar, int totalHabits, int completedHabits) {
         boolean hasGoals = total > 0;
         emptyState.setVisibility(hasGoals ? View.GONE : View.VISIBLE);
         statsRow.setVisibility(hasGoals ? View.VISIBLE : View.GONE);
@@ -147,12 +166,15 @@ public class HomeFragment extends Fragment {
         chartCard.setVisibility(hasGoals ? View.VISIBLE : View.GONE);
         tvRecentLabel.setVisibility(hasGoals && !recent.isEmpty() ? View.VISIBLE : View.GONE);
         recentActivityContainer.setVisibility(hasGoals ? View.VISIBLE : View.GONE);
+
+        // Always show habits stats regardless of goals
+        tvHabits.setText(completedHabits + "/" + totalHabits);
+        circularProgress.setProgress(totalHabits > 0 ? (float) completedHabits / totalHabits : 0f);
+
         if (!hasGoals) return;
 
         tvActiveGoals.setText(String.valueOf(active));
         tvCompleted.setText(String.valueOf(completed));
-        tvHabits.setText(active + "/" + total);
-        circularProgress.setProgress(total > 0 ? (float) completed / total : 0f);
 
         float dp = getResources().getDisplayMetrics().density;
         for (int i = 0; i < 7; i++) {
@@ -242,5 +264,3 @@ public class HomeFragment extends Fragment {
         if (executor != null) executor.shutdown();
     }
 }
-
-

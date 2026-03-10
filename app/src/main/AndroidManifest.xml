@@ -118,6 +118,17 @@
             android:name=".ReflectionJournalActivity"
             android:exported="false" />
 
+        <!-- Habit Tracker Screen -->
+        <activity
+            android:name=".HabitTrackerActivity"
+            android:exported="false" />
+
+        <!-- Add Habit Screen -->
+        <activity
+            android:name=".AddHabitActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <!-- FileProvider for camera capture temp files -->
         <provider
             android:name="androidx.core.content.FileProvider"
