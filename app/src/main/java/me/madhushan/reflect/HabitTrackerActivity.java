@@ -18,7 +18,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.content.res.AppCompatResources;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -240,12 +240,13 @@ public class HabitTrackerActivity extends AppCompatActivity {
         for (Habit habit : habits) {
             View itemView = LayoutInflater.from(this).inflate(R.layout.item_habit, habitsListContainer, false);
 
-            FrameLayout iconBg   = itemView.findViewById(R.id.habit_icon_bg);
-            ImageView   icon     = itemView.findViewById(R.id.habit_icon);
-            TextView    tvTitle  = itemView.findViewById(R.id.tv_habit_title);
-            TextView    tvDesc   = itemView.findViewById(R.id.tv_habit_description);
-            TextView    tvStreak = itemView.findViewById(R.id.tv_streak);
-            SwitchCompat toggle  = itemView.findViewById(R.id.habit_toggle);
+            FrameLayout iconBg    = itemView.findViewById(R.id.habit_icon_bg);
+            ImageView   icon      = itemView.findViewById(R.id.habit_icon);
+            TextView    tvTitle   = itemView.findViewById(R.id.tv_habit_title);
+            TextView    tvDesc    = itemView.findViewById(R.id.tv_habit_description);
+            TextView    tvStreak  = itemView.findViewById(R.id.tv_streak);
+            FrameLayout checkBtn  = itemView.findViewById(R.id.habit_check_btn);
+            ImageView   checkIcon = itemView.findViewById(R.id.habit_check_icon);
 
             tvTitle.setText(habit.title != null ? habit.title : "");
             tvDesc.setText(habit.description != null ? habit.description : "");
@@ -254,22 +255,22 @@ public class HabitTrackerActivity extends AppCompatActivity {
             // Apply icon color and icon independently
             applyIconStyle(iconBg, icon, habit.iconColor, habit.iconName);
 
-            // Set toggle state based on completion for selected date
+            // Load completion state and apply check button UI
             executor.execute(() -> {
                 HabitCompletion existing = completionDao.getCompletionForDate(habit.id, selectedDate);
-                runOnUiThread(() -> {
-                    toggle.setOnCheckedChangeListener(null);
-                    toggle.setChecked(existing != null);
-                    toggle.setOnCheckedChangeListener((btn, isChecked) ->
-                            onHabitToggled(habit, isChecked));
-                });
+                boolean isDone = existing != null;
+                runOnUiThread(() -> applyCheckState(checkBtn, checkIcon, isDone));
             });
 
-            // Toggle should NOT trigger item click
-            toggle.setClickable(true);
-            toggle.setFocusable(true);
+            // Tap check button to toggle completion
+            checkBtn.setOnClickListener(v -> {
+                boolean currentlyDone = checkBtn.getTag() != null && (boolean) checkBtn.getTag();
+                boolean newDone = !currentlyDone;
+                applyCheckState(checkBtn, checkIcon, newDone);
+                onHabitToggled(habit, newDone);
+            });
 
-            // Tap item (non-toggle area) → Edit
+            // Tap item body (not check button) → Edit
             itemView.setOnClickListener(v -> openEditHabit(habit));
 
             // Long press → Edit / Delete options dialog
@@ -279,6 +280,18 @@ public class HabitTrackerActivity extends AppCompatActivity {
             });
 
             habitsListContainer.addView(itemView);
+        }
+    }
+
+    /** Updates the visual state of the circular check button */
+    private void applyCheckState(FrameLayout checkBtn, ImageView checkIcon, boolean isDone) {
+        checkBtn.setTag(isDone);
+        if (isDone) {
+            checkBtn.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_habit_check_checked));
+            checkIcon.setVisibility(View.VISIBLE);
+        } else {
+            checkBtn.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_habit_check_unchecked));
+            checkIcon.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -430,6 +443,9 @@ public class HabitTrackerActivity extends AppCompatActivity {
         if (executor != null) executor.shutdown();
     }
 }
+
+
+
 
 
 
