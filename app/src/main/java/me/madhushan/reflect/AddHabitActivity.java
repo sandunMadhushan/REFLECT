@@ -12,6 +12,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
@@ -24,17 +25,23 @@ import me.madhushan.reflect.utils.SessionManager;
 
 public class AddHabitActivity extends AppCompatActivity {
 
+    public static final String EXTRA_HABIT_ID = "habit_id";
+
     private TextInputEditText etHabitName, etHabitDescription;
     private TextView freqDaily, freqWeekly, freqSpecific;
+    private TextView tvTitle, tvSaveBtn;
     private TextView[] dayViews;
 
     private String selectedFrequency = "daily";
-    private String selectedColor = "indigo";
+    private String selectedColor     = "indigo";
     private final boolean[] activeDays = {true, true, true, true, true, true, true};
 
     private HabitDao habitDao;
     private SessionManager sessionManager;
     private ExecutorService executor;
+
+    /** null = add mode, non-null = edit mode */
+    private Habit habitToEdit = null;
 
     private final int[] colorViewIds = {
             R.id.color_indigo, R.id.color_emerald, R.id.color_pink,
@@ -60,6 +67,8 @@ public class AddHabitActivity extends AppCompatActivity {
         freqDaily          = findViewById(R.id.freq_daily);
         freqWeekly         = findViewById(R.id.freq_weekly);
         freqSpecific       = findViewById(R.id.freq_specific);
+        tvTitle            = findViewById(R.id.tv_screen_title);
+        tvSaveBtn          = findViewById(R.id.btn_save_habit);
 
         int[] dayIds = {R.id.day_mon, R.id.day_tue, R.id.day_wed,
                         R.id.day_thu, R.id.day_fri, R.id.day_sat, R.id.day_sun};
@@ -80,10 +89,60 @@ public class AddHabitActivity extends AppCompatActivity {
         }
 
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
-        findViewById(R.id.btn_save_habit).setOnClickListener(v -> saveHabit());
+        tvSaveBtn.setOnClickListener(v -> saveHabit());
 
+        // Check if we are in edit mode
+        int habitId = getIntent().getIntExtra(EXTRA_HABIT_ID, -1);
+        if (habitId != -1) {
+            // Edit mode — load existing habit in background then populate UI
+            executor.execute(() -> {
+                habitToEdit = habitDao.getHabitById(habitId);
+                runOnUiThread(this::populateForEdit);
+            });
+        } else {
+            // Add mode
+            updateFrequencyUI();
+            updateDayChips();
+        }
+    }
+
+    /** Pre-populate all fields with the existing habit's data */
+    private void populateForEdit() {
+        if (habitToEdit == null) { finish(); return; }
+
+        // Update title + button label
+        if (tvTitle != null) tvTitle.setText("Edit Habit");
+        tvSaveBtn.setText("Update Habit");
+
+        // Name & description
+        etHabitName.setText(habitToEdit.title);
+        etHabitDescription.setText(habitToEdit.description);
+
+        // Frequency
+        selectedFrequency = habitToEdit.frequency != null ? habitToEdit.frequency : "daily";
+
+        // Active days — parse "1111111" string
+        String daysStr = habitToEdit.activeDays;
+        if (daysStr != null && daysStr.length() == 7) {
+            for (int i = 0; i < 7; i++) {
+                activeDays[i] = daysStr.charAt(i) == '1';
+            }
+        }
+
+        // Icon color
+        selectedColor = habitToEdit.iconColor != null ? habitToEdit.iconColor : "indigo";
+
+        // Sync color check marks
+        for (int i = 0; i < colorNames.length; i++) {
+            boolean isSelected = colorNames[i].equals(selectedColor);
+            findViewById(colorCheckIds[i]).setVisibility(isSelected ? View.VISIBLE : View.GONE);
+        }
+
+        // Sync frequency & day chips
         updateFrequencyUI();
         updateDayChips();
+        findViewById(R.id.active_days_row)
+                .setVisibility(selectedFrequency.equals("weekly") ? View.GONE : View.VISIBLE);
     }
 
     private void selectFrequency(String freq) {
@@ -97,8 +156,8 @@ public class AddHabitActivity extends AppCompatActivity {
         int white   = getResources().getColor(R.color.white, getTheme());
         int textSec = getResources().getColor(R.color.colorTextSecondary, getTheme());
 
-        freqDaily.setTextColor(selectedFrequency.equals("daily")    ? white : textSec);
-        freqWeekly.setTextColor(selectedFrequency.equals("weekly")  ? white : textSec);
+        freqDaily.setTextColor(selectedFrequency.equals("daily")       ? white : textSec);
+        freqWeekly.setTextColor(selectedFrequency.equals("weekly")     ? white : textSec);
         freqSpecific.setTextColor(selectedFrequency.equals("specific") ? white : textSec);
 
         freqDaily.setBackground(selectedFrequency.equals("daily")
@@ -151,26 +210,47 @@ public class AddHabitActivity extends AppCompatActivity {
         String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                 .format(Calendar.getInstance().getTime());
 
-        Habit habit = new Habit();
-        habit.userId      = sessionManager.getUserId();
-        habit.title       = name;
-        habit.description = TextUtils.isEmpty(desc) ? "" : desc;
-        habit.iconName    = getIconNameForColor(selectedColor);
-        habit.iconColor   = selectedColor;
-        habit.frequency   = selectedFrequency;
-        habit.activeDays  = days.toString();
-        habit.streakCount = 0;
-        habit.createdAt   = now;
-        habit.updatedAt   = now;
+        if (habitToEdit != null) {
+            // ── Edit mode: update existing habit ──
+            habitToEdit.title       = name;
+            habitToEdit.description = desc;
+            habitToEdit.iconName    = getIconNameForColor(selectedColor);
+            habitToEdit.iconColor   = selectedColor;
+            habitToEdit.frequency   = selectedFrequency;
+            habitToEdit.activeDays  = days.toString();
+            habitToEdit.updatedAt   = now;
 
-        executor.execute(() -> {
-            habitDao.insertHabit(habit);
-            runOnUiThread(() -> {
-                Toast.makeText(this, "Habit added!", Toast.LENGTH_SHORT).show();
-                setResult(RESULT_OK);
-                finish();
+            executor.execute(() -> {
+                habitDao.updateHabit(habitToEdit);
+                runOnUiThread(() -> {
+                    Toast.makeText(this, "Habit updated!", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_OK);
+                    finish();
+                });
             });
-        });
+        } else {
+            // ── Add mode: insert new habit ──
+            Habit habit = new Habit();
+            habit.userId      = sessionManager.getUserId();
+            habit.title       = name;
+            habit.description = desc;
+            habit.iconName    = getIconNameForColor(selectedColor);
+            habit.iconColor   = selectedColor;
+            habit.frequency   = selectedFrequency;
+            habit.activeDays  = days.toString();
+            habit.streakCount = 0;
+            habit.createdAt   = now;
+            habit.updatedAt   = now;
+
+            executor.execute(() -> {
+                habitDao.insertHabit(habit);
+                runOnUiThread(() -> {
+                    Toast.makeText(this, "Habit added!", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_OK);
+                    finish();
+                });
+            });
+        }
     }
 
     private String getIconNameForColor(String color) {
@@ -189,4 +269,3 @@ public class AddHabitActivity extends AppCompatActivity {
         if (executor != null) executor.shutdown();
     }
 }
-
