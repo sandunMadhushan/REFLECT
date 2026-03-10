@@ -3,6 +3,7 @@ package me.madhushan.reflect;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,7 +13,6 @@ import androidx.appcompat.content.res.AppCompatResources;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
@@ -34,6 +34,8 @@ public class AddHabitActivity extends AppCompatActivity {
 
     private String selectedFrequency = "daily";
     private String selectedColor     = "indigo";
+    private String selectedIcon      = "self_improvement"; // independent of color
+
     private final boolean[] activeDays = {true, true, true, true, true, true, true};
 
     private HabitDao habitDao;
@@ -43,6 +45,7 @@ public class AddHabitActivity extends AppCompatActivity {
     /** null = add mode, non-null = edit mode */
     private Habit habitToEdit = null;
 
+    // Color picker
     private final int[] colorViewIds = {
             R.id.color_indigo, R.id.color_emerald, R.id.color_pink,
             R.id.color_orange, R.id.color_primary
@@ -52,6 +55,23 @@ public class AddHabitActivity extends AppCompatActivity {
             R.id.color_orange_check, R.id.color_primary_check
     };
     private final String[] colorNames = {"indigo", "emerald", "pink", "orange", "primary"};
+
+    // Icon picker — parallel arrays: view IDs, icon name strings, drawable res IDs
+    private final int[] iconViewIds = {
+            R.id.icon_self_improvement, R.id.icon_water_drop, R.id.icon_fitness_center,
+            R.id.icon_menu_book, R.id.icon_favorite, R.id.icon_mindfulness,
+            R.id.icon_psychology, R.id.icon_calendar
+    };
+    private final String[] iconNames = {
+            "self_improvement", "water_drop", "fitness_center",
+            "menu_book", "favorite", "mindfulness",
+            "psychology", "calendar"
+    };
+    private final int[] iconDrawables = {
+            R.drawable.ic_self_improvement, R.drawable.ic_water_drop, R.drawable.ic_fitness_center,
+            R.drawable.ic_menu_book, R.drawable.ic_favorite, R.drawable.ic_mindfulness,
+            R.drawable.ic_psychology, R.drawable.ic_calendar
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +90,7 @@ public class AddHabitActivity extends AppCompatActivity {
         tvTitle            = findViewById(R.id.tv_screen_title);
         tvSaveBtn          = findViewById(R.id.btn_save_habit);
 
+        // Day chips
         int[] dayIds = {R.id.day_mon, R.id.day_tue, R.id.day_wed,
                         R.id.day_thu, R.id.day_fri, R.id.day_sat, R.id.day_sun};
         dayViews = new TextView[7];
@@ -79,30 +100,37 @@ public class AddHabitActivity extends AppCompatActivity {
             dayViews[i].setOnClickListener(v -> toggleDay(idx));
         }
 
+        // Frequency
         freqDaily.setOnClickListener(v    -> selectFrequency("daily"));
         freqWeekly.setOnClickListener(v   -> selectFrequency("weekly"));
         freqSpecific.setOnClickListener(v -> selectFrequency("specific"));
 
+        // Color picker
         for (int i = 0; i < colorViewIds.length; i++) {
             final int idx = i;
             findViewById(colorViewIds[i]).setOnClickListener(v -> selectColor(idx));
         }
 
+        // Icon picker
+        for (int i = 0; i < iconViewIds.length; i++) {
+            final int idx = i;
+            findViewById(iconViewIds[i]).setOnClickListener(v -> selectIcon(idx));
+        }
+
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
         tvSaveBtn.setOnClickListener(v -> saveHabit());
 
-        // Check if we are in edit mode
+        // Edit mode?
         int habitId = getIntent().getIntExtra(EXTRA_HABIT_ID, -1);
         if (habitId != -1) {
-            // Edit mode — load existing habit in background then populate UI
             executor.execute(() -> {
                 habitToEdit = habitDao.getHabitById(habitId);
                 runOnUiThread(this::populateForEdit);
             });
         } else {
-            // Add mode
             updateFrequencyUI();
             updateDayChips();
+            updateIconPicker();
         }
     }
 
@@ -120,27 +148,24 @@ public class AddHabitActivity extends AppCompatActivity {
 
         // Frequency
         selectedFrequency = habitToEdit.frequency != null ? habitToEdit.frequency : "daily";
+        selectedColor     = habitToEdit.iconColor  != null ? habitToEdit.iconColor  : "indigo";
+        selectedIcon      = habitToEdit.iconName   != null ? habitToEdit.iconName   : "self_improvement";
 
         // Active days — parse "1111111" string
         String daysStr = habitToEdit.activeDays;
         if (daysStr != null && daysStr.length() == 7) {
-            for (int i = 0; i < 7; i++) {
-                activeDays[i] = daysStr.charAt(i) == '1';
-            }
+            for (int i = 0; i < 7; i++) activeDays[i] = daysStr.charAt(i) == '1';
         }
 
-        // Icon color
-        selectedColor = habitToEdit.iconColor != null ? habitToEdit.iconColor : "indigo";
-
-        // Sync color check marks
+        // Sync color checks
         for (int i = 0; i < colorNames.length; i++) {
-            boolean isSelected = colorNames[i].equals(selectedColor);
-            findViewById(colorCheckIds[i]).setVisibility(isSelected ? View.VISIBLE : View.GONE);
+            findViewById(colorCheckIds[i])
+                    .setVisibility(colorNames[i].equals(selectedColor) ? View.VISIBLE : View.GONE);
         }
 
-        // Sync frequency & day chips
         updateFrequencyUI();
         updateDayChips();
+        updateIconPicker();
         findViewById(R.id.active_days_row)
                 .setVisibility(selectedFrequency.equals("weekly") ? View.GONE : View.VISIBLE);
     }
@@ -192,6 +217,34 @@ public class AddHabitActivity extends AppCompatActivity {
         for (int i = 0; i < colorCheckIds.length; i++) {
             findViewById(colorCheckIds[i]).setVisibility(i == idx ? View.VISIBLE : View.GONE);
         }
+        // Update icon preview tint to match new color
+        updateIconPicker();
+    }
+
+    private void selectIcon(int idx) {
+        selectedIcon = iconNames[idx];
+        updateIconPicker();
+    }
+
+    private void updateIconPicker() {
+        int white   = getResources().getColor(R.color.white, getTheme());
+        int textSec = getResources().getColor(R.color.colorTextSecondary, getTheme());
+
+        for (int i = 0; i < iconViewIds.length; i++) {
+            android.widget.FrameLayout container =
+                    (android.widget.FrameLayout) findViewById(iconViewIds[i]);
+            ImageView img = (ImageView) container.getChildAt(0);
+            boolean isSelected = iconNames[i].equals(selectedIcon);
+
+            container.setBackground(isSelected
+                    ? AppCompatResources.getDrawable(this, R.drawable.bg_btn_primary)
+                    : AppCompatResources.getDrawable(this, R.drawable.bg_icon_picker_unselected));
+
+            if (img != null) {
+                img.setImageResource(iconDrawables[i]);
+                img.setColorFilter(isSelected ? white : textSec);
+            }
+        }
     }
 
     private void saveHabit() {
@@ -214,7 +267,7 @@ public class AddHabitActivity extends AppCompatActivity {
             // ── Edit mode: update existing habit ──
             habitToEdit.title       = name;
             habitToEdit.description = desc;
-            habitToEdit.iconName    = getIconNameForColor(selectedColor);
+            habitToEdit.iconName    = selectedIcon;
             habitToEdit.iconColor   = selectedColor;
             habitToEdit.frequency   = selectedFrequency;
             habitToEdit.activeDays  = days.toString();
@@ -234,7 +287,7 @@ public class AddHabitActivity extends AppCompatActivity {
             habit.userId      = sessionManager.getUserId();
             habit.title       = name;
             habit.description = desc;
-            habit.iconName    = getIconNameForColor(selectedColor);
+            habit.iconName    = selectedIcon;
             habit.iconColor   = selectedColor;
             habit.frequency   = selectedFrequency;
             habit.activeDays  = days.toString();
@@ -253,19 +306,10 @@ public class AddHabitActivity extends AppCompatActivity {
         }
     }
 
-    private String getIconNameForColor(String color) {
-        switch (color) {
-            case "emerald": return "water_drop";
-            case "pink":    return "book_2";
-            case "orange":  return "fitness_center";
-            case "primary": return "check_circle";
-            default:        return "self_improvement";
-        }
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (executor != null) executor.shutdown();
     }
 }
+
