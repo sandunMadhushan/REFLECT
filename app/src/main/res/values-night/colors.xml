@@ -23,5 +23,19 @@
     <color name="colorBlueIcon">#60A5FA</color>
     <color name="colorPurpleIcon">#C084FC</color>
     <color name="colorProgressTrack">#2A2D4A</color>
+
+    <!-- ── Habit Tracker semantic colors (DARK overrides) ── -->
+    <color name="colorHabitIconIndigoBg">#1A1A3E</color>
+    <color name="colorHabitIconEmeraldBg">#0D2B22</color>
+    <color name="colorHabitIconPinkBg">#2D0F1F</color>
+    <color name="colorHabitIconOrangeBg">#2B1800</color>
+    <color name="colorHabitIconPrimaryBg">#1A1A3E</color>
+    <color name="colorHabitStreak">#F97316</color>
+    <color name="colorHabitCalDayBg">#1C1C2E</color>
+    <color name="colorHabitCalSelectedBg">#252646</color>
+    <color name="colorHabitSwitchTrackOff">#334155</color>
+    <color name="colorHabitStatCard">#1E2035</color>
+    <color name="colorHabitDashedBtn">#111121</color>
+    <color name="colorHabitDashedBorder">#4e51e9</color>
 </resources>
 

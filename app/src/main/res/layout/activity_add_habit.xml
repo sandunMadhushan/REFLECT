@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/background_dark">
+    android:background="@color/colorAppBg">
 
     <!-- Header -->
     <LinearLayout
@@ -15,23 +15,20 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingTop="52dp"
-        android:paddingBottom="16dp">
+        android:paddingBottom="16dp"
+        android:background="@color/colorAppBg">
 
-        <FrameLayout
+        <ImageView
             android:id="@+id/btn_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_arrow_back"
+            app:tint="@color/colorTextPrimary"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            android:background="@drawable/bg_notif_btn">
-            <ImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_arrow_back"
-                android:contentDescription="@null"
-                app:tint="@color/colorTextSecondary"/>
-        </FrameLayout>
+            android:contentDescription="@null"/>
 
         <TextView
             android:layout_width="0dp"
@@ -39,11 +36,11 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="Add New Habit"
-            android:textColor="@color/white"
+            android:textColor="@color/colorTextPrimary"
             android:textSize="18sp"
             android:textStyle="bold"/>
 
-        <View android:layout_width="40dp" android:layout_height="40dp"/>
+        <View android:layout_width="44dp" android:layout_height="44dp"/>
     </LinearLayout>
 
     <ScrollView
@@ -66,57 +63,61 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="HABIT NAME"
-                android:textColor="#9495c7"
+                android:textColor="@color/colorTextSecondary"
                 android:textSize="11sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.1"
                 android:layout_marginBottom="8dp"/>
 
-            <EditText
-                android:id="@+id/et_habit_name"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:background="@drawable/bg_card_dark"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:hint="e.g. Morning Meditation"
-                android:textColor="@color/white"
-                android:textColorHint="#9495c7"
-                android:textSize="15sp"
-                android:inputType="text"
-                android:layout_marginBottom="24dp"/>
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_habit_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="e.g. Morning Meditation"
+                    android:inputType="textCapSentences"
+                    android:textColor="@color/colorTextPrimary"
+                    android:textColorHint="@color/colorTextSecondary"
+                    android:textSize="15sp"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Description -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="DESCRIPTION / GOAL"
-                android:textColor="#9495c7"
+                android:textColor="@color/colorTextSecondary"
                 android:textSize="11sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.1"
                 android:layout_marginBottom="8dp"/>
 
-            <EditText
-                android:id="@+id/et_habit_description"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:background="@drawable/bg_card_dark"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:hint="e.g. 15 minutes, 2 Liters"
-                android:textColor="@color/white"
-                android:textColorHint="#9495c7"
-                android:textSize="15sp"
-                android:inputType="text"
-                android:layout_marginBottom="24dp"/>
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_habit_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="e.g. 15 minutes, 2 Liters"
+                    android:inputType="textCapSentences"
+                    android:textColor="@color/colorTextPrimary"
+                    android:textColorHint="@color/colorTextSecondary"
+                    android:textSize="15sp"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Icon Color Picker -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ICON COLOR"
-                android:textColor="#9495c7"
+                android:textColor="@color/colorTextSecondary"
                 android:textSize="11sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.1"
@@ -218,7 +219,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="FREQUENCY"
-                android:textColor="#9495c7"
+                android:textColor="@color/colorTextSecondary"
                 android:textSize="11sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.1"
@@ -228,7 +229,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:background="@drawable/bg_card_dark"
+                android:background="@color/colorCard"
                 android:padding="4dp"
                 android:layout_marginBottom="16dp">
 
@@ -253,7 +254,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="Weekly"
-                    android:textColor="#9495c7"
+                    android:textColor="@color/colorTextSecondary"
                     android:textSize="13sp"
                     android:clickable="true"
                     android:focusable="true"
@@ -266,14 +267,14 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="Specific"
-                    android:textColor="#9495c7"
+                    android:textColor="@color/colorTextSecondary"
                     android:textSize="13sp"
                     android:clickable="true"
                     android:focusable="true"
                     android:layout_marginStart="4dp"/>
             </LinearLayout>
 
-            <!-- Active Days (show only for daily/specific) -->
+            <!-- Active Days -->
             <LinearLayout
                 android:id="@+id/active_days_row"
                 android:layout_width="match_parent"
@@ -324,7 +325,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:background="@drawable/bg_card_dark"
+                android:background="@color/colorCard"
                 android:padding="16dp"
                 android:layout_marginBottom="24dp">
 
@@ -351,14 +352,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Reminders"
-                        android:textColor="@color/white"
+                        android:textColor="@color/colorTextPrimary"
                         android:textSize="14sp"
                         android:textStyle="bold"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Get notified at 09:00 AM"
-                        android:textColor="#9495c7"
+                        android:textColor="@color/colorTextSecondary"
                         android:textSize="12sp"/>
                 </LinearLayout>
 
@@ -382,7 +383,7 @@
         android:paddingEnd="20dp"
         android:paddingBottom="32dp"
         android:paddingTop="12dp"
-        android:background="@color/background_dark">
+        android:background="@color/colorAppBg">
 
         <TextView
             android:id="@+id/btn_save_habit"
@@ -399,5 +400,4 @@
     </LinearLayout>
 
 </LinearLayout>
-
 

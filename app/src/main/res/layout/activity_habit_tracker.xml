@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/background_dark">
+    android:background="@color/colorAppBg">
 
     <!-- Header -->
     <LinearLayout
@@ -15,7 +15,8 @@
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
         android:paddingTop="52dp"
-        android:paddingBottom="12dp">
+        android:paddingBottom="12dp"
+        android:background="@color/colorAppBg">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -26,14 +27,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Habit Tracker"
-                android:textColor="@color/white"
+                android:textColor="@color/colorTextPrimary"
                 android:textSize="24sp"
                 android:textStyle="bold"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Keep up the momentum!"
-                android:textColor="#9495c7"
+                android:textColor="@color/colorTextSecondary"
                 android:textSize="13sp"
                 android:layout_marginTop="2dp"/>
         </LinearLayout>
@@ -45,7 +46,7 @@
             android:layout_height="40dp"
             android:clickable="true"
             android:focusable="true"
-            android:background="@drawable/bg_notif_btn">
+            android:background="@color/colorNotifBtn">
             <ImageView
                 android:layout_width="22dp"
                 android:layout_height="22dp"
@@ -84,9 +85,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="4dp">
-                    <!-- Days filled programmatically -->
-                </LinearLayout>
+                    android:padding="4dp"/>
             </HorizontalScrollView>
 
             <!-- Stats Row -->
@@ -105,7 +104,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
-                    android:background="@drawable/bg_card_dark"
+                    android:background="@color/colorCard"
                     android:orientation="vertical"
                     android:padding="16dp"
                     android:elevation="2dp">
@@ -117,8 +116,8 @@
                         android:gravity="center_vertical"
                         android:layout_marginBottom="8dp">
                         <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
                             android:src="@drawable/ic_fire"
                             android:contentDescription="@null"
                             app:tint="@color/primary"
@@ -127,8 +126,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="STREAK"
-                            android:textColor="#9495c7"
-                            android:textSize="10sp"
+                            android:textColor="@color/colorTextSecondary"
+                            android:textSize="11sp"
                             android:textStyle="bold"
                             android:letterSpacing="0.1"/>
                     </LinearLayout>
@@ -137,7 +136,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0 Days"
-                        android:textColor="@color/white"
+                        android:textColor="@color/colorTextPrimary"
                         android:textSize="22sp"
                         android:textStyle="bold"/>
                 </LinearLayout>
@@ -148,7 +147,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
-                    android:background="@drawable/bg_card_dark"
+                    android:background="@color/colorCard"
                     android:orientation="vertical"
                     android:padding="16dp"
                     android:elevation="2dp">
@@ -160,8 +159,8 @@
                         android:gravity="center_vertical"
                         android:layout_marginBottom="8dp">
                         <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
                             android:src="@drawable/ic_check_circle"
                             android:contentDescription="@null"
                             app:tint="@color/primary"
@@ -170,8 +169,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="COMPLETION"
-                            android:textColor="#9495c7"
-                            android:textSize="10sp"
+                            android:textColor="@color/colorTextSecondary"
+                            android:textSize="11sp"
                             android:textStyle="bold"
                             android:letterSpacing="0.1"/>
                     </LinearLayout>
@@ -180,7 +179,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0%"
-                        android:textColor="@color/white"
+                        android:textColor="@color/colorTextPrimary"
                         android:textSize="22sp"
                         android:textStyle="bold"/>
                 </LinearLayout>
@@ -201,7 +200,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Today's Habits"
-                    android:textColor="@color/white"
+                    android:textColor="@color/colorTextPrimary"
                     android:textSize="18sp"
                     android:textStyle="bold"/>
 
@@ -248,7 +247,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No habits yet"
-                    android:textColor="@color/white"
+                    android:textColor="@color/colorTextPrimary"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
@@ -256,7 +255,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Add your first habit below to start building streaks."
-                    android:textColor="#9495c7"
+                    android:textColor="@color/colorTextSecondary"
                     android:textSize="13sp"
                     android:gravity="center"/>
             </LinearLayout>
