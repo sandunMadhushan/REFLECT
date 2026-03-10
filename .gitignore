@@ -14,6 +14,9 @@
 .cxx
 local.properties
 
+# APK binaries — uploaded as GitHub Release assets, not committed to git
+*.apk
+
 # UI design reference screens — local only, not pushed to GitHub
 UI_Screens/
 
