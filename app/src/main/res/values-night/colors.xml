@@ -37,5 +37,15 @@
     <color name="colorHabitStatCard">#1E2035</color>
     <color name="colorHabitDashedBtn">#111121</color>
     <color name="colorHabitDashedBorder">#4e51e9</color>
+
+    <!-- ── Achievement colors (DARK overrides) ── -->
+    <color name="colorTealAccent">#00BFA5</color>
+    <color name="colorTealAccentAlpha">#2200BFA5</color>
+    <color name="colorAchievementIconBg">#1A2E2C</color>
+    <color name="colorAchievementIconBgLocked">#1E2035</color>
+    <color name="colorAchievementLocked">#161627</color>
+    <color name="colorAchievementProgressBg">#2A2D4A</color>
+    <color name="colorAchievementTextLocked">#64748b</color>
+    <color name="colorAchievementCardBorder">#00BFA5</color>
 </resources>
 

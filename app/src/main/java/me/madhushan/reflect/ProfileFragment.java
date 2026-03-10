@@ -27,6 +27,11 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import me.madhushan.reflect.database.AppDatabase;
 import me.madhushan.reflect.utils.AvatarLoader;
 import me.madhushan.reflect.utils.SessionManager;
 
@@ -36,6 +41,11 @@ public class ProfileFragment extends Fragment {
     private TextView tvUserName, tvAvatarInitials;
     private ImageView ivAvatarPhoto;
     private SwitchMaterial switchDarkMode, switchNotifications;
+
+    // Achievement summary views
+    private TextView tvAchievementsSummary, tvProfileXp, tvProfileAchievementsCount;
+    private View profileAchievementFill;
+    private ExecutorService executor;
 
     private final ActivityResultLauncher<String> notifPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -62,6 +72,16 @@ public class ProfileFragment extends Fragment {
         switchDarkMode      = v.findViewById(R.id.switch_dark_mode);
         switchNotifications = v.findViewById(R.id.switch_notifications);
 
+        // Achievement views
+        tvAchievementsSummary        = v.findViewById(R.id.tv_achievements_summary);
+        tvProfileXp                  = v.findViewById(R.id.tv_profile_xp);
+        tvProfileAchievementsCount   = v.findViewById(R.id.tv_profile_achievements_count);
+        profileAchievementFill       = v.findViewById(R.id.profile_achievement_fill);
+        executor = Executors.newSingleThreadExecutor();
+
+        v.findViewById(R.id.btn_achievements).setOnClickListener(b ->
+                startActivity(new Intent(requireContext(), AchievementsActivity.class)));
+
         v.findViewById(R.id.btn_edit_avatar).setOnClickListener(b ->
                 startActivity(new Intent(requireContext(), PersonalDetailsActivity.class)));
         v.findViewById(R.id.row_personal_details).setOnClickListener(b ->
@@ -75,6 +95,7 @@ public class ProfileFragment extends Fragment {
         setupDarkModeSwitch();
         setupNotificationToggle();
         populateUserData();
+        loadAchievementSummary();
     }
 
     @Override
@@ -82,6 +103,64 @@ public class ProfileFragment extends Fragment {
         super.onResume();
         populateUserData();
         syncNotificationToggle();
+        loadAchievementSummary();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (executor != null) executor.shutdown();
+    }
+
+    private void loadAchievementSummary() {
+        if (!isAdded()) return;
+        int userId = sessionManager.getUserId();
+        AppDatabase db = AppDatabase.getInstance(requireContext());
+
+        executor.execute(() -> {
+            AchievementEngine.Stats stats = new AchievementEngine.Stats();
+            stats.maxHabitStreak = getMaxStreak(db, userId);
+            stats.totalReflections = db.reflectionDao().getReflectionCount(userId);
+            stats.totalGoals = db.goalDao().getTotalGoalsCount(userId);
+            stats.completedGoals = db.goalDao().getCompletedGoalsCount(userId);
+            stats.totalHabits = db.habitDao().getTotalHabitsCount(userId);
+            stats.habitCompletionsTotal = db.habitCompletionDao().getTotalCompletionsForUser(userId);
+
+            List<AchievementEngine.Achievement> all = AchievementEngine.evaluate(stats);
+            int xp = AchievementEngine.calcXp(all);
+            int level = AchievementEngine.calcLevel(xp);
+            int unlocked = 0;
+            for (AchievementEngine.Achievement a : all) if (a.unlocked) unlocked++;
+            final int total = all.size();
+            final int finalXp = xp;
+            final int finalLevel = level;
+            final int finalUnlocked = unlocked;
+
+            if (!isAdded()) return;
+            requireActivity().runOnUiThread(() -> {
+                if (!isAdded()) return;
+                tvAchievementsSummary.setText("Level " + finalLevel + "  ·  " + finalXp + " XP");
+                tvProfileXp.setText("View All");
+                tvProfileAchievementsCount.setText(finalUnlocked + "/" + total);
+
+                // Animate progress fill
+                profileAchievementFill.post(() -> {
+                    if (profileAchievementFill.getParent() == null) return;
+                    int parentWidth = ((View) profileAchievementFill.getParent()).getWidth();
+                    float pct = total > 0 ? (float) finalUnlocked / total : 0f;
+                    ViewGroup.LayoutParams lp = profileAchievementFill.getLayoutParams();
+                    lp.width = (int)(parentWidth * pct);
+                    profileAchievementFill.setLayoutParams(lp);
+                });
+            });
+        });
+    }
+
+    private int getMaxStreak(AppDatabase db, int userId) {
+        List<me.madhushan.reflect.database.Habit> habits = db.habitDao().getHabitsForUser(userId);
+        int max = 0;
+        for (me.madhushan.reflect.database.Habit h : habits) if (h.streakCount > max) max = h.streakCount;
+        return max;
     }
 
     private void populateUserData() {
