@@ -129,6 +129,11 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <!-- Achievements Screen -->
+        <activity
+            android:name=".AchievementsActivity"
+            android:exported="false" />
+
         <!-- FileProvider for camera capture temp files -->
         <provider
             android:name="androidx.core.content.FileProvider"

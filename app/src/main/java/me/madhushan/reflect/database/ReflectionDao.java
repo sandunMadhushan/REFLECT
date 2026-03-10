@@ -35,5 +35,8 @@ public interface ReflectionDao {
 
     @Query("SELECT COUNT(*) FROM reflections WHERE userId = :userId")
     int getTotalReflectionsCount(int userId);
+
+    @Query("SELECT COUNT(*) FROM reflections WHERE userId = :userId")
+    int getReflectionCount(int userId);
 }
 

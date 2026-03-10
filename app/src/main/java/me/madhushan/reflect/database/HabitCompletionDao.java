@@ -35,5 +35,12 @@ public interface HabitCompletionDao {
     /** Consecutive day streak for a habit (count back from today). */
     @Query("SELECT completedDate FROM habit_completions WHERE habitId = :habitId ORDER BY completedDate DESC")
     List<String> getAllCompletionDates(int habitId);
+
+    /** Total habit completions ever for all habits belonging to a user. */
+    @Query("SELECT COUNT(*) FROM habit_completions hc " +
+           "INNER JOIN habits h ON hc.habitId = h.id " +
+           "WHERE h.userId = :userId")
+    int getTotalCompletionsForUser(int userId);
 }
+
 
