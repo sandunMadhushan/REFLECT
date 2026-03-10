@@ -1,6 +1,5 @@
 package me.madhushan.reflect.utils;
 
-import android.content.Context;
 import android.util.Log;
 
 import androidx.credentials.ClearCredentialStateRequest;
@@ -19,10 +18,12 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import me.madhushan.reflect.R;
+import me.madhushan.reflect.BuildConfig;
 
 /**
  * Helper that wraps the Credential Manager Google Sign-In flow.
+ * The Web Client ID is read from BuildConfig.GOOGLE_WEB_CLIENT_ID,
+ * which is injected at build-time from local.properties (never committed to git).
  *
  * Usage:
  *   GoogleSignInHelper helper = new GoogleSignInHelper(activity);
@@ -50,10 +51,10 @@ public class GoogleSignInHelper {
 
     /** Launch the Google sign-in bottom sheet. */
     public void signIn(Callback callback) {
-        String webClientId = activity.getString(R.string.default_web_client_id);
+        String webClientId = BuildConfig.GOOGLE_WEB_CLIENT_ID;
 
-        if (webClientId.startsWith("YOUR_WEB_CLIENT_ID")) {
-            callback.onFailure("Google Sign-In is not configured yet.\n\nAdd your Web Client ID in strings.xml.");
+        if (webClientId.startsWith("YOUR_") || webClientId.startsWith("MISSING_")) {
+            callback.onFailure("Google Sign-In is not configured.\n\nAdd GOOGLE_WEB_CLIENT_ID to local.properties.");
             return;
         }
 

@@ -33,6 +33,7 @@ import java.util.concurrent.Executors;
 
 import me.madhushan.reflect.database.AppDatabase;
 import me.madhushan.reflect.utils.AvatarLoader;
+import me.madhushan.reflect.utils.FacebookSignInHelper;
 import me.madhushan.reflect.utils.SessionManager;
 
 public class ProfileFragment extends Fragment {
@@ -257,6 +258,7 @@ public class ProfileFragment extends Fragment {
                 .setMessage(R.string.profile_logout_confirm_message)
                 .setPositiveButton(R.string.profile_logout_confirm_yes, (d, w) -> {
                     sessionManager.clearSession();
+                    FacebookSignInHelper.logOut(); // clear Facebook session
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
                     Intent i = new Intent(requireContext(), LoginActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

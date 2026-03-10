@@ -134,6 +134,32 @@
             android:name=".AchievementsActivity"
             android:exported="false" />
 
+        <!-- Facebook Login — App ID and Client Token (replace values with yours from developers.facebook.com) -->
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="com.facebook.sdk.ClientToken"
+            android:value="@string/facebook_client_token" />
+
+        <!-- Facebook Login Activity (required by Facebook SDK) -->
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
+
+        <!-- Facebook Custom Tab Activity (required for SDK 13+) -->
+        <activity
+            android:name="com.facebook.CustomTabActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
+
         <!-- FileProvider for camera capture temp files -->
         <provider
             android:name="androidx.core.content.FileProvider"
