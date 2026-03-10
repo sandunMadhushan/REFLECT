@@ -1,5 +1,5 @@
 # 📊 REFLECT — Project Status Report
-> **Date:** March 4, 2026 | **Module:** ICT3214 — Mobile Application Development
+> **Date:** March 10, 2026 | **Module:** ICT3214 — Mobile Application Development
 
 ---
 
@@ -28,6 +28,8 @@
 | **Recent activity feed** | Dynamic from DB | ✅ Done |
 | **Empty state (new user)** | Shows prompt when no data | ✅ Done |
 | **Bottom navigation bar** | FAB + 4 tabs | ✅ Done |
+| **Habits card → HabitTrackerActivity** | Tapping habits section opens Habit Tracker | ✅ Done |
+| **Live habit stats on Home** | Completed today / total habits | ✅ Done |
 
 ### 🎯 Goals
 | Screen / Feature | File(s) | Status |
@@ -63,6 +65,47 @@
 | **Colab training notebook** | `REFLECT_Mood_Classifier_TFLite.ipynb` | ✅ Done |
 | **Model files (assets)** | `mood_classifier.tflite` + `mood_vocab.txt` | ✅ Done |
 
+### 🏋️ Habit Tracker
+| Screen / Feature | File(s) | Status |
+|---|---|---|
+| **Habit Tracker Screen** | `HabitTrackerActivity.java` + `activity_habit_tracker.xml` | ✅ Done |
+| **Add New Habit** | `AddHabitActivity.java` + `activity_add_habit.xml` | ✅ Done |
+| **Edit Habit (pre-filled)** | `AddHabitActivity.java` — edit mode, pre-fills all fields | ✅ Done |
+| **7-day calendar strip** | Scrollable, today highlighted | ✅ Done |
+| **Habit cards** | Icon (coloured), title, description, streak badge | ✅ Done |
+| **Mark as Done — bottom sheet** | Long-press → confirmation bottom sheet | ✅ Done |
+| **Mark as Done — check icon** | Check icon replaces button when already completed today | ✅ Done |
+| **Delete habit** | Confirmation dialog → removes habit + completions from DB | ✅ Done |
+| **Streak tracking** | Consecutive day streak calculated from `habit_completions` | ✅ Done |
+| **Streak count / completion rate on header** | Today's stats shown at top of Habit Tracker | ✅ Done |
+| **Frequency selector** | Daily / Weekly / Specific Days | ✅ Done |
+| **Day toggles (Mon–Sun)** | Shown when Specific Days selected | ✅ Done |
+| **Icon picker (8 icons)** | self_improvement, water_drop, book, fitness, bedtime, restaurant, music, psychology | ✅ Done |
+| **Color picker (6 colors, bordered swatches)** | Indigo, Emerald, Pink, Orange, Purple, Red | ✅ Done |
+| **Icon updates when color changes** | Icon color reflects selected swatch live in picker | ✅ Done |
+| **Dark / Light theme** | Habit Tracker + Add Habit fully support both themes | ✅ Done |
+| **Empty state** | Shown when no habits added yet | ✅ Done |
+| **Habit DB entity** | `Habit.java` + `HabitDao.java` | ✅ Done |
+| **HabitCompletion DB entity** | `HabitCompletion.java` + `HabitCompletionDao.java` | ✅ Done |
+| **Home → Habit Tracker navigation** | Tapping habits card on Home opens Habit Tracker | ✅ Done |
+
+### 🏆 Achievements
+| Screen / Feature | File(s) | Status |
+|---|---|---|
+| **Achievements Screen** | `AchievementsActivity.java` + `activity_achievements.xml` | ✅ Done |
+| **Achievement Engine** | `AchievementEngine.java` — 16 achievements, 4 categories | ✅ Done |
+| **XP level display** | Level name (Beginner → Expert) + total XP earned | ✅ Done |
+| **XP progress bar toward next level** | Animated fill bar | ✅ Done |
+| **Streaks category** | Beginner (3d), Consistent (7d), Dedicated (14d), Unstoppable (30d) | ✅ Done |
+| **Reflections category** | First Thought, Weekly Writer, Monthly Mind, Journal Master | ✅ Done |
+| **Goals category** | Dream Big, Goal Crusher, Achiever, Legend | ✅ Done |
+| **Habits category** | First Habit, Habit Builder, Habit Master, Daily Champion | ✅ Done |
+| **Unlocked vs locked state** | Unlocked = full colour + check; Locked = dimmed + lock overlay | ✅ Done |
+| **Per-achievement progress bar** | Shows current / target value for each achievement | ✅ Done |
+| **Profile → Achievements section** | Summary card in ProfileFragment with XP bar + unlocked count | ✅ Done |
+| **"View All Achievements" button on Profile** | Opens AchievementsActivity | ✅ Done |
+| **Dark / Light theme** | Achievements screen fully supports both themes | ✅ Done |
+
 ### 👤 Profile & Settings
 | Screen / Feature | File(s) | Status |
 |---|---|---|
@@ -75,6 +118,7 @@
 | **Profile photo — Gallery** | Photo Picker / READ_MEDIA_IMAGES | ✅ Done |
 | **Google profile photo display** | Glide image loading with CircleCrop | ✅ Done |
 | **Avatar initials fallback** | Auto-generated from name | ✅ Done |
+| **Achievements summary section** | XP bar + unlocked count + "View All" button | ✅ Done |
 | **Help & Support** | `HelpSupportActivity.java` + `activity_help_support.xml` | ✅ Done |
 | **Subscription / Pro screen** | `SubscriptionActivity.java` + `activity_subscription.xml` | ✅ Done |
 | **Logout** | Session clear + back to Login | ✅ Done |
@@ -85,10 +129,17 @@
 | **User** | `User.java` | ✅ Done |
 | **Goal** | `Goal.java` | ✅ Done |
 | **Reflection** | `Reflection.java` | ✅ Done |
+| **Habit** | `Habit.java` | ✅ Done |
+| **HabitCompletion** | `HabitCompletion.java` | ✅ Done |
 | **UserDao** | `UserDao.java` | ✅ Done |
 | **GoalDao** | `GoalDao.java` | ✅ Done |
 | **ReflectionDao** | `ReflectionDao.java` | ✅ Done |
-| **AppDatabase** | `AppDatabase.java` (version 3) | ✅ Done |
+| **HabitDao** | `HabitDao.java` | ✅ Done |
+| **HabitCompletionDao** | `HabitCompletionDao.java` | ✅ Done |
+| **AppDatabase** | `AppDatabase.java` (version **4**) | ✅ Done |
+| **Migration v1→v2** | Adds `goals` table | ✅ Done |
+| **Migration v2→v3** | Adds `reflections` table | ✅ Done |
+| **Migration v3→v4** | Adds `habits` + `habit_completions` tables | ✅ Done |
 | **SHA-256 password hashing** | `PasswordUtils.java` | ✅ Done |
 
 ---
@@ -107,32 +158,7 @@ These screens exist in `UI_Screens/` folder with full designs (HTML + image) but
 | Mood trend chart | — | — |
 | Stats summary cards | — | — |
 
-> **Note:** Currently in Home, "View All" next to "Your Progress" links nowhere. This should open the Progress Analytics screen.
-
----
-
-### 🏆 Achievements
-| Feature | UI Screen File | Priority |
-|---|---|---|
-| **Achievements Screen** | `UI_Screens/achievements/` | 🟡 MEDIUM |
-| Streak badges (Beginner, Consistent, etc.) | — | — |
-| Total XP / Level display | — | — |
-| Unlocked vs locked achievements | — | — |
-| Overall progress bar | — | — |
-
----
-
-### 🧘 Habit Tracker
-| Feature | UI Screen File | Priority |
-|---|---|---|
-| **Habit Tracker Screen** | `UI_Screens/habit_tracker/` | 🔴 HIGH |
-| **Add New Habit** | `UI_Screens/add_new_habit/` | 🔴 HIGH |
-| Weekly habit grid (Mon–Sun checkboxes) | — | — |
-| Habit streak display | — | — |
-| Habit categories | — | — |
-| Habit database entity (`Habit.java`) | — | — |
-
-> **Note:** The `add_new_habit` folder exists in UI_Screens. This is a separate feature from Goals.
+> **Note:** Currently in Home, "View All" next to "Your Progress" switches to Goals tab as a workaround. Needs `ProgressAnalyticsActivity` to be built.
 
 ---
 
@@ -163,16 +189,16 @@ These screens exist in `UI_Screens/` folder with full designs (HTML + image) but
 | `goal_details/` | Goal details page (light) | ✅ Yes |
 | `goal_details_dark/` | Goal details page (dark) | ✅ Yes |
 | `add_new_goal/` | Add new goal form | ✅ Yes |
-| `add_reflection/` | Add reflection journal entry + 🤖 AI mood detect | ✅ Yes |
+| `add_reflection/` | Add reflection journal entry + AI mood detect | ✅ Yes |
 | `reflection_journal/` | Journal list (light) | ✅ Yes |
 | `reflection_journal_dark_mode/` | Journal list (dark) | ✅ Yes |
 | `profile_settings/` | Profile & settings page | ✅ Yes |
+| `habit_tracker/` | Habit tracking screen (light) | ✅ Yes |
+| `habit_tracker_dark_mode/` | Habit tracking screen (dark) | ✅ Yes |
+| `add_new_habit/` | Add / Edit habit form | ✅ Yes |
+| `achievements/` | Achievements & badges screen | ✅ Yes |
 | `progress_analytics/` | Analytics charts screen | ❌ Not built |
 | `progress_analytics_dark_mode/` | Analytics charts (dark) | ❌ Not built |
-| `achievements/` | Achievements & badges | ❌ Not built |
-| `habit_tracker/` | Habit tracking screen | ❌ Not built |
-| `habit_tracker_dark_mode/` | Habit tracking (dark) | ❌ Not built |
-| `add_new_habit/` | Add habit form | ❌ Not built |
 | `vision_board/` | Vision board / goal images | ❌ Not built |
 
 ---
@@ -184,9 +210,8 @@ These screens exist in `UI_Screens/` folder with full designs (HTML + image) but
 | `User` | `users` | ✅ | id, fullName, email, passwordHash |
 | `Goal` | `goals` | ✅ | title, description, category, priority, deadline, isAchieved |
 | `Reflection` | `reflections` | ✅ | title, mood, content, isFavorite, createdAt |
-| `Habit` | `habits` | ❌ | **Not created yet** — needed for Habit Tracker |
-| `HabitLog` | `habit_logs` | ❌ | **Not created yet** — daily check-in records |
-| `Achievement` | `achievements` | ❌ | **Not created yet** — needed for Achievements screen |
+| `Habit` | `habits` | ✅ | title, description, iconName, iconColor, frequency, activeDays, streakCount |
+| `HabitCompletion` | `habit_completions` | ✅ | habitId, completedDate |
 
 ---
 
@@ -205,15 +230,17 @@ SplashActivity (2s)
 
 MainActivity (BottomNav Host)
     ├── [Home Tab]    ─▶ HomeFragment
+    │       └── [Habits card] ─────────────────▶ HabitTrackerActivity
+    │               ├── [+ FAB] ───────────────▶ AddHabitActivity (add mode)
+    │               └── [Edit icon] ───────────▶ AddHabitActivity (edit mode, pre-filled)
     ├── [Goals Tab]   ─▶ GoalsFragment ──▶ AddGoalActivity / GoalDetailsActivity / EditGoalActivity
     ├── [+FAB]        ─▶ AddGoalActivity (quick add) OR AddReflectionActivity
-    ├── [Journal Tab] ─▶ JournalFragment ──▶ AddReflectionActivity (🤖 AI mood detect inside)
-    └── [Profile Tab] ─▶ ProfileFragment ──▶ PersonalDetailsActivity
-                                           ├── HelpSupportActivity
-                                           └── SubscriptionActivity
-
-HomeFragment
-    └── [View All Progress] ──▶ ❌ MISSING — should go to ProgressAnalyticsActivity
+    ├── [Journal Tab] ─▶ JournalFragment ──▶ AddReflectionActivity (AI mood detect inside)
+    └── [Profile Tab] ─▶ ProfileFragment
+            ├── [Achievements section] ─────────▶ AchievementsActivity
+            ├── [Personal Details] ────────────▶ PersonalDetailsActivity
+            ├── [Subscription] ────────────────▶ SubscriptionActivity
+            └── [Help & Support] ──────────────▶ HelpSupportActivity
 ```
 
 ---
@@ -225,11 +252,7 @@ HomeFragment
 | # | Task | Effort | Notes |
 |---|---|---|---|
 | 1 | **Progress Analytics Screen** | Medium | Has full UI design in `progress_analytics/`. Wire "View All" in Home. |
-| 2 | **Habit Tracker Screen** | High | Needs new DB entities (`Habit`, `HabitLog`) + full screen UI. |
-| 3 | **Add New Habit Screen** | Medium | Form for creating habits. |
-| 4 | **Achievements Screen** | Medium | Mostly UI — calculate from existing Goal/Reflection data. |
-| 5 | **Vision Board Screen** | Low | Image-based, gallery pick, masonry layout. |
-| 6 | **"View All" Progress link** | Low | Wire button in HomeFragment to ProgressAnalyticsActivity. |
+| 2 | **Vision Board Screen** | Low | Image-based, gallery pick, masonry layout. |
 
 ---
 
@@ -237,10 +260,13 @@ HomeFragment
 
 | Issue | Where | Status |
 |---|---|---|
-| "View All" near Your Progress | `HomeFragment` | ❌ Not yet linked — needs `ProgressAnalyticsActivity` first |
-| Habit Tracker tab/button | `MainActivity` | ❌ No Habit screen exists yet |
-| Notification toggle persistence | `ProfileFragment` | ✅ Fixed — `commit()` used, toggle reads system permission on `onResume` |
-| TFLite duplicate namespace (manifest merger) | `build.gradle.kts` | ✅ Fixed — using `implementation` only (no `tensorflow-lite-api` separately) |
+| "View All" near Your Progress | `HomeFragment` | ⚠️ Currently switches to Goals tab — needs `ProgressAnalyticsActivity` |
+| TFLite duplicate namespace (manifest merger) | `build.gradle.kts` | ✅ Fixed |
+| Notification toggle persistence | `ProfileFragment` | ✅ Fixed |
+| Habit icon not updating when color changes | `AddHabitActivity` | ✅ Fixed |
+| Icon color picker swatches not visible | `AddHabitActivity` | ✅ Fixed — bordered swatches added |
+| Edit habit not pre-filling data | `AddHabitActivity` | ✅ Fixed — edit mode loads existing Habit from DB |
+| Mark-as-done toggle confusing UX | `HabitTrackerActivity` | ✅ Fixed — replaced with long-press bottom sheet |
 
 ---
 
@@ -269,19 +295,18 @@ HomeFragment
 | Category | Done | Total | Progress |
 |---|---|---|---|
 | Auth & Onboarding | 9 | 9 | 🟢 100% |
-| Home Dashboard | 7 | 7 | 🟢 100% |
+| Home Dashboard | 9 | 9 | 🟢 100% |
 | Goals | 8 | 8 | 🟢 100% |
 | Reflection Journal | 6 | 6 | 🟢 100% |
 | AI Mood Detection | 8 | 8 | 🟢 100% |
-| Profile & Settings | 12 | 12 | 🟢 100% |
-| Database | 8 | 8 | 🟢 100% |
+| Habit Tracker | 20 | 20 | 🟢 100% |
+| Achievements | 13 | 13 | 🟢 100% |
+| Profile & Settings | 13 | 13 | 🟢 100% |
+| Database | 15 | 15 | 🟢 100% |
 | Progress Analytics | 0 | 5 | 🔴 0% |
-| Habit Tracker | 0 | 6 | 🔴 0% |
-| Achievements | 0 | 4 | 🔴 0% |
-| Vision Board | 0 | 3 | 🟡 0% |
-| **TOTAL** | **58** | **76** | **🟡 76%** |
+| Vision Board | 0 | 3 | 🔴 0% |
+| **TOTAL** | **101** | **109** | **🟡 93%** |
 
 ---
 
-*Last Updated: March 4, 2026 — 07:10 PM*
-
+*Last Updated: March 10, 2026 — REFLECT v1.2*

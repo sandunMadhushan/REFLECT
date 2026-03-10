@@ -28,7 +28,7 @@
 ## 📖 About Reflect
 
 **Reflect** is a mindful personal goal journaling app built for Android.
-It gives users a calm, distraction-free space to **write their goals**, **add periodic reflection notes**, **log journal reflections with mood tracking**, and **track their personal growth** — all stored privately per user on the device using a local Room database.
+It gives users a calm, distraction-free space to **write their goals**, **add periodic reflection notes**, **log journal reflections with mood tracking**, **build daily habits with streaks**, **unlock achievements**, and **track their personal growth** — all stored privately per user on the device using a local Room database.
 
 Unlike complex productivity apps, Reflect is intentionally minimal.
 It's about **thinking deeply**, not managing tasks.
@@ -46,7 +46,7 @@ It's about **thinking deeply**, not managing tasks.
 | 🔵 **Google Sign-In** | ✅ Done | One-tap Google sign-in via Credential Manager API — auto-registers on first use |
 | 🖼️ **Google Profile Photo** | ✅ Done | Google account photo loaded via Glide with CircleCrop on Home & Profile |
 | 🔓 **Forgot Password** | ✅ Done | 2-step flow: verify email → set new password → success screen |
-| 🏠 **Home Dashboard** | ✅ Done | Stats cards, inspiration quote, dynamic progress chart (today highlighted), recent activity from DB |
+| 🏠 **Home Dashboard** | ✅ Done | Stats cards, inspiration quote, dynamic progress chart (today highlighted), recent activity from DB, habits card taps into Habit Tracker |
 | 🎯 **Goals Tab** | ✅ Done | Fragment-based tab — full goals list with filter chips (All / Active / Completed), goal cards with progress |
 | ➕ **Add Goal** | ✅ Done | Title, description, category dropdown, priority selector (Low/Medium/High), date picker for deadline |
 | ✏️ **Edit Goal** | ✅ Done | Full edit screen pre-filled with all existing goal data |
@@ -54,16 +54,21 @@ It's about **thinking deeply**, not managing tasks.
 | 📓 **Reflection Journal** | ✅ Done | Fragment-based Journal tab — mood-tagged entries, filter chips (All / This Week / This Month / Favorites), long-press to favorite |
 | ➕ **Add Reflection** | ✅ Done | Title, mood picker (Happy / Calm / Neutral / Sad / Anxious), full content entry, saves to Room DB |
 | 🤖 **AI Mood Detection** | ✅ Done | On-device TFLite model auto-detects mood from journal text — confidence bars + emoji displayed; falls back to keyword matching if no model loaded |
-| 👤 **Profile & Settings** | ✅ Done | Avatar, dark mode toggle, notifications toggle with runtime permission flow, account rows, logout |
+| 🏋️ **Habit Tracker** | ✅ Done | Full habit tracking screen — daily calendar strip, habits list with streaks, long-press mark-as-done with bottom sheet confirmation, delete habit |
+| ➕ **Add Habit** | ✅ Done | Title, description, frequency selector (Daily/Weekly/Specific Days), icon picker, color picker with bordered swatches |
+| ✏️ **Edit Habit** | ✅ Done | Edit screen pre-fills all existing habit data (name, desc, frequency, active days, icon, color) |
+| 🏆 **Achievements Screen** | ✅ Done | XP level display, overall progress bar, categorised achievement cards (Streaks / Reflections / Goals / Habits), unlocked vs locked state |
+| 🏅 **Achievement Engine** | ✅ Done | `AchievementEngine.java` — evaluates 16 achievements across 4 categories from live DB stats |
+| 👤 **Profile & Settings** | ✅ Done | Avatar, dark mode toggle, notifications toggle with runtime permission flow, account rows, Achievements section, logout |
 | 📸 **Profile Photo Update** | ✅ Done | Choose from gallery (Photo Picker) or capture with camera — saved to private storage |
 | 🪪 **Personal Details** | ✅ Done | Edit name, view email, change password with current password verification, delete account |
 | 💳 **Subscription Screen** | ✅ Done | Plan overview UI screen |
 | ❓ **Help & Support** | ✅ Done | FAQ and support contact screen |
-| 🌙 **Dark / Light Theme** | ✅ Done | Follows device system theme live — switches across all screens instantly |
+| 🌙 **Dark / Light Theme** | ✅ Done | Follows device system theme live — switches across all screens instantly, including Habit Tracker & Achievements |
 | 🔔 **Notifications Toggle** | ✅ Done | Runtime permission request (Android 13+), toggle persists across app restarts |
 | 📱 **Session Management** | ✅ Done | Persistent login via `SharedPreferences`, auto-skip splash & onboarding |
 | 🧭 **Single-Activity Navigation** | ✅ Done | `MainActivity` hosts Home / Goals / Journal / Profile as Fragments with a shared bottom nav bar |
-| 🎨 **Reflect Logo** | ✅ Done | Custom `reflect_logo.png` applied as app launcher icon (all mipmap densities) and on every auth screen (Splash, Login, Register, Forgot Password) with rounded corners via `ShapeableImageView` |
+| 🎨 **Reflect Logo** | ✅ Done | Custom `reflect_logo.png` applied as app launcher icon (all mipmap densities) and on every auth screen |
 
 ---
 
@@ -126,11 +131,11 @@ MainActivity (activity_main.xml)
 ┌──────────────────┐
 │  Splash Screen   │  Reflect logo + animated loading bar
 └────────┬─────────┘
-         ├─── [Session exists] ──────────────────────▶ MainActivity (Home tab)
-         ├─── [Onboarding done, no session] ─────────▶ Login Screen
-         └─── [First launch] ──────────────────────▶ Onboarding (3 pages)
-                                                           │
-                                          [Get Started] ──▶ Login Screen
+         ├─── [Session exists] ──────────────────────────▶ MainActivity (Home tab)
+         ├─── [Onboarding done, no session] ─────────────▶ Login Screen
+         └─── [First launch] ──────────────────────────▶ Onboarding (3 pages)
+                                                               │
+                                              [Get Started] ──▶ Login Screen
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │                              Login Screen                                    │
 │  • Reflect logo (rounded ShapeableImageView)                                 │
@@ -148,6 +153,7 @@ MainActivity (activity_main.xml)
 │  │  • Avatar + "Welcome back, [Name]"  •  Notification bell           │    │
 │  │  • Empty state: "Add Your First Goal" button                        │    │
 │  │  • Active Goals  •  Completed  •  Habits (circular ring)           │    │
+│  │  • Tap Habits card ──▶ HabitTrackerActivity                        │    │
 │  │  • Daily Inspiration quote card                                     │    │
 │  │  • Weekly bar chart (Mon–Sun, today highlighted)                    │    │
 │  │  • Recent Activity feed — last 5 goals, tap → Goal Details          │    │
@@ -168,8 +174,7 @@ MainActivity (activity_main.xml)
 │  │  • Header "Reflection Journal"                                      │    │
 │  │  • Filter chips: All | This Week | This Month | ⭐ Favorites        │    │
 │  │  • Journal entry cards — mood icon, title, date/time, content preview│   │
-│  │  • Mood colour-coded icon boxes (Happy=Green, Sad=Amber,            │    │
-│  │    Neutral=Blue, Anxious=Purple, Calm=Blue)                         │    │
+│  │  • Mood colour-coded icon boxes                                     │    │
 │  │  • Long-press entry → toggle favorite (⭐)                          │    │
 │  │  • Empty state when no entries                                      │    │
 │  └─────────────────────────────────────────────────────────────────────┘    │
@@ -178,6 +183,7 @@ MainActivity (activity_main.xml)
 │  │  PROFILE TAB  (ProfileFragment)                                     │    │
 │  │  • Avatar  •  User name  •  "Pro Member" badge                      │    │
 │  │  • App Preferences: Dark Mode toggle, Notifications toggle          │    │
+│  │  • Achievements section — XP bar, count, "View All" button          │    │
 │  │  • Account: Personal Details ▶  Subscription ▶  Help & Support ▶   │    │
 │  │  • Log Out button with confirmation dialog                          │    │
 │  │  • Version text                                                     │    │
@@ -209,6 +215,46 @@ MainActivity (activity_main.xml)
 │  Edit ▶ →  Edit Goal Screen (pre-filled, updates DB on save)                │
 │  Delete → confirmation dialog → removes from DB → back to Goals tab         │
 └──────────────────────────────────────────────────────────────────────────────┘
+           │  [Habits card on Home — or any deep link]
+           ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         Habit Tracker Screen                                 │
+│  • Scrollable 7-day calendar strip (today highlighted)                      │
+│  • Today's streak count + overall completion rate                           │
+│  • Habit cards — coloured icon, title, description, streak badge            │
+│  • Long-press habit → "Mark as Done" bottom sheet confirmation              │
+│  • Check icon replaces mark button when already done today                  │
+│  • Swipe-to-delete / delete icon on each card                               │
+│  • ✏️ Edit icon — opens AddHabitActivity pre-filled with existing data      │
+│  • FAB (+) → AddHabitActivity (Add Mode)                                    │
+│  • Empty state when no habits added yet                                     │
+└──────────────────────────────────────────────────────────────────────────────┘
+           │  [FAB or Edit icon]
+           ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    Add / Edit Habit Screen                                   │
+│  • Title + Description fields                                                │
+│  • Frequency selector: Daily | Weekly | Specific Days                       │
+│  • Day toggles (Mon–Sun) — shown when Specific Days selected                │
+│  • Icon picker — 8 icons (self_improvement, water_drop, book, fitness,      │
+│    bedtime, restaurant, music, psychology)                                   │
+│  • Color picker — 6 bordered swatches (Indigo, Emerald, Pink, Orange,       │
+│    Purple, Red) — border highlights selected colour                          │
+│  • Edit mode: screen pre-fills all fields from existing Habit               │
+│  • Save → inserts or updates Room DB → RESULT_OK                            │
+└──────────────────────────────────────────────────────────────────────────────┘
+           │  [Profile → Achievements section]
+           ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         Achievements Screen                                  │
+│  • Level badge (Beginner → Expert) + total XP earned                        │
+│  • XP progress bar toward next level                                        │
+│  • Sections: Streaks | Reflections | Goals | Habits                         │
+│  • Each achievement card: icon, title, description, XP, progress bar        │
+│  • Unlocked achievements show full colour + ✅ check                        │
+│  • Locked achievements shown dimmed with 🔒 overlay                        │
+│  • 16 total achievements evaluated live from Room DB                        │
+└──────────────────────────────────────────────────────────────────────────────┘
            │  [Profile → Personal Details]
            ▼
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -223,7 +269,7 @@ MainActivity (activity_main.xml)
 
 ## 🗄️ Database Schema
 
-Reflect uses the **Room Persistence Library** backed by SQLite.
+Reflect uses the **Room Persistence Library** backed by SQLite. Currently at **version 4**.
 
 ### `users` table — `User.java`
 
@@ -262,7 +308,56 @@ Reflect uses the **Room Persistence Library** backed by SQLite.
 | `isFavorite` | `INTEGER` | `0` = normal, `1` = favorited |
 | `createdAt` | `TEXT` | ISO datetime (`yyyy-MM-dd HH:mm:ss`) |
 
+### `habits` table — `Habit.java`
+
+| Column | Type | Description |
+|---|---|---|
+| `id` | `INTEGER PK` | Auto-generated habit ID |
+| `userId` | `INTEGER FK` | References `users(id)` |
+| `title` | `TEXT` | Habit name |
+| `description` | `TEXT` | Short description / target (e.g. "15 minutes") |
+| `iconName` | `TEXT` | Icon identifier e.g. `self_improvement`, `water_drop` |
+| `iconColor` | `TEXT` | Color key e.g. `indigo`, `emerald`, `pink`, `orange` |
+| `frequency` | `TEXT` | `daily` / `weekly` / `specific` |
+| `activeDays` | `TEXT` | 7-char bitmask e.g. `1111100` (Mon–Fri) |
+| `streakCount` | `INTEGER` | Current consecutive day streak |
+| `createdAt` | `TEXT` | ISO datetime of creation |
+| `updatedAt` | `TEXT` | ISO datetime of last update |
+
+### `habit_completions` table — `HabitCompletion.java`
+
+| Column | Type | Description |
+|---|---|---|
+| `id` | `INTEGER PK` | Auto-generated completion ID |
+| `habitId` | `INTEGER FK` | References `habits(id)` ON DELETE CASCADE |
+| `completedDate` | `TEXT` | ISO date `yyyy-MM-dd` of the completion |
+
 > 🔑 All queries are filtered by the logged-in user's ID — complete data privacy between accounts.
+
+---
+
+## 🏆 Achievement System
+
+The achievement system is fully on-device — no server needed. It evaluates **16 achievements** across 4 categories against live Room DB stats.
+
+### Achievement Categories
+
+| Category | Achievements |
+|---|---|
+| **Streaks** | Beginner (3-day), Consistent (7-day), Dedicated (14-day), Unstoppable (30-day) |
+| **Reflections** | First Thought, Weekly Writer, Monthly Mind, Journal Master |
+| **Goals** | Dream Big, Goal Crusher, Achiever, Legend |
+| **Habits** | First Habit, Habit Builder, Habit Master, Daily Champion |
+
+### XP & Levels
+
+| Level | XP Range |
+|---|---|
+| Beginner | 0 – 199 XP |
+| Explorer | 200 – 499 XP |
+| Achiever | 500 – 999 XP |
+| Champion | 1000 – 1999 XP |
+| Expert | 2000+ XP |
 
 ---
 
@@ -272,7 +367,7 @@ Reflect fully supports **system-driven dark and light mode**:
 
 - Follows device theme automatically
 - Switches **live** while the app is open
-- Covers **every** screen across all activities and fragments
+- Covers **every** screen across all activities and fragments — including Habit Tracker, Add/Edit Habit, and Achievements
 - Implemented via `AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM` in `ReflectApp.java`
 - Profile screen **Dark Mode toggle** lets users override to force dark/light
 
@@ -299,7 +394,7 @@ The `reflect_logo.png` is used as the app's visual identity across all entry poi
 | **Register Screen** | `ShapeableImageView` 72×72dp, `centerCrop`, `18dp` rounded corners |
 | **Forgot Password Screen** | `ShapeableImageView` 72×72dp, `centerCrop`, `18dp` rounded corners |
 
-Rounded corners are applied via `@style/RoundedLogoShape` (`cornerFamily=rounded`, `cornerSize=18dp`) in `themes.xml`, ensuring the logo image is **pixel-perfectly clipped** — not just a rounded background behind a square image.
+Rounded corners are applied via `@style/RoundedLogoShape` (`cornerFamily=rounded`, `cornerSize=18dp`) in `themes.xml`, ensuring the logo image is **pixel-perfectly clipped**.
 
 ---
 
@@ -322,10 +417,10 @@ REFLECT/
 │   │   ├── ForgotPasswordActivity.java       # 2-step password reset (verify email → new password)
 │   │   │
 │   │   ├── ── Main Tab Fragments ──
-│   │   ├── HomeFragment.java                 # Home tab — stats, bar chart, recent activity, empty state
+│   │   ├── HomeFragment.java                 # Home tab — stats, bar chart, recent activity, habits card → HabitTrackerActivity
 │   │   ├── GoalsFragment.java                # Goals tab — filter chips, goal cards, progress bars
 │   │   ├── JournalFragment.java              # Journal tab — mood entries, filter chips, long-press favorite
-│   │   ├── ProfileFragment.java              # Profile tab — avatar, dark mode, notifications, logout
+│   │   ├── ProfileFragment.java              # Profile tab — avatar, dark mode, notifications, achievements summary, logout
 │   │   │
 │   │   ├── ── Goal Screens ──
 │   │   ├── AddGoalActivity.java              # Add new goal — title, description, category, priority, deadline
@@ -333,7 +428,15 @@ REFLECT/
 │   │   ├── GoalDetailsActivity.java          # Goal detail — progress, reflections, mark achieved, edit, delete
 │   │   │
 │   │   ├── ── Journal Screens ──
-│   │   ├── AddReflectionActivity.java        # Add reflection — title, mood picker, content body
+│   │   ├── AddReflectionActivity.java        # Add reflection — title, mood picker, content body + 🤖 AI mood detect
+│   │   │
+│   │   ├── ── Habit Screens ──
+│   │   ├── HabitTrackerActivity.java         # Habit tracker — calendar strip, habit cards, streak, mark-done bottom sheet
+│   │   ├── AddHabitActivity.java             # Add / Edit habit — title, desc, frequency, day picker, icon/color pickers
+│   │   │
+│   │   ├── ── Achievements ──
+│   │   ├── AchievementsActivity.java         # Achievements screen — XP header, progress bar, achievement cards
+│   │   ├── AchievementEngine.java            # Evaluates 16 achievements across 4 categories from live stats
 │   │   │
 │   │   ├── ── Profile Screens ──
 │   │   ├── PersonalDetailsActivity.java      # Edit name/password, camera/gallery photo picker, delete account
@@ -347,13 +450,17 @@ REFLECT/
 │   │   │
 │   │   ├── ── Database ──
 │   │   ├── database/
-│   │   │   ├── AppDatabase.java              # @Database — Room singleton, version 3
+│   │   │   ├── AppDatabase.java              # @Database — Room singleton, version 4; migrations 1→2→3→4
 │   │   │   ├── User.java                     # @Entity — users table
 │   │   │   ├── UserDao.java                  # @Dao — insert, login, emailExists, findByEmail, update
 │   │   │   ├── Goal.java                     # @Entity — goals table
-│   │   │   ├── GoalDao.java                  # @Dao — CRUD + getActive/Completed/Total counts, getRecentGoals, getActivityCountForDate
+│   │   │   ├── GoalDao.java                  # @Dao — CRUD + getActive/Completed/Total counts
 │   │   │   ├── Reflection.java               # @Entity — reflections table
-│   │   │   └── ReflectionDao.java            # @Dao — insert, update, delete, getReflectionsForUser
+│   │   │   ├── ReflectionDao.java            # @Dao — insert, update, delete, getReflectionsForUser
+│   │   │   ├── Habit.java                    # @Entity — habits table (title, icon, color, frequency, activeDays, streak)
+│   │   │   ├── HabitDao.java                 # @Dao — CRUD + getHabitsForUser, getTotalHabitsCount, updateStreak
+│   │   │   ├── HabitCompletion.java          # @Entity — habit_completions table (habitId, completedDate)
+│   │   │   └── HabitCompletionDao.java       # @Dao — insert/delete completions, getCompletedCountForUserOnDate, streak queries
 │   │   │
 │   │   ├── ── Utilities ──
 │   │   ├── utils/
@@ -366,37 +473,40 @@ REFLECT/
 │   │   │
 │   │   └── ── Custom Views ──
 │   │       └── ui/
-│   │           └── CircularProgressView.java # Custom canvas view — circular progress ring
+│   │           └── CircularProgressView.java # Custom canvas view — circular progress ring (used in Home habits card)
 │   │
-│   ├── assets/                               # ← place TFLite model files here
-│   │   ├── mood_classifier.tflite            # TFLite model (train in Colab, then copy here)
+│   ├── assets/
+│   │   ├── mood_classifier.tflite            # TFLite mood model (train in Colab, copy here)
 │   │   └── mood_vocab.txt                    # Vocabulary list matching the model
 │   │
 │   ├── res/
 │   │   ├── layout/
 │   │   │   ├── ── Fragment Layouts ──
-│   │   │   ├── fragment_home.xml             # Home tab UI (stats, chart, recent activity)
+│   │   │   ├── fragment_home.xml             # Home tab UI (stats, chart, habits card, recent activity)
 │   │   │   ├── fragment_goals.xml            # Goals tab UI (filter chips, goals list)
 │   │   │   ├── fragment_journal.xml          # Journal tab UI (filter chips, entries list)
-│   │   │   ├── fragment_profile.xml          # Profile tab UI (avatar, settings rows, logout)
-│   │   │   │
-│   │   │   ├── ── Main Host Layout ──
-│   │   │   ├── activity_main.xml             # Fragment container + bottom nav bar + FAB
+│   │   │   ├── fragment_profile.xml          # Profile tab UI (avatar, settings rows, achievements section, logout)
 │   │   │   │
 │   │   │   ├── ── Auth Layouts ──
-│   │   │   ├── activity_splash.xml           # Reflect logo + gradient box + progress bar
+│   │   │   ├── activity_splash.xml
 │   │   │   ├── activity_onboarding.xml
-│   │   │   ├── fragment_onboarding_1.xml     # "Set Meaningful Goals"
-│   │   │   ├── fragment_onboarding_2.xml     # "Reflect on Your Journey"
-│   │   │   ├── fragment_onboarding_3.xml     # "See Your Progress"
-│   │   │   ├── activity_login.xml            # Reflect logo (ShapeableImageView, rounded)
-│   │   │   ├── activity_register.xml         # Reflect logo (ShapeableImageView, rounded)
-│   │   │   ├── activity_forgot_password.xml  # Reflect logo (ShapeableImageView, rounded)
+│   │   │   ├── fragment_onboarding_1/2/3.xml
+│   │   │   ├── activity_login.xml
+│   │   │   ├── activity_register.xml
+│   │   │   ├── activity_forgot_password.xml
 │   │   │   │
 │   │   │   ├── ── Goal Layouts ──
 │   │   │   ├── activity_add_goal.xml
 │   │   │   ├── activity_edit_goal.xml
 │   │   │   ├── activity_goal_details.xml
+│   │   │   │
+│   │   │   ├── ── Habit Layouts ──
+│   │   │   ├── activity_habit_tracker.xml    # Habit tracker screen (calendar strip, habit list container)
+│   │   │   ├── activity_add_habit.xml        # Add/Edit habit form (title, freq, day toggles, icon/color pickers)
+│   │   │   ├── item_habit.xml                # Individual habit card item
+│   │   │   │
+│   │   │   ├── ── Achievements Layout ──
+│   │   │   ├── activity_achievements.xml     # Achievements screen (XP header, progress bar, achievement cards)
 │   │   │   │
 │   │   │   ├── ── Journal Layouts ──
 │   │   │   ├── activity_add_reflection.xml
@@ -406,55 +516,44 @@ REFLECT/
 │   │   │       ├── activity_subscription.xml
 │   │   │       └── activity_help_support.xml
 │   │   │
-│   │   ├── drawable/
-│   │   │   ├── reflect_logo.png              # ← App logo (used in launcher + all auth screens)
-│   │   │   ├── ic_launcher_foreground_logo.xml  # Adaptive icon foreground wrapping reflect_logo.png
-│   │   │   └── ...90+ vector icons, shape backgrounds, gradients
-│   │   ├── mipmap-mdpi/                      # reflect_logo.png → ic_launcher.png + ic_launcher_round.png
-│   │   ├── mipmap-hdpi/                      # reflect_logo.png → ic_launcher.png + ic_launcher_round.png
-│   │   ├── mipmap-xhdpi/                     # reflect_logo.png → ic_launcher.png + ic_launcher_round.png
-│   │   ├── mipmap-xxhdpi/                    # reflect_logo.png → ic_launcher.png + ic_launcher_round.png
-│   │   ├── mipmap-xxxhdpi/                   # reflect_logo.png → ic_launcher.png + ic_launcher_round.png
-│   │   ├── mipmap-anydpi-v26/                # Adaptive icon XML (background gradient + logo foreground)
-│   │   ├── xml/
-│   │   │   ├── file_paths.xml                # FileProvider paths for camera capture
-│   │   │   ├── backup_rules.xml
-│   │   │   └── data_extraction_rules.xml
+│   │   ├── drawable/                         # 90+ vector icons, backgrounds, gradients
+│   │   ├── mipmap-*/                         # Launcher icons (all densities)
 │   │   ├── values/
 │   │   │   ├── colors.xml                    # Brand + semantic light-theme palette
-│   │   │   ├── strings.xml                   # All UI strings
-│   │   │   ├── attrs.xml                     # Custom view attributes
-│   │   │   └── themes.xml                    # Base.Theme.REFLECT (DayNight) + Splash theme + RoundedLogoShape
+│   │   │   ├── strings.xml
+│   │   │   ├── attrs.xml
+│   │   │   └── themes.xml
 │   │   └── values-night/
 │   │       └── colors.xml                    # Dark-mode color overrides
 │   │
-│   └── AndroidManifest.xml                   # Activities, permissions, FileProvider declared
+│   └── AndroidManifest.xml
 │
 ├── gradle/
-│   └── libs.versions.toml                    # Version catalog (Room, ViewPager2, Glide, Credential Manager)
-├── REFLECT_Mood_Classifier_TFLite.ipynb      # Google Colab notebook — train & export TFLite mood model
-├── UI_Screens/                               # HTML/PNG UI reference screens (gitignored from build)
-│   ├── home_dashboard/
-│   ├── home_dashboard_dark_mode/
-│   ├── goal_list_screen/
-│   ├── goal_list_dark_mode/
-│   ├── goal_details/
-│   ├── goal_details_dark/
-│   ├── add_new_goal/
-│   ├── reflection_journal/
-│   ├── reflection_journal_dark_mode/
-│   ├── add_reflection/
-│   ├── profile_settings/
-│   ├── progress_analytics/
-│   ├── progress_analytics_dark_mode/
-│   ├── login_screen/
-│   ├── register_screen/
-│   ├── splash_screen/
-│   ├── onboarding_*/
-│   ├── achievements/
-│   ├── habit_tracker/
-│   ├── habit_tracker_dark_mode/
-│   └── vision_board/
+│   └── libs.versions.toml
+├── REFLECT_Mood_Classifier_TFLite.ipynb      # Google Colab — train & export TFLite mood model
+├── UI_Screens/                               # HTML/PNG UI reference screens
+│   ├── home_dashboard/           ✅ Built
+│   ├── home_dashboard_dark_mode/ ✅ Built
+│   ├── goal_list_screen/         ✅ Built
+│   ├── goal_list_dark_mode/      ✅ Built
+│   ├── goal_details/             ✅ Built
+│   ├── goal_details_dark/        ✅ Built
+│   ├── add_new_goal/             ✅ Built
+│   ├── add_reflection/           ✅ Built
+│   ├── reflection_journal/       ✅ Built
+│   ├── reflection_journal_dark_mode/ ✅ Built
+│   ├── profile_settings/         ✅ Built
+│   ├── habit_tracker/            ✅ Built
+│   ├── habit_tracker_dark_mode/  ✅ Built
+│   ├── add_new_habit/            ✅ Built
+│   ├── achievements/             ✅ Built
+│   ├── login_screen/             ✅ Built
+│   ├── register_screen/          ✅ Built
+│   ├── splash_screen/            ✅ Built
+│   ├── onboarding_*/             ✅ Built
+│   ├── progress_analytics/       ❌ Not built
+│   ├── progress_analytics_dark_mode/ ❌ Not built
+│   └── vision_board/             ❌ Not built
 ├── .gitignore
 └── README.md
 ```
@@ -496,6 +595,26 @@ REFLECT/
 
 ---
 
+## 🏋️ Habit Tracker System
+
+| Action | Behaviour |
+|---|---|
+| Tap **Habits card** on Home | Opens `HabitTrackerActivity` |
+| Tap **+FAB** in Habit Tracker | Opens `AddHabitActivity` (Add mode) |
+| Tap ✏️ **Edit icon** on habit card | Opens `AddHabitActivity` (Edit mode — pre-filled) |
+| **Long-press** habit card | Shows "Mark as Done" bottom sheet confirmation |
+| Tap **Mark as Done** | Inserts `HabitCompletion` for today → updates streak + stats |
+| Tap 🗑️ **Delete icon** | Confirmation dialog → removes habit + all completions from DB |
+| Return from Add/Edit | `HabitTrackerActivity` reloads habit list |
+
+### Habit Icon Options
+`self_improvement` · `water_drop` · `book_2` · `fitness_center` · `bedtime` · `restaurant` · `music_note` · `psychology`
+
+### Habit Color Options
+`indigo` · `emerald` · `pink` · `orange` · `purple` · `red`
+
+---
+
 ## 📓 Reflection Journal System
 
 | Action | Behaviour |
@@ -532,7 +651,6 @@ REFLECT/
 - **Android 12 and below** — reads system notification setting automatically
 - Toggle in Profile tab persists via `SessionManager.setNotificationsEnabled()` (synchronous `commit()`)
 - System permission revoked externally → toggle auto-corrects to OFF on next `onResume`
-- Turning toggle **OFF** saves preference without clearing the dialog-shown flag (prevents re-triggering system dialog)
 
 ---
 
@@ -632,7 +750,6 @@ MoodClassifier.getScores(text)
       │       Output: float[1][5] — softmax scores for each mood class
       │
       └── [model not found / failed] → keyword fallback scoring
-                  (looks for happy/sad/anxious/calm keywords in text)
 ```
 
 ### Model Architecture (Colab-trained)
@@ -663,10 +780,8 @@ MoodClassifier.getScores(text)
 ## 🔮 Upcoming Features
 
 - [ ] 📊 **Progress Analytics** — charts and streaks for goal completion across time
-- [ ] 🏆 **Achievements** — milestone badges and completion tracking
 - [ ] 🗺️ **Vision Board** — visual inspiration board for goals
 - [ ] 🔔 **Reminders** — daily reflection push notifications (channel already set up)
-- [ ] 🧩 **Habit Tracker** — daily habit check-ins with streaks
 
 ---
 
@@ -679,7 +794,7 @@ MoodClassifier.getScores(text)
 | **Project Idea** | #8 — Personal Goal Reflection App |
 | **Submission Deadline** | 6th March 2026 |
 | **Package Name** | `me.madhushan.reflect` |
-| **Version** | 1.0 |
+| **Version** | 1.2 |
 
 ---
 
