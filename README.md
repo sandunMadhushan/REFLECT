@@ -22,6 +22,16 @@
 >
 > **UI Design:** [View Figma Prototype →](https://www.figma.com/design/Td2oz592yq6aNDssoqYxMq/REFLECT-MOBILE-APP?node-id=0-1&t=ntP8JgXwgVIoP7fr-1)
 
+---
+
+### 📲 Latest Release — v1.3
+
+[![Download APK](https://img.shields.io/badge/⬇️%20Download-REFLECT--v1.3.apk-4E51E9?style=for-the-badge&logo=android&logoColor=white)](https://github.com/sandunMadhushan/REFLECT/releases/tag/v1.3)
+
+> **[→ View Release Notes & Download REFLECT-v1.3.apk](https://github.com/sandunMadhushan/REFLECT/releases/tag/v1.3)**
+>
+> Minimum Android: **7.0 (API 24)** · Package: `me.madhushan.reflect`
+
 </div>
 
 ---
@@ -687,6 +697,12 @@ REFLECT/
 
 ### Installation
 
+> **Just want to try the app?**
+> ⬇️ **[Download REFLECT-v1.3.apk directly from GitHub Releases](https://github.com/sandunMadhushan/REFLECT/releases/tag/v1.3)**
+> — no build required. See [installation instructions below](#-install-the-apk).
+
+**To build from source:**
+
 ```bash
 # 1. Clone the repository
 git clone https://github.com/sandunMadhushan/REFLECT.git
@@ -707,6 +723,17 @@ git clone https://github.com/sandunMadhushan/REFLECT.git
 
 > Email/password features work offline with no API key setup needed.
 > Google Sign-In and Facebook Login require keys in `local.properties` — see the **Social Auth Setup Guide** below.
+
+---
+
+### 📲 Install the APK
+
+1. Go to **[Releases → v1.3](https://github.com/sandunMadhushan/REFLECT/releases/tag/v1.3)**
+2. Download **`REFLECT-v1.3.apk`** from the Assets section
+3. On your Android device: **Settings → Security → Allow unknown sources** (or "Install unknown apps")
+4. Open the downloaded APK and tap **Install**
+
+> ⚠️ Minimum Android version: **7.0 (API 24)**
 
 ---
 
@@ -875,6 +902,19 @@ MoodClassifier.getScores(text)
 
 ---
 
+## 📦 Releases
+
+| Version | Tag | Date | APK | Notes |
+|---|---|---|---|---|
+| **v1.3** *(Latest)* | [`v1.3`](https://github.com/sandunMadhushan/REFLECT/releases/tag/v1.3) | Mar 10, 2026 | [⬇️ REFLECT-v1.3.apk](https://github.com/sandunMadhushan/REFLECT/releases/tag/v1.3) | Facebook Login, Secret Key Management |
+| v1.2 | [`v1.2`](https://github.com/sandunMadhushan/REFLECT/releases/tag/v1.2) | Mar 10, 2026 | [⬇️ REFLECT-v1.2.apk](https://github.com/sandunMadhushan/REFLECT/releases/tag/v1.2) | Habit Tracker, Achievements |
+| v1.1 | [`v1.1`](https://github.com/sandunMadhushan/REFLECT/releases/tag/v1.1) | — | — | AI Mood Detection, Journal, Goals |
+| v1.0 | [`v1.0`](https://github.com/sandunMadhushan/REFLECT/releases/tag/v1.0) | — | — | Initial release |
+
+> Full changelog & release notes: **[github.com/sandunMadhushan/REFLECT/releases](https://github.com/sandunMadhushan/REFLECT/releases)**
+
+---
+
 ## 📄 License
 
 This project is submitted as academic coursework for ICT3214.
@@ -885,5 +925,6 @@ This project is submitted as academic coursework for ICT3214.
 <div align="center">
   <img src="app/src/main/res/drawable/reflect_logo_rounded.png" width="48" alt="Reflect Logo"/><br><br>
   <i>"Track. Reflect. Grow."</i><br><br>
-  Built with ❤️ for ICT3214 — Mobile Application Development
+  Built with ❤️ for ICT3214 — Mobile Application Development<br><br>
+  <a href="https://github.com/sandunMadhushan/REFLECT/releases/tag/v1.3"><strong>⬇️ Download REFLECT-v1.3.apk</strong></a>
 </div>
