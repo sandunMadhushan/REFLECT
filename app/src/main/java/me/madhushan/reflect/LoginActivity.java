@@ -2,7 +2,6 @@ package me.madhushan.reflect;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +17,7 @@ import java.util.concurrent.Executors;
 import me.madhushan.reflect.database.AppDatabase;
 import me.madhushan.reflect.database.User;
 import me.madhushan.reflect.database.UserDao;
+import me.madhushan.reflect.utils.FacebookSignInHelper;
 import me.madhushan.reflect.utils.GoogleSignInHelper;
 import me.madhushan.reflect.utils.PasswordUtils;
 import me.madhushan.reflect.utils.SessionManager;
@@ -26,12 +26,13 @@ public class LoginActivity extends AppCompatActivity {
 
     private TextInputLayout tilEmail, tilPassword;
     private TextInputEditText etEmail, etPassword;
-    private MaterialButton btnLogin, btnGoogle, btnApple;
+    private MaterialButton btnLogin, btnGoogle, btnFacebook;
     private TextView tvForgotPassword, tvRegister;
 
     private AppDatabase db;
     private SessionManager sessionManager;
     private GoogleSignInHelper googleSignInHelper;
+    private FacebookSignInHelper facebookSignInHelper;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
@@ -39,24 +40,25 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        db                 = AppDatabase.getInstance(this);
-        sessionManager     = new SessionManager(this);
-        googleSignInHelper = new GoogleSignInHelper(this);
+        db                    = AppDatabase.getInstance(this);
+        sessionManager        = new SessionManager(this);
+        googleSignInHelper    = new GoogleSignInHelper(this);
+        facebookSignInHelper  = new FacebookSignInHelper(this);
 
         initViews();
         setupClickListeners();
     }
 
     private void initViews() {
-        tilEmail        = findViewById(R.id.til_email);
-        tilPassword     = findViewById(R.id.til_password);
-        etEmail         = findViewById(R.id.et_email);
-        etPassword      = findViewById(R.id.et_password);
-        btnLogin        = findViewById(R.id.btn_login);
-        btnGoogle       = findViewById(R.id.btn_google);
-        btnApple        = findViewById(R.id.btn_apple);
+        tilEmail         = findViewById(R.id.til_email);
+        tilPassword      = findViewById(R.id.til_password);
+        etEmail          = findViewById(R.id.et_email);
+        etPassword       = findViewById(R.id.et_password);
+        btnLogin         = findViewById(R.id.btn_login);
+        btnGoogle        = findViewById(R.id.btn_google);
+        btnFacebook      = findViewById(R.id.btn_facebook);
         tvForgotPassword = findViewById(R.id.tv_forgot_password);
-        tvRegister      = findViewById(R.id.tv_register);
+        tvRegister       = findViewById(R.id.tv_register);
     }
 
     private void setupClickListeners() {
@@ -69,8 +71,7 @@ public class LoginActivity extends AppCompatActivity {
 
         btnGoogle.setOnClickListener(v -> handleGoogleSignIn());
 
-        btnApple.setOnClickListener(v ->
-                Toast.makeText(this, "Apple sign-in — coming soon", Toast.LENGTH_SHORT).show());
+        btnFacebook.setOnClickListener(v -> handleFacebookSignIn());
 
         tvRegister.setOnClickListener(v -> {
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
@@ -197,6 +198,80 @@ public class LoginActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private void handleFacebookSignIn() {
+        btnFacebook.setEnabled(false);
+        btnFacebook.setText(R.string.facebook_signing_in);
+
+        facebookSignInHelper.signIn(new FacebookSignInHelper.Callback() {
+            @Override
+            public void onSuccess(String displayName, String email, String photoUrl) {
+                if (photoUrl != null && !photoUrl.isEmpty()) {
+                    sessionManager.setPhotoUrl(photoUrl);
+                }
+                handleFacebookUser(displayName, email);
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                btnFacebook.setEnabled(true);
+                btnFacebook.setText(R.string.btn_facebook);
+                Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void handleFacebookUser(String displayName, String email) {
+        executor.execute(() -> {
+            UserDao dao = db.userDao();
+            User existing = dao.findByEmail(email);
+
+            if (existing != null) {
+                // Already registered — log them in
+                final User user = existing;
+                runOnUiThread(() -> {
+                    btnFacebook.setEnabled(true);
+                    btnFacebook.setText(R.string.btn_facebook);
+                    sessionManager.saveSession(user.id, user.fullName, user.email);
+                    goToHome();
+                });
+            } else {
+                // First-time Facebook login — auto-register
+                User newUser = new User();
+                newUser.fullName     = displayName;
+                newUser.email        = email;
+                newUser.passwordHash = "FACEBOOK_AUTH_" + PasswordUtils.hash(email);
+
+                long newId = dao.insertUser(newUser);
+                runOnUiThread(() -> {
+                    btnFacebook.setEnabled(true);
+                    btnFacebook.setText(R.string.btn_facebook);
+                    if (newId > 0) {
+                        sessionManager.saveSession((int) newId, displayName, email);
+                        Toast.makeText(LoginActivity.this,
+                                "Welcome to Reflect, " + displayName + "! 🎉",
+                                Toast.LENGTH_SHORT).show();
+                        goToHome();
+                    } else {
+                        Toast.makeText(LoginActivity.this,
+                                "Facebook sign-in failed. Please try again.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * Required by the Facebook SDK to process the login activity result.
+     * Must be called from onActivityResult in the host Activity.
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Forward to Facebook SDK first
+        facebookSignInHelper.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void goToHome() {

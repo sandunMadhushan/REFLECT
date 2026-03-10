@@ -69,6 +69,8 @@ dependencies {
     // TensorFlow Lite — on-device AI mood detection
     // v2.4.0 bundles everything in one jar (no -api split), so no duplicate namespace conflict
     implementation("org.tensorflow:tensorflow-lite:2.4.0")
+    // Facebook Login SDK
+    implementation(libs.facebook.android.sdk)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

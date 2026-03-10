@@ -220,22 +220,22 @@
                         app:strokeColor="@color/colorBorder"
                         app:strokeWidth="1dp" />
 
-                    <!-- Apple Button -->
+                    <!-- Facebook Button -->
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_apple"
+                        android:id="@+id/btn_facebook"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:layout_width="0dp"
                         android:layout_height="52dp"
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
-                        android:text="@string/btn_apple"
+                        android:text="@string/btn_facebook"
                         android:textColor="@color/colorTextPrimary"
                         android:textSize="13sp"
                         android:textStyle="bold"
                         app:cornerRadius="12dp"
-                        app:icon="@drawable/ic_apple"
+                        app:icon="@drawable/ic_facebook"
                         app:iconSize="20dp"
-                        app:iconTint="@color/colorTextPrimary"
+                        app:iconTint="@null"
                         app:strokeColor="@color/colorBorder"
                         app:strokeWidth="1dp" />
                 </LinearLayout>
