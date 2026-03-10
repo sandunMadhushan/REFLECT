@@ -1,5 +1,5 @@
 # 📊 REFLECT — Project Status Report
-> **Date:** March 10, 2026 | **Module:** ICT3214 — Mobile Application Development
+> **Date:** March 10, 2026 | **Module:** ICT3214 — Mobile Application Development | **Version:** 1.3
 
 ---
 
@@ -13,7 +13,10 @@
 | **Login Screen** | `LoginActivity.java` + `activity_login.xml` | ✅ Done |
 | **Register Screen** | `RegisterActivity.java` + `activity_register.xml` | ✅ Done |
 | **Forgot Password** | `ForgotPasswordActivity.java` + `activity_forgot_password.xml` | ✅ Done |
-| **Google Sign-In** | `GoogleSignInHelper.java` | ✅ Done |
+| **Google Sign-In** | `GoogleSignInHelper.java` — reads key from `BuildConfig` | ✅ Done |
+| **Facebook Login** | `FacebookSignInHelper.java` — Graph API profile fetch, auto-register, logout | ✅ Done |
+| **Secret Key Management** | `local.properties` (gitignored) + `BuildConfig` + `resValue` injection in `build.gradle.kts` | ✅ Done |
+| **secrets.properties.example** | Committed template showing which keys contributors need | ✅ Done |
 | **Session Management** | `SessionManager.java` | ✅ Done |
 | **Auto-skip to Home if logged in** | `SplashActivity.java` | ✅ Done |
 | **Auto-skip Onboarding if seen** | `OnboardingActivity.java` | ✅ Done |
@@ -260,7 +263,9 @@ MainActivity (BottomNav Host)
 
 | Issue | Where | Status |
 |---|---|---|
-| "View All" near Your Progress | `HomeFragment` | ⚠️ Currently switches to Goals tab — needs `ProgressAnalyticsActivity` |
+| Apple Sign-In button on login screen | `LoginActivity` | ✅ Replaced — Facebook Login button added instead |
+| Google Web Client ID hardcoded in strings.xml | `strings.xml` | ✅ Fixed — moved to gitignored `local.properties` |
+| Facebook App ID / Client Token in strings.xml | `strings.xml` | ✅ Never committed — injected via `resValue` from `local.properties` |
 | TFLite duplicate namespace (manifest merger) | `build.gradle.kts` | ✅ Fixed |
 | Notification toggle persistence | `ProfileFragment` | ✅ Fixed |
 | Habit icon not updating when color changes | `AddHabitActivity` | ✅ Fixed |
@@ -280,6 +285,8 @@ MainActivity (BottomNav Host)
 | Database | Room Persistence Library | `2.6.1` |
 | Auth | SHA-256 hashing + `SharedPreferences` session | — |
 | Google Sign-In | Credential Manager API | `1.5.0` |
+| Facebook Login | Facebook Android SDK | `latest.release` |
+| Secret Keys | `local.properties` → `BuildConfig` + `resValue` | — |
 | Image Loading | Glide | `4.16.0` |
 | UI | XML Layouts, ConstraintLayout, MaterialComponents | `1.13.0` |
 | Theme | Dynamic dark/light — follows device system theme | — |
@@ -294,7 +301,7 @@ MainActivity (BottomNav Host)
 
 | Category | Done | Total | Progress |
 |---|---|---|---|
-| Auth & Onboarding | 9 | 9 | 🟢 100% |
+| Auth & Onboarding | 12 | 12 | 🟢 100% |
 | Home Dashboard | 9 | 9 | 🟢 100% |
 | Goals | 8 | 8 | 🟢 100% |
 | Reflection Journal | 6 | 6 | 🟢 100% |
@@ -305,8 +312,8 @@ MainActivity (BottomNav Host)
 | Database | 15 | 15 | 🟢 100% |
 | Progress Analytics | 0 | 5 | 🔴 0% |
 | Vision Board | 0 | 3 | 🔴 0% |
-| **TOTAL** | **101** | **109** | **🟡 93%** |
+| **TOTAL** | **104** | **112** | **🟡 93%** |
 
 ---
 
-*Last Updated: March 10, 2026 — REFLECT v1.2*
+*Last Updated: March 10, 2026 — REFLECT v1.3*

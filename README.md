@@ -11,6 +11,7 @@
 [![Room](https://img.shields.io/badge/Database-Room-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://developer.android.com/training/data-storage/room)
 [![Material3](https://img.shields.io/badge/UI-Material%20Design%203-757de8?style=for-the-badge&logo=materialdesign&logoColor=white)](https://m3.material.io)
 [![Google Sign-In](https://img.shields.io/badge/Auth-Google%20Sign--In-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://developers.google.com/identity)
+[![Facebook Login](https://img.shields.io/badge/Auth-Facebook%20Login-1877F2?style=for-the-badge&logo=facebook&logoColor=white)](https://developers.facebook.com/docs/facebook-login/android)
 [![TFLite](https://img.shields.io/badge/AI-TensorFlow%20Lite-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/lite)
 [![Figma](https://img.shields.io/badge/Design-Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)](https://www.figma.com/design/Td2oz592yq6aNDssoqYxMq/REFLECT-MOBILE-APP?node-id=0-1&t=ntP8JgXwgVIoP7fr-1)
 [![License](https://img.shields.io/badge/License-MIT-teal?style=for-the-badge)](LICENSE)
@@ -42,8 +43,10 @@ It's about **thinking deeply**, not managing tasks.
 | 💫 **Splash Screen** | ✅ Done | Animated branded loading screen with the Reflect logo, progress bar, routes by session/onboarding state |
 | 🎓 **Onboarding** | ✅ Done | 3-page swipeable intro with ViewPager2, skip support, shown only once |
 | 🔐 **Register** | ✅ Done | Full validation, SHA-256 password hashing, Room DB insert, auto-login on success |
-| 🔑 **Login** | ✅ Done | Email/password auth against Room DB, session creation |
+| 🔑 **Login** | ✅ Done | Email/password auth against Room DB, session creation; social login buttons (Google + Facebook) |
 | 🔵 **Google Sign-In** | ✅ Done | One-tap Google sign-in via Credential Manager API — auto-registers on first use |
+| 📘 **Facebook Login** | ✅ Done | Facebook Login SDK — Graph API fetches name, email, photo; auto-registers on first use; logout clears Facebook session |
+| 🔑 **Secret Key Management** | ✅ Done | API keys stored in gitignored `local.properties`, injected via `BuildConfig` + `resValue` at build time — never committed to git |
 | 🖼️ **Google Profile Photo** | ✅ Done | Google account photo loaded via Glide with CircleCrop on Home & Profile |
 | 🔓 **Forgot Password** | ✅ Done | 2-step flow: verify email → set new password → success screen |
 | 🏠 **Home Dashboard** | ✅ Done | Stats cards, inspiration quote, dynamic progress chart (today highlighted), recent activity from DB, habits card taps into Habit Tracker |
@@ -87,6 +90,8 @@ It's about **thinking deeply**, not managing tasks.
 | **Image Loading** | Glide | `4.16.0` |
 | **Google Sign-In** | Credential Manager API | `1.5.0` |
 | **Google ID Token** | `com.google.android.libraries.identity.googleid` | `1.1.1` |
+| **Facebook Login** | Facebook Android SDK | `latest.release` |
+| **Secret Keys** | `local.properties` → `BuildConfig` + `resValue` injection | — |
 | **On-Device AI** | TensorFlow Lite | `2.4.0` |
 | **Model Training** | Google Colab (Python / TF Keras → TFLite) | — |
 | **Password Security** | SHA-256 via `MessageDigest` | — |
@@ -141,6 +146,7 @@ MainActivity (activity_main.xml)
 │  • Reflect logo (rounded ShapeableImageView)                                 │
 │  • Email / Password  •  Log In  •  Forgot Password?                          │
 │  • 🔵 Google Sign-In (Credential Manager — fully functional)                 │
+│  • 📘 Facebook Login (Facebook SDK — Graph API for name, email, photo)       │
 │  • "Register now" link                                                       │
 └──────────┬──────────────────────────────────────────────────────────────────┘
            │ [success]
@@ -462,14 +468,15 @@ REFLECT/
 │   │   │   ├── HabitCompletion.java          # @Entity — habit_completions table (habitId, completedDate)
 │   │   │   └── HabitCompletionDao.java       # @Dao — insert/delete completions, getCompletedCountForUserOnDate, streak queries
 │   │   │
-│   │   ├── ── Utilities ──
-│   │   ├── utils/
-│   │   │   ├── AvatarLoader.java             # Glide-based avatar — local file / Google URL / initials fallback
-│   │   │   ├── GoogleSignInHelper.java       # Credential Manager Google Sign-In wrapper
-│   │   │   ├── MoodClassifier.java           # TFLite inference wrapper — predict() + getScores() + keyword fallback
-│   │   │   ├── NotificationHelper.java       # Notification channel creation
-│   │   │   ├── PasswordUtils.java            # SHA-256 password hashing
-│   │   │   └── SessionManager.java           # SharedPreferences — session, photo paths, notif prefs
+│   ├── ── Utilities ──
+│   ├── utils/
+│   │   ├── AvatarLoader.java             # Glide-based avatar — local file / Google URL / initials fallback
+│   │   ├── GoogleSignInHelper.java       # Credential Manager Google Sign-In wrapper — reads key from BuildConfig
+│   │   ├── FacebookSignInHelper.java     # Facebook Login SDK wrapper — Graph API profile fetch, logout
+│   │   ├── MoodClassifier.java           # TFLite inference wrapper — predict() + getScores() + keyword fallback
+│   │   ├── NotificationHelper.java       # Notification channel creation
+│   │   ├── PasswordUtils.java            # SHA-256 password hashing
+│   │   └── SessionManager.java           # SharedPreferences — session, photo paths, notif prefs
 │   │   │
 │   │   └── ── Custom Views ──
 │   │       └── ui/
@@ -530,6 +537,8 @@ REFLECT/
 │
 ├── gradle/
 │   └── libs.versions.toml
+├── local.properties                          # ⚠️ GITIGNORED — your real API keys go here
+├── secrets.properties.example               # ✅ Committed — template showing which keys are needed
 ├── REFLECT_Mood_Classifier_TFLite.ipynb      # Google Colab — train & export TFLite mood model
 ├── UI_Screens/                               # HTML/PNG UI reference screens
 │   ├── home_dashboard/           ✅ Built
@@ -685,43 +694,98 @@ git clone https://github.com/sandunMadhushan/REFLECT.git
 # 2. Open in Android Studio
 #    File → Open → Select the cloned folder
 
-# 3. Sync Gradle
+# 3. Set up secret keys
+#    Copy secrets.properties.example → local.properties
+#    Fill in your GOOGLE_WEB_CLIENT_ID, FACEBOOK_APP_ID, FACEBOOK_CLIENT_TOKEN
+
+# 4. Sync Gradle
 #    File → Sync Project with Gradle Files
 
-# 4. Run on emulator or physical device
+# 5. Run on emulator or physical device
 #    Run → Run 'app'
 ```
 
-> Email/password features work offline with no setup needed.
-> Google Sign-In requires additional configuration below.
+> Email/password features work offline with no API key setup needed.
+> Google Sign-In and Facebook Login require keys in `local.properties` — see the **Social Auth Setup Guide** below.
 
 ---
 
-## 🔵 Google Sign-In Setup Guide
+## 🔑 Social Auth Setup Guide
 
-### Step 1 — Create a Firebase Project
+All API keys are stored in **`local.properties`** (gitignored — never committed to GitHub).
+Copy `secrets.properties.example` → `local.properties` and fill in your real values.
+
+```properties
+# local.properties (gitignored)
+GOOGLE_WEB_CLIENT_ID=YOUR_GOOGLE_WEB_CLIENT_ID.apps.googleusercontent.com
+FACEBOOK_APP_ID=YOUR_FACEBOOK_APP_ID
+FACEBOOK_CLIENT_TOKEN=YOUR_FACEBOOK_CLIENT_TOKEN
+```
+
+Gradle reads these and injects them as `BuildConfig` fields + `resValue` strings at build time.
+**No secret ever touches a committed file.**
+
+---
+
+### 🔵 Google Sign-In Setup
+
+#### Step 1 — Create a Firebase Project
 
 1. Go to **[Firebase Console](https://console.firebase.google.com)** → Add project → name it `Reflect`
 
-### Step 2 — Register your Android App
+#### Step 2 — Register your Android App
 
 1. Click the **Android** icon → enter package name `me.madhushan.reflect`
-2. Get your SHA-1:
+2. Get your SHA-1 fingerprint:
    ```bash
    keytool -list -v -keystore "%USERPROFILE%\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android
    ```
 3. Paste SHA-1 → Register app → Download **`google-services.json`** → place in `/app/`
 
-### Step 3 — Enable Google Sign-In
+#### Step 3 — Enable Google Sign-In
 
-Firebase Console → **Authentication** → **Sign-in method** → **Google** → Enable → Copy Web Client ID
+Firebase Console → **Authentication** → **Sign-in method** → **Google** → Enable → Copy **Web Client ID**
 
-### Step 4 — Add Web Client ID
+#### Step 4 — Add to local.properties
 
-`app/src/main/res/values/strings.xml`:
-```xml
-<string name="default_web_client_id">YOUR_WEB_CLIENT_ID.apps.googleusercontent.com</string>
+```properties
+GOOGLE_WEB_CLIENT_ID=YOUR_WEB_CLIENT_ID.apps.googleusercontent.com
 ```
+
+---
+
+### 📘 Facebook Login Setup
+
+#### Step 1 — Create a Facebook App
+
+1. Go to **[developers.facebook.com](https://developers.facebook.com)** → My Apps → Create App
+2. Select **Consumer** → Enter app name `Reflect` → Create App
+3. Add **Facebook Login** product → choose **Android**
+
+#### Step 2 — Add Key Hash (required for Android auth)
+
+```powershell
+# Windows PowerShell
+keytool -exportcert -alias androiddebugkey -keystore "$env:USERPROFILE\.android\debug.keystore" | openssl sha1 -binary | openssl base64
+```
+
+Go to **Settings → Basic → Android section** → paste the hash into **Key Hashes** → Save
+
+#### Step 3 — Collect App ID and Client Token
+
+- **App ID** → Settings → Basic → App ID
+- **Client Token** → Settings → Advanced → Client Token
+
+#### Step 4 — Add to local.properties
+
+```properties
+FACEBOOK_APP_ID=YOUR_FACEBOOK_APP_ID
+FACEBOOK_CLIENT_TOKEN=YOUR_FACEBOOK_CLIENT_TOKEN
+```
+
+#### Step 5 — Sync Gradle
+
+**File → Sync Project with Gradle Files** — Gradle injects the values automatically.
 
 ---
 
@@ -794,16 +858,20 @@ MoodClassifier.getScores(text)
 | **Project Idea** | #8 — Personal Goal Reflection App |
 | **Submission Deadline** | 6th March 2026 |
 | **Package Name** | `me.madhushan.reflect` |
-| **Version** | 1.2 |
+| **Version** | 1.3 |
 
 ---
 
-## 🔒 Security Note
+## 🔒 Security
 
-- **Passwords** — SHA-256 hashed via `PasswordUtils.java`, never stored plain text
-- **Google Sign-In** — ID Token verified via `GoogleIdTokenCredential`, stored as `GOOGLE_AUTH_<hash>`
-- **Profile Photos** — stored in app-private internal storage, inaccessible to other apps
-- **Database ops** — all Room operations run on background threads via `ExecutorService`
+| Area | Approach |
+|---|---|
+| **Passwords** | SHA-256 hashed via `PasswordUtils.java` — never stored plain text |
+| **Google Sign-In** | ID Token verified via `GoogleIdTokenCredential`, stored as `GOOGLE_AUTH_<hash>` |
+| **Facebook Login** | Access token handled by Facebook SDK; stored as `FACEBOOK_AUTH_<hash>` in Room DB |
+| **API Keys** | Stored in gitignored `local.properties` — injected at build time via `BuildConfig` fields and `resValue`. A committed `secrets.properties.example` template shows contributors which keys are needed without exposing real values |
+| **Profile Photos** | Stored in app-private internal storage (`/files/profile_photos/`), inaccessible to other apps |
+| **Database ops** | All Room operations run on background threads via `ExecutorService` |
 
 ---
 
