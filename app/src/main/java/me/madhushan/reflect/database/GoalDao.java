@@ -48,5 +48,9 @@ public interface GoalDao {
     /** Goals updated on a specific date (for chart). */
     @Query("SELECT COUNT(*) FROM goals WHERE userId = :userId AND updatedAt LIKE :datePrefix || '%'")
     int getActivityCountForDate(int userId, String datePrefix);
+
+    /** Goals updated on a specific date (for activity feed). */
+    @Query("SELECT * FROM goals WHERE userId = :userId AND updatedAt LIKE :date || '%' ORDER BY updatedAt DESC")
+    List<Goal> getGoalsForDate(int userId, String date);
 }
 
