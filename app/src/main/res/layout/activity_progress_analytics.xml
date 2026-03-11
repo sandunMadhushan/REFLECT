@@ -227,6 +227,58 @@
                     android:orientation="horizontal"
                     android:layout_marginTop="6dp">
                 </LinearLayout>
+
+                <!-- Selected day detail panel — shown when a bar is tapped -->
+                <LinearLayout
+                    android:id="@+id/day_detail_panel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <!-- Divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/colorBorder"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="12dp"/>
+
+                    <!-- Day title row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+                        <TextView
+                            android:id="@+id/tv_day_detail_title"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="@color/colorTextPrimary"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:text="Monday"/>
+                        <TextView
+                            android:id="@+id/btn_close_day_detail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="✕"
+                            android:textColor="@color/colorTextSecondary"
+                            android:textSize="16sp"
+                            android:padding="4dp"
+                            android:clickable="true"
+                            android:focusable="true"/>
+                    </LinearLayout>
+
+                    <!-- Day detail content (habits + reflections) -->
+                    <LinearLayout
+                        android:id="@+id/day_detail_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"/>
+                </LinearLayout>
             </LinearLayout>
 
             <!-- ── 4 STAT CARDS GRID ── -->
