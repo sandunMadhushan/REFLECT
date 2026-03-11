@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = { User.class, Goal.class, Reflection.class, Habit.class, HabitCompletion.class }, version = 4, exportSchema = false)
+@Database(entities = { User.class, Goal.class, Reflection.class, Habit.class, HabitCompletion.class, VisionBoardItem.class }, version = 5, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase INSTANCE;
@@ -18,6 +18,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract ReflectionDao reflectionDao();
     public abstract HabitDao habitDao();
     public abstract HabitCompletionDao habitCompletionDao();
+    public abstract VisionBoardItemDao visionBoardItemDao();
 
     /** Migration from v1 (users only) → v2 (adds goals table). */
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
@@ -85,6 +86,23 @@ public abstract class AppDatabase extends RoomDatabase {
         }
     };
 
+    /** Migration from v4 → v5 (adds vision_board_items table). */
+    static final Migration MIGRATION_4_5 = new Migration(4, 5) {
+        @Override
+        public void migrate(SupportSQLiteDatabase db) {
+            db.execSQL("CREATE TABLE IF NOT EXISTS `vision_board_items` (" +
+                    "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                    "`userId` INTEGER NOT NULL," +
+                    "`title` TEXT," +
+                    "`category` TEXT," +
+                    "`note` TEXT," +
+                    "`imageUri` TEXT," +
+                    "`createdAt` TEXT," +
+                    "FOREIGN KEY(`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE)");
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_vision_board_items_userId` ON `vision_board_items` (`userId`)");
+        }
+    };
+
     public static AppDatabase getInstance(Context context) {
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
@@ -94,7 +112,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             AppDatabase.class,
                             "reflect_db"
                     )
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
                     .build();
                 }
             }
