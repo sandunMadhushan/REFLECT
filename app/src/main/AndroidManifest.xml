@@ -142,6 +142,11 @@
             android:name=".NotificationsActivity"
             android:exported="false" />
 
+        <!-- Progress Analytics Screen -->
+        <activity
+            android:name=".ProgressAnalyticsActivity"
+            android:exported="false" />
+
         <!-- Vision Board Screen -->
         <activity
             android:name=".VisionBoardActivity"
