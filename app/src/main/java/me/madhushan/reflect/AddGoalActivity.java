@@ -23,6 +23,7 @@ import java.util.concurrent.Executors;
 import me.madhushan.reflect.database.AppDatabase;
 import me.madhushan.reflect.database.Goal;
 import me.madhushan.reflect.database.GoalDao;
+import me.madhushan.reflect.utils.AppNotificationManager;
 import me.madhushan.reflect.utils.SessionManager;
 
 public class AddGoalActivity extends AppCompatActivity {
@@ -146,6 +147,9 @@ public class AddGoalActivity extends AppCompatActivity {
 
         executor.execute(() -> {
             goalDao.insertGoal(goal);
+            AppNotificationManager.postGeneral(this, goal.userId,
+                    "🎯 New Goal Created",
+                    "You set a new goal: \"" + title + "\". Keep going!");
             runOnUiThread(() -> {
                 Toast.makeText(this, "Goal saved! 🎯", Toast.LENGTH_SHORT).show();
                 setResult(RESULT_OK);

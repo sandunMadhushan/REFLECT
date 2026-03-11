@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
 import me.madhushan.reflect.database.AppDatabase;
 import me.madhushan.reflect.database.User;
 import me.madhushan.reflect.database.UserDao;
+import me.madhushan.reflect.utils.AppNotificationManager;
 import me.madhushan.reflect.utils.GoogleSignInHelper;
 import me.madhushan.reflect.utils.PasswordUtils;
 import me.madhushan.reflect.utils.SessionManager;
@@ -163,6 +164,7 @@ public class RegisterActivity extends AppCompatActivity {
                 if (newId > 0) {
                     // Auto-login: save session and go to MainActivity
                     sessionManager.saveSession((int) newId, finalFullName, finalEmail);
+                    AppNotificationManager.postWelcome(RegisterActivity.this, (int) newId, finalFullName);
                     Toast.makeText(this,
                             "Welcome to Reflect, " + finalFullName + "! 🎉",
                             Toast.LENGTH_LONG).show();

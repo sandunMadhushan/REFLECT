@@ -22,6 +22,8 @@ import me.madhushan.reflect.database.AppDatabase;
 import me.madhushan.reflect.database.Goal;
 import me.madhushan.reflect.database.GoalDao;
 import me.madhushan.reflect.ui.CircularProgressView;
+import me.madhushan.reflect.utils.AppNotificationManager;
+import me.madhushan.reflect.utils.SessionManager;
 
 public class GoalDetailsActivity extends AppCompatActivity {
 
@@ -31,6 +33,7 @@ public class GoalDetailsActivity extends AppCompatActivity {
     private Goal currentGoal;
     private GoalDao goalDao;
     private ExecutorService executor;
+    private SessionManager sessionManager;
 
     private TextView tvTitle, tvDescription, tvCategory, tvPriority, tvDeadline, tvCreated;
     private TextView tvProgressPct, tvMarkLabel, tvNoReflections;
@@ -55,6 +58,7 @@ public class GoalDetailsActivity extends AppCompatActivity {
         goalId   = getIntent().getIntExtra(EXTRA_GOAL_ID, -1);
         goalDao  = AppDatabase.getInstance(this).goalDao();
         executor = Executors.newSingleThreadExecutor();
+        sessionManager = new SessionManager(this);
 
         tvTitle          = findViewById(R.id.tv_goal_title);
         tvDescription    = findViewById(R.id.tv_goal_description);
@@ -157,6 +161,10 @@ public class GoalDetailsActivity extends AppCompatActivity {
             currentGoal.isAchieved = newStatus;
             currentGoal.updatedAt  = today;
             goalDao.updateGoal(currentGoal);
+            if (newStatus == 1) {
+                AppNotificationManager.postGoalAchieved(this,
+                        sessionManager.getUserId(), currentGoal.title);
+            }
             runOnUiThread(() -> {
                 bindGoal();
                 setResult(RESULT_OK);

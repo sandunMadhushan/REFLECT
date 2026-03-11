@@ -20,6 +20,7 @@ import java.util.concurrent.Executors;
 import me.madhushan.reflect.database.AppDatabase;
 import me.madhushan.reflect.database.Reflection;
 import me.madhushan.reflect.database.ReflectionDao;
+import me.madhushan.reflect.utils.AppNotificationManager;
 import me.madhushan.reflect.utils.MoodClassifier;
 import me.madhushan.reflect.utils.SessionManager;
 
@@ -225,6 +226,7 @@ public class AddReflectionActivity extends AppCompatActivity {
 
         executor.execute(() -> {
             reflectionDao.insertReflection(r);
+            AppNotificationManager.postReflectionAdded(this, userId, title);
             runOnUiThread(() -> {
                 Toast.makeText(this, "Reflection saved!", Toast.LENGTH_SHORT).show();
                 setResult(RESULT_OK);

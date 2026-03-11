@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = { User.class, Goal.class, Reflection.class, Habit.class, HabitCompletion.class, VisionBoardItem.class }, version = 5, exportSchema = false)
+@Database(entities = { User.class, Goal.class, Reflection.class, Habit.class, HabitCompletion.class, VisionBoardItem.class, AppNotification.class }, version = 6, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase INSTANCE;
@@ -19,6 +19,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract HabitDao habitDao();
     public abstract HabitCompletionDao habitCompletionDao();
     public abstract VisionBoardItemDao visionBoardItemDao();
+    public abstract AppNotificationDao appNotificationDao();
 
     /** Migration from v1 (users only) → v2 (adds goals table). */
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
@@ -103,6 +104,21 @@ public abstract class AppDatabase extends RoomDatabase {
         }
     };
 
+    /** Migration from v5 → v6 (adds app_notifications table). */
+    static final Migration MIGRATION_5_6 = new Migration(5, 6) {
+        @Override
+        public void migrate(SupportSQLiteDatabase db) {
+            db.execSQL("CREATE TABLE IF NOT EXISTS `app_notifications` (" +
+                    "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                    "`userId` INTEGER NOT NULL," +
+                    "`type` TEXT," +
+                    "`title` TEXT," +
+                    "`message` TEXT," +
+                    "`createdAt` TEXT," +
+                    "`isRead` INTEGER NOT NULL)");
+        }
+    };
+
     public static AppDatabase getInstance(Context context) {
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
@@ -112,7 +128,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             AppDatabase.class,
                             "reflect_db"
                     )
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
                     .build();
                 }
             }
