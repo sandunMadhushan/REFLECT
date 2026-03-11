@@ -30,6 +30,10 @@ public interface ReflectionDao {
     @Query("SELECT * FROM reflections WHERE userId = :userId AND createdAt >= :dateStart ORDER BY createdAt DESC")
     List<Reflection> getReflectionsFromDate(int userId, String dateStart);
 
+    /** Reflections written on a specific date (for activity feed). */
+    @Query("SELECT * FROM reflections WHERE userId = :userId AND createdAt LIKE :date || '%' ORDER BY createdAt DESC")
+    List<Reflection> getReflectionsForDate(int userId, String date);
+
     @Query("SELECT * FROM reflections WHERE userId = :userId AND isFavorite = 1 ORDER BY createdAt DESC")
     List<Reflection> getFavoriteReflections(int userId);
 

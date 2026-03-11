@@ -45,6 +45,7 @@ public class GoalsFragment extends Fragment {
 
     private LinearLayout goalsContainer, goalsEmptyState;
     private TextView filterAll, filterActive, filterCompleted;
+    private TextView tvEmptyTitle, tvEmptySubtitle;
     private String currentFilter = "all";
 
     private final ActivityResultLauncher<Intent> goalLauncher =
@@ -65,6 +66,8 @@ public class GoalsFragment extends Fragment {
 
         goalsContainer  = v.findViewById(R.id.goals_container);
         goalsEmptyState = v.findViewById(R.id.goals_empty_state);
+        tvEmptyTitle    = v.findViewById(R.id.tv_empty_title);
+        tvEmptySubtitle = v.findViewById(R.id.tv_empty_subtitle);
         filterAll       = v.findViewById(R.id.goals_filter_all);
         filterActive    = v.findViewById(R.id.goals_filter_active);
         filterCompleted = v.findViewById(R.id.goals_filter_completed);
@@ -111,8 +114,28 @@ public class GoalsFragment extends Fragment {
 
     private void renderGoals(List<Goal> goals) {
         goalsContainer.removeAllViews();
-        goalsEmptyState.setVisibility(goals.isEmpty() ? View.VISIBLE : View.GONE);
-        if (goals.isEmpty()) return;
+
+        if (goals.isEmpty()) {
+            goalsEmptyState.setVisibility(View.VISIBLE);
+            // Update empty state message based on active filter
+            switch (currentFilter) {
+                case "active":
+                    tvEmptyTitle.setText("No active goals");
+                    tvEmptySubtitle.setText("You have no goals in progress. Tap + to add a new goal.");
+                    break;
+                case "completed":
+                    tvEmptyTitle.setText("No completed goals yet");
+                    tvEmptySubtitle.setText("Keep going! Complete a goal and it will show up here.");
+                    break;
+                default:
+                    tvEmptyTitle.setText("No goals yet");
+                    tvEmptySubtitle.setText("Tap the + button to add your first goal.");
+                    break;
+            }
+            return;
+        }
+
+        goalsEmptyState.setVisibility(View.GONE);
 
         float dp = getResources().getDisplayMetrics().density;
         for (Goal goal : goals) {

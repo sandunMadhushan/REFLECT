@@ -41,6 +41,13 @@ public interface HabitCompletionDao {
            "INNER JOIN habits h ON hc.habitId = h.id " +
            "WHERE h.userId = :userId")
     int getTotalCompletionsForUser(int userId);
+
+    /** Habits completed on a specific date for a user (for activity feed). */
+    @Query("SELECT h.* FROM habits h " +
+           "INNER JOIN habit_completions hc ON h.id = hc.habitId " +
+           "WHERE h.userId = :userId AND hc.completedDate = :date " +
+           "ORDER BY h.title ASC")
+    List<me.madhushan.reflect.database.Habit> getHabitsCompletedOnDate(int userId, String date);
 }
 
 
