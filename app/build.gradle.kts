@@ -93,6 +93,8 @@ dependencies {
     // Room Database
     implementation(libs.room.runtime)
     annotationProcessor(libs.room.compiler)
+    // WorkManager — background notifications when app is closed
+    implementation("androidx.work:work-runtime:2.9.0")
     // ViewPager2 for onboarding
     implementation(libs.viewpager2)
     // Google Sign-In via Credential Manager

@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import me.madhushan.reflect.utils.SessionManager;
+import me.madhushan.reflect.utils.WorkManagerScheduler;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,6 +34,10 @@ public class MainActivity extends AppCompatActivity {
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 sessionManager.setNotificationsEnabled(isGranted);
                 sessionManager.markNotifDialogShown();
+                if (isGranted) {
+                    // Permission just granted — start the daily background reminder
+                    WorkManagerScheduler.schedule(MainActivity.this);
+                }
             });
 
     // FAB launchers — refresh the current fragment on RESULT_OK
@@ -168,13 +173,15 @@ public class MainActivity extends AppCompatActivity {
                     == PackageManager.PERMISSION_GRANTED) {
                 sessionManager.setNotificationsEnabled(true);
                 sessionManager.markNotifDialogShown();
+                WorkManagerScheduler.schedule(this);
             } else {
                 notifPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
             }
         } else {
-            sessionManager.setNotificationsEnabled(
-                    NotificationManagerCompat.from(this).areNotificationsEnabled());
+            boolean enabled = NotificationManagerCompat.from(this).areNotificationsEnabled();
+            sessionManager.setNotificationsEnabled(enabled);
             sessionManager.markNotifDialogShown();
+            if (enabled) WorkManagerScheduler.schedule(this);
         }
     }
 }
