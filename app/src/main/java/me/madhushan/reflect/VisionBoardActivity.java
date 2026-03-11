@@ -8,6 +8,8 @@ public class VisionBoardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.visionboard);
+
+        // Back button
+        findViewById(R.id.btn_back).setOnClickListener(v -> finish());
     }
 }
-
