@@ -22,7 +22,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -33,54 +32,10 @@ import me.madhushan.reflect.database.HabitDao;
 import me.madhushan.reflect.database.HabitCompletionDao;
 import me.madhushan.reflect.ui.CircularProgressView;
 import me.madhushan.reflect.utils.AvatarLoader;
+import me.madhushan.reflect.utils.InspirationLoader;
 import me.madhushan.reflect.utils.SessionManager;
 
 public class HomeFragment extends Fragment {
-
-    // ── Daily Inspiration data ────────────────────────────────────────────────
-    private static final String[][] QUOTES = {
-        {"Believe you can and you're halfway there.", "Theodore Roosevelt"},
-        {"The only way to do great work is to love what you do.", "Steve Jobs"},
-        {"It does not matter how slowly you go as long as you do not stop.", "Confucius"},
-        {"Success is not final, failure is not fatal: it is the courage to continue that counts.", "Winston Churchill"},
-        {"You are never too old to set another goal or to dream a new dream.", "C.S. Lewis"},
-        {"The secret of getting ahead is getting started.", "Mark Twain"},
-        {"Don't watch the clock; do what it does. Keep going.", "Sam Levenson"},
-        {"Hardships often prepare ordinary people for an extraordinary destiny.", "C.S. Lewis"},
-        {"Believe in yourself and all that you are.", "Christian D. Larson"},
-        {"Act as if what you do makes a difference. It does.", "William James"},
-        {"What you get by achieving your goals is not as important as what you become.", "Zig Ziglar"},
-        {"Keep your face always toward the sunshine, and shadows will fall behind you.", "Walt Whitman"},
-        {"Do one thing every day that scares you.", "Eleanor Roosevelt"},
-        {"You miss 100% of the shots you don't take.", "Wayne Gretzky"},
-        {"The future belongs to those who believe in the beauty of their dreams.", "Eleanor Roosevelt"},
-        {"It always seems impossible until it's done.", "Nelson Mandela"},
-        {"Start where you are. Use what you have. Do what you can.", "Arthur Ashe"},
-        {"Strive not to be a success, but rather to be of value.", "Albert Einstein"},
-        {"Two roads diverged in a wood, and I took the one less traveled by.", "Robert Frost"},
-        {"If you can dream it, you can do it.", "Walt Disney"},
-        {"In the middle of every difficulty lies opportunity.", "Albert Einstein"},
-        {"Life is what happens when you're busy making other plans.", "John Lennon"},
-        {"Spread love everywhere you go. Let no one ever come to you without leaving happier.", "Mother Teresa"},
-        {"When you reach the end of your rope, tie a knot in it and hang on.", "Franklin D. Roosevelt"},
-        {"Always remember that you are absolutely unique. Just like everyone else.", "Margaret Mead"},
-        {"Don't go where the path may lead, go instead where there is no path and leave a trail.", "Ralph Waldo Emerson"},
-        {"You will face many defeats in life, but never let yourself be defeated.", "Maya Angelou"},
-        {"The greatest glory in living lies not in never falling, but in rising every time we fall.", "Nelson Mandela"},
-        {"In the end, it's not the years in your life that count. It's the life in your years.", "Abraham Lincoln"},
-        {"Never let the fear of striking out keep you from playing the game.", "Babe Ruth"},
-    };
-
-    private static final int[] QUOTE_BACKGROUNDS = {
-        R.drawable.quote_img_1,
-        R.drawable.quote_img_2,
-        R.drawable.quote_img_3,
-        R.drawable.quote_img_4,
-        R.drawable.quote_img_5,
-        R.drawable.quote_img_6,
-        R.drawable.quote_img_7,
-    };
-    // ─────────────────────────────────────────────────────────────────────────
 
     private GoalDao goalDao;
     private HabitDao habitDao;
@@ -163,26 +118,18 @@ public class HomeFragment extends Fragment {
         loadData();
     }
 
-    /** Picks a quote + background image that stays the same for the entire day
-     *  but rotates every day using today's date as the random seed. */
+    /** Loads today's quote + image from res/xml/inspirations.xml via InspirationLoader. */
     private void setupDailyInspiration(View v) {
-        // Build a seed from today's date so the same quote shows all day
-        Calendar cal = Calendar.getInstance();
-        long dateSeed = cal.get(Calendar.YEAR) * 10000L
-                + (cal.get(Calendar.MONTH) + 1) * 100L
-                + cal.get(Calendar.DAY_OF_MONTH);
-        Random rnd = new Random(dateSeed);
+        InspirationLoader.Inspiration today =
+                InspirationLoader.getTodaysInspiration(requireContext());
 
-        int quoteIndex = rnd.nextInt(QUOTES.length);
-        int bgIndex    = rnd.nextInt(QUOTE_BACKGROUNDS.length);
+        if (today.imageResId != 0)
+            ((ImageView) v.findViewById(R.id.iv_quote_bg)).setImageResource(today.imageResId);
 
-        String quote  = QUOTES[quoteIndex][0];
-        String author = "— " + QUOTES[quoteIndex][1];
-        int    bgRes  = QUOTE_BACKGROUNDS[bgIndex];
-
-        ((ImageView) v.findViewById(R.id.iv_quote_bg)).setImageResource(bgRes);
-        ((TextView)  v.findViewById(R.id.tv_quote_text)).setText("\u201C" + quote + "\u201D");
-        ((TextView)  v.findViewById(R.id.tv_quote_author)).setText(author);
+        ((TextView) v.findViewById(R.id.tv_quote_text))
+                .setText("\u201C" + today.quote + "\u201D");
+        ((TextView) v.findViewById(R.id.tv_quote_author))
+                .setText(today.author);
     }
 
     @Override
