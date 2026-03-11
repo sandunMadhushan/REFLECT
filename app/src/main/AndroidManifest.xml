@@ -143,6 +143,13 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
+        <!-- Add / Edit Vision Board Item -->
+        <activity
+            android:name=".AddVisionItemActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+
         <!-- Facebook Login — App ID and Client Token (replace values with yours from developers.facebook.com) -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
