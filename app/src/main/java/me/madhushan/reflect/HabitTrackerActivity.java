@@ -32,6 +32,7 @@ import me.madhushan.reflect.database.Habit;
 import me.madhushan.reflect.database.HabitCompletion;
 import me.madhushan.reflect.database.HabitCompletionDao;
 import me.madhushan.reflect.database.HabitDao;
+import me.madhushan.reflect.utils.AppNotificationManager;
 import me.madhushan.reflect.utils.SessionManager;
 
 public class HabitTrackerActivity extends AppCompatActivity {
@@ -355,6 +356,14 @@ public class HabitTrackerActivity extends AppCompatActivity {
                 // Recalculate streak
                 int streak = calculateStreak(habit.id);
                 habitDao.updateStreak(habit.id, streak, selectedDate);
+                // Post streak milestone notifications
+                if (streak == 3 || streak == 7 || streak == 14 || streak == 30) {
+                    AppNotificationManager.postHabitStreak(
+                            HabitTrackerActivity.this,
+                            sessionManager.getUserId(),
+                            habit.title != null ? habit.title : "Habit",
+                            streak);
+                }
             } else {
                 // Remove completion
                 completionDao.deleteCompletionForDate(habit.id, selectedDate);

@@ -24,6 +24,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import me.madhushan.reflect.utils.AvatarLoader;
 import me.madhushan.reflect.utils.SessionManager;
+import me.madhushan.reflect.utils.WorkManagerScheduler;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -42,7 +43,9 @@ public class ProfileActivity extends AppCompatActivity {
                 switchNotifications.setOnCheckedChangeListener(null);
                 switchNotifications.setChecked(isGranted);
                 setupNotificationToggle();
-                if (!isGranted) {
+                if (isGranted) {
+                    WorkManagerScheduler.scheduleNow(this);
+                } else {
                     Toast.makeText(this,
                             "Permission denied. Enable notifications in App Settings.",
                             Toast.LENGTH_LONG).show();
@@ -124,25 +127,23 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void handleNotificationToggleOff() {
-        // Simply save OFF — do NOT clear the dialog-shown flag.
-        // This prevents MainActivity from re-triggering the system dialog.
         sessionManager.setNotificationsEnabled(false);
+        WorkManagerScheduler.cancel(this);
     }
 
     private void handleNotificationToggleOn() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (isNotificationPermissionGranted()) {
-                // System permission is granted — show an in-app confirmation dialog
-                // (Android won't re-show the system dialog for already-granted permissions)
                 new AlertDialog.Builder(this)
                         .setTitle("Enable Notifications")
                         .setMessage("Allow Reflect to send you daily reflection reminders and goal updates?")
-                        .setPositiveButton("Enable", (d, w) ->
-                                sessionManager.setNotificationsEnabled(true))
+                        .setPositiveButton("Enable", (d, w) -> {
+                            sessionManager.setNotificationsEnabled(true);
+                            WorkManagerScheduler.scheduleNow(this);
+                        })
                         .setNegativeButton("Not now", (d, w) -> revertToggleOff())
                         .show();
             } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
-                // Denied before — show rationale then re-request
                 new AlertDialog.Builder(this)
                         .setTitle("Enable Notifications")
                         .setMessage("Reflect needs notification permission to send you daily reflection reminders and goal updates.")
@@ -151,18 +152,18 @@ public class ProfileActivity extends AppCompatActivity {
                         .setNegativeButton("Not now", (d, w) -> revertToggleOff())
                         .show();
             } else {
-                // Permanently denied — go to App Settings
                 revertToggleOff();
                 showOpenSettingsDialog();
             }
         } else {
-            // Android 12 and below
             if (NotificationManagerCompat.from(this).areNotificationsEnabled()) {
                 new AlertDialog.Builder(this)
                         .setTitle("Enable Notifications")
                         .setMessage("Allow Reflect to send you daily reflection reminders and goal updates?")
-                        .setPositiveButton("Enable", (d, w) ->
-                                sessionManager.setNotificationsEnabled(true))
+                        .setPositiveButton("Enable", (d, w) -> {
+                            sessionManager.setNotificationsEnabled(true);
+                            WorkManagerScheduler.scheduleNow(this);
+                        })
                         .setNegativeButton("Not now", (d, w) -> revertToggleOff())
                         .show();
             } else {

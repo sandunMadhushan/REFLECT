@@ -8,9 +8,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -26,6 +24,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import me.madhushan.reflect.database.AppDatabase;
+import me.madhushan.reflect.database.AppNotificationDao;
 import me.madhushan.reflect.database.Goal;
 import me.madhushan.reflect.database.GoalDao;
 import me.madhushan.reflect.database.HabitDao;
@@ -40,11 +39,12 @@ public class HomeFragment extends Fragment {
     private GoalDao goalDao;
     private HabitDao habitDao;
     private HabitCompletionDao habitCompletionDao;
+    private AppNotificationDao notificationDao;
     private SessionManager sessionManager;
     private ExecutorService executor;
 
     private LinearLayout statsRow, emptyState, sectionProgress, chartCard, recentActivityContainer;
-    private TextView tvRecentLabel, tvActiveGoals, tvCompleted, tvHabits;
+    private TextView tvRecentLabel, tvActiveGoals, tvCompleted, tvHabits, tvNotifBadge;
     private CircularProgressView circularProgress;
     private View[] bars;
     private TextView[] dayLabels;
@@ -67,6 +67,7 @@ public class HomeFragment extends Fragment {
         goalDao        = AppDatabase.getInstance(requireContext()).goalDao();
         habitDao       = AppDatabase.getInstance(requireContext()).habitDao();
         habitCompletionDao = AppDatabase.getInstance(requireContext()).habitCompletionDao();
+        notificationDao    = AppDatabase.getInstance(requireContext()).appNotificationDao();
         executor       = Executors.newSingleThreadExecutor();
 
         // Avatar
@@ -86,6 +87,7 @@ public class HomeFragment extends Fragment {
         tvActiveGoals          = v.findViewById(R.id.tv_active_goals_count);
         tvCompleted            = v.findViewById(R.id.tv_completed_count);
         tvHabits               = v.findViewById(R.id.tv_habits_count);
+        tvNotifBadge           = v.findViewById(R.id.tv_notif_badge);
         circularProgress       = v.findViewById(R.id.circular_progress);
 
         bars = new View[]{ v.findViewById(R.id.bar_mon), v.findViewById(R.id.bar_tue),
@@ -107,8 +109,10 @@ public class HomeFragment extends Fragment {
         // Completed Goals card → navigate to Goals tab filtered by completed
         v.findViewById(R.id.card_completed_goals).setOnClickListener(b ->
                 ((MainActivity) requireActivity()).switchToTab("goals", "completed"));
+
+        // Notification bell → open NotificationsActivity
         v.findViewById(R.id.btn_notifications).setOnClickListener(b ->
-                Toast.makeText(requireContext(), "Notifications — coming soon", Toast.LENGTH_SHORT).show());
+                startActivity(new Intent(requireContext(), NotificationsActivity.class)));
 
         // Habits card → open Habit Tracker
         v.findViewById(R.id.card_habits).setOnClickListener(b ->
@@ -143,6 +147,25 @@ public class HomeFragment extends Fragment {
                     v.findViewById(R.id.tv_avatar_initials), sessionManager);
             ((TextView) v.findViewById(R.id.tv_user_name)).setText(sessionManager.getUserName());
         }
+        refreshNotifBadge();
+    }
+
+    /** Loads the unread notification count and shows/hides the badge on the bell icon. */
+    private void refreshNotifBadge() {
+        if (tvNotifBadge == null) return;
+        int userId = sessionManager.getUserId();
+        executor.execute(() -> {
+            int unread = notificationDao.getUnreadCount(userId);
+            if (getActivity() == null) return;
+            requireActivity().runOnUiThread(() -> {
+                if (unread > 0) {
+                    tvNotifBadge.setVisibility(View.VISIBLE);
+                    tvNotifBadge.setText(unread > 99 ? "99+" : String.valueOf(unread));
+                } else {
+                    tvNotifBadge.setVisibility(View.GONE);
+                }
+            });
+        });
     }
 
     public void loadData() {
@@ -163,8 +186,10 @@ public class HomeFragment extends Fragment {
             int totalHabits     = habitDao.getTotalHabitsCount(userId);
             int completedHabits = habitCompletionDao.getCompletedCountForUserOnDate(userId, todayDate);
 
-            requireActivity().runOnUiThread(() ->
-                    updateUI(active, completed, total, recent, barCounts, fMax, totalHabits, completedHabits));
+            requireActivity().runOnUiThread(() -> {
+                    updateUI(active, completed, total, recent, barCounts, fMax, totalHabits, completedHabits);
+                    refreshNotifBadge();
+            });
         });
     }
 
