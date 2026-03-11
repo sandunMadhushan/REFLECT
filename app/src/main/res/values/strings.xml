@@ -208,4 +208,22 @@
     <string name="ai_detecting">Detecting…</string>
     <string name="ai_redetect">Re-detect</string>
     <string name="ai_detect_btn">Detect</string>
+
+    <!-- Vision Board -->
+    <string name="vision_board_title">Vision Board</string>
+    <string name="vision_board_subtitle">Visualize your growth</string>
+    <string name="life_goal">LIFE GOAL</string>
+    <string name="dream_home">Dream Home</string>
+    <string name="dream_home_desc">Dream Home image</string>
+    <string name="career">CAREER</string>
+    <string name="senior_designer">Senior Designer</string>
+    <string name="senior_designer_desc">Senior Designer image</string>
+    <string name="travel_switzerland">Travel Switzerland</string>
+    <string name="travel_switzerland_desc">Travel Switzerland image</string>
+    <string name="eat_clean">Eat Clean</string>
+    <string name="eat_clean_desc">Eat Clean image</string>
+    <string name="inner_peace">Inner Peace</string>
+    <string name="inner_peace_desc">Inner Peace image</string>
+    <string name="read_books">Read 20 Books</string>
+    <string name="read_books_desc">Read 20 Books image</string>
 </resources>

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="#181818"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/vision_board_title"
+        android:textColor="#FFF"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="24dp"/>
+
+    <!-- Subtitle -->
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/vision_board_subtitle"
+        android:textColor="#AAB2C8"
+        android:textSize="18sp"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="24dp"/>
+
+    <!-- Vision Board Grid (simplified with GridLayout) -->
+    <GridLayout
+        android:id="@+id/vision_grid"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:columnCount="2"
+        android:rowCount="3"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="80dp">
+
+        <!-- Card 1: Dream Home -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_margin="12dp"
+            android:background="@drawable/rounded_card_bg">
+            <ImageView
+                android:src="@drawable/dream_home"
+                android:scaleType="centerCrop"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/dream_home_desc"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/life_goal"
+                android:textColor="#FFF"
+                android:background="@drawable/label_bg"
+                android:padding="6dp"
+                android:textSize="14sp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dream_home"
+                android:textColor="#FFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_margin="8dp"/>
+        </LinearLayout>
+
+        <!-- Card 2: Senior Designer -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_margin="12dp"
+            android:background="@drawable/rounded_card_bg">
+            <ImageView
+                android:src="@drawable/senior_designer"
+                android:scaleType="centerCrop"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/senior_designer_desc"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/career"
+                android:textColor="#FFF"
+                android:background="@drawable/label_career_bg"
+                android:padding="6dp"
+                android:textSize="14sp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/senior_designer"
+                android:textColor="#FFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_margin="8dp"/>
+        </LinearLayout>
+
+        <!-- Card 3: Travel Switzerland -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_margin="12dp"
+            android:background="@drawable/rounded_card_bg">
+            <ImageView
+                android:src="@drawable/travel_switzerland"
+                android:scaleType="centerCrop"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/travel_switzerland_desc"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/travel_switzerland"
+                android:textColor="#FFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_margin="8dp"/>
+        </LinearLayout>
+
+        <!-- Card 4: Eat Clean -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_margin="12dp"
+            android:background="@drawable/rounded_card_bg">
+            <ImageView
+                android:src="@drawable/eat_clean"
+                android:scaleType="centerCrop"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/eat_clean_desc"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/eat_clean"
+                android:textColor="#FFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_margin="8dp"/>
+        </LinearLayout>
+
+        <!-- Card 5: Inner Peace -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_margin="12dp"
+            android:background="@drawable/rounded_card_bg">
+            <ImageView
+                android:src="@drawable/inner_peace"
+                android:scaleType="centerCrop"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/inner_peace_desc"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/inner_peace"
+                android:textColor="#FFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_margin="8dp"/>
+        </LinearLayout>
+
+        <!-- Card 6: Read 20 Books -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_margin="12dp"
+            android:background="@drawable/rounded_card_bg">
+            <ImageView
+                android:src="@drawable/read_books"
+                android:scaleType="centerCrop"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/read_books_desc"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/read_books"
+                android:textColor="#FFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_margin="8dp"/>
+        </LinearLayout>
+    </GridLayout>
+
+    <!-- Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#222"
+        app:itemIconTint="@color/bottom_nav_selector"
+        app:itemTextColor="@color/bottom_nav_selector"
+        app:menu="@menu/bottom_nav_menu"/>
+</LinearLayout>
