@@ -1,4 +1,4 @@
-<div align="center>
+<div align="center">
 
 <img src="app/src/main/res/drawable/reflect_logo_rounded.png" width="110" alt="Reflect Logo"/>
 
