@@ -83,6 +83,9 @@ public class ProfileFragment extends Fragment {
         v.findViewById(R.id.btn_achievements).setOnClickListener(b ->
                 startActivity(new Intent(requireContext(), AchievementsActivity.class)));
 
+        v.findViewById(R.id.row_vision_board).setOnClickListener(b ->
+                startActivity(new Intent(requireContext(), VisionBoardActivity.class)));
+
         v.findViewById(R.id.btn_edit_avatar).setOnClickListener(b ->
                 startActivity(new Intent(requireContext(), PersonalDetailsActivity.class)));
         v.findViewById(R.id.row_personal_details).setOnClickListener(b ->
