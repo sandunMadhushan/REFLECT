@@ -98,6 +98,14 @@ public class HomeFragment extends Fragment {
                 goalLauncher.launch(new Intent(requireContext(), AddGoalActivity.class)));
         v.findViewById(R.id.btn_view_all_goals).setOnClickListener(b ->
                 ((MainActivity) requireActivity()).switchToTab("goals"));
+
+        // Active Goals card → navigate to Goals tab filtered by active
+        v.findViewById(R.id.card_active_goals).setOnClickListener(b ->
+                ((MainActivity) requireActivity()).switchToTab("goals", "active"));
+
+        // Completed Goals card → navigate to Goals tab filtered by completed
+        v.findViewById(R.id.card_completed_goals).setOnClickListener(b ->
+                ((MainActivity) requireActivity()).switchToTab("goals", "completed"));
         v.findViewById(R.id.btn_notifications).setOnClickListener(b ->
                 Toast.makeText(requireContext(), "Notifications — coming soon", Toast.LENGTH_SHORT).show());
 

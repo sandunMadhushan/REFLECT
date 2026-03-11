@@ -29,6 +29,16 @@ import me.madhushan.reflect.utils.SessionManager;
 
 public class GoalsFragment extends Fragment {
 
+    private static final String ARG_FILTER = "initial_filter";
+
+    public static GoalsFragment newInstance(String filter) {
+        GoalsFragment f = new GoalsFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_FILTER, filter);
+        f.setArguments(args);
+        return f;
+    }
+
     private GoalDao goalDao;
     private SessionManager sessionManager;
     private ExecutorService executor;
@@ -63,6 +73,12 @@ public class GoalsFragment extends Fragment {
         filterActive.setOnClickListener(b    -> { currentFilter = "active";    applyFilterUI(); loadData(); });
         filterCompleted.setOnClickListener(b -> { currentFilter = "completed"; applyFilterUI(); loadData(); });
 
+        // Apply initial filter from arguments (e.g. navigated from Home cards)
+        Bundle args = getArguments();
+        if (args != null && args.containsKey(ARG_FILTER)) {
+            currentFilter = args.getString(ARG_FILTER, "all");
+        }
+        applyFilterUI();
         loadData();
     }
 
