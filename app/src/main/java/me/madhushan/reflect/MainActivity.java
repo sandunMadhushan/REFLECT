@@ -104,11 +104,18 @@ public class MainActivity extends AppCompatActivity {
 
     /** Public so any Fragment can trigger a tab switch (e.g. HomeFragment "View All"). */
     public void switchToTab(String tab) {
+        switchToTab(tab, null);
+    }
+
+    /** Switch to a tab with an optional initial filter (used by Goals tab). */
+    public void switchToTab(String tab, String filter) {
         currentTab = tab;
 
         Fragment fragment;
         switch (tab) {
-            case "goals":   fragment = new GoalsFragment();   break;
+            case "goals":
+                fragment = (filter != null) ? GoalsFragment.newInstance(filter) : new GoalsFragment();
+                break;
             case "journal": fragment = new JournalFragment(); break;
             case "profile": fragment = new ProfileFragment(); break;
             default:        fragment = new HomeFragment();    break;
