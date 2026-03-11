@@ -1,6 +1,6 @@
 package me.madhushan.reflect;
 
-import android.content.Intent;
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,10 +34,14 @@ public class JournalFragment extends Fragment {
     private SessionManager sessionManager;
     private ExecutorService executor;
 
-    private LinearLayout entriesContainer, emptyState;
+    private LinearLayout entriesContainer, emptyState, dateFilterBanner;
     private TextView filterAll, filterWeek, filterMonth, filterFavorites;
     private TextView tvEmptyTitle, tvEmptySubtitle;
+    private TextView tvSelectedDate, btnClearDate;
     private String currentFilter = "all";
+
+    // null means no date filter active; non-null means user picked a specific date
+    private String selectedDate = null; // "yyyy-MM-dd"
 
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,26 +54,99 @@ public class JournalFragment extends Fragment {
         reflectionDao    = AppDatabase.getInstance(requireContext()).reflectionDao();
         executor         = Executors.newSingleThreadExecutor();
 
-        entriesContainer = v.findViewById(R.id.entries_container);
-        emptyState       = v.findViewById(R.id.empty_state);
-        tvEmptyTitle     = v.findViewById(R.id.tv_empty_title);
-        tvEmptySubtitle  = v.findViewById(R.id.tv_empty_subtitle);
-        filterAll        = v.findViewById(R.id.filter_all);
-        filterWeek       = v.findViewById(R.id.filter_week);
-        filterMonth      = v.findViewById(R.id.filter_month);
-        filterFavorites  = v.findViewById(R.id.filter_favorites);
+        entriesContainer  = v.findViewById(R.id.entries_container);
+        emptyState        = v.findViewById(R.id.empty_state);
+        tvEmptyTitle      = v.findViewById(R.id.tv_empty_title);
+        tvEmptySubtitle   = v.findViewById(R.id.tv_empty_subtitle);
+        dateFilterBanner  = v.findViewById(R.id.date_filter_banner);
+        tvSelectedDate    = v.findViewById(R.id.tv_selected_date);
+        btnClearDate      = v.findViewById(R.id.btn_clear_date);
+        filterAll         = v.findViewById(R.id.filter_all);
+        filterWeek        = v.findViewById(R.id.filter_week);
+        filterMonth       = v.findViewById(R.id.filter_month);
+        filterFavorites   = v.findViewById(R.id.filter_favorites);
 
         filterAll.setOnClickListener(b       -> setFilter("all"));
         filterWeek.setOnClickListener(b      -> setFilter("week"));
         filterMonth.setOnClickListener(b     -> setFilter("month"));
         filterFavorites.setOnClickListener(b -> setFilter("favorites"));
 
+        // Calendar icon — show DatePickerDialog
+        v.findViewById(R.id.btn_calendar).setOnClickListener(b -> showDatePicker());
+
+        // Clear date filter button
+        btnClearDate.setOnClickListener(b -> clearDateFilter());
+
         loadData();
     }
 
     @Override public void onResume() { super.onResume(); loadData(); }
 
-    private void setFilter(String f) { currentFilter = f; applyFilterUI(); loadData(); }
+    // ── Date picker ───────────────────────────────────────────────────────
+
+    private void showDatePicker() {
+        Calendar cal = Calendar.getInstance();
+        // If a date is already selected, pre-populate the picker with that date
+        if (selectedDate != null) {
+            try {
+                java.util.Date d = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(selectedDate);
+                if (d != null) cal.setTime(d);
+            } catch (Exception ignored) {}
+        }
+
+        DatePickerDialog dialog = new DatePickerDialog(
+                requireContext(),
+                (picker, year, month, dayOfMonth) -> {
+                    // Build the date string
+                    String picked = String.format(Locale.getDefault(), "%04d-%02d-%02d",
+                            year, month + 1, dayOfMonth);
+                    applyDateFilter(picked);
+                },
+                cal.get(Calendar.YEAR),
+                cal.get(Calendar.MONTH),
+                cal.get(Calendar.DAY_OF_MONTH)
+        );
+        // Don't allow picking future dates
+        dialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+        dialog.setTitle("Filter by date");
+        dialog.show();
+    }
+
+    private void applyDateFilter(String date) {
+        selectedDate = date;
+        // Format for display: "March 12, 2026"
+        try {
+            java.util.Date d = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(date);
+            String display = d != null
+                    ? new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(d)
+                    : date;
+            tvSelectedDate.setText("Showing: " + display);
+        } catch (Exception e) {
+            tvSelectedDate.setText("Showing: " + date);
+        }
+        dateFilterBanner.setVisibility(View.VISIBLE);
+        // Reset chip filters when date is picked — date takes priority
+        currentFilter = "all";
+        applyFilterUI();
+        loadData();
+    }
+
+    private void clearDateFilter() {
+        selectedDate = null;
+        dateFilterBanner.setVisibility(View.GONE);
+        loadData();
+    }
+
+    // ── Filter chips ──────────────────────────────────────────────────────
+
+    private void setFilter(String f) {
+        // Switching a chip clears any active date filter
+        selectedDate = null;
+        dateFilterBanner.setVisibility(View.GONE);
+        currentFilter = f;
+        applyFilterUI();
+        loadData();
+    }
 
     private void applyFilterUI() {
         int white    = getResources().getColor(R.color.white, null);
@@ -92,61 +169,90 @@ public class JournalFragment extends Fragment {
         filterFavorites.setTypeface(null, currentFilter.equals("favorites") ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
     }
 
+    // ── Data loading ──────────────────────────────────────────────────────
+
     public void loadData() {
         if (!isAdded() || sessionManager == null) return;
         int userId = sessionManager.getUserId();
+        final String dateSnap = selectedDate; // capture for background thread
+
         executor.execute(() -> {
             List<Reflection> all = reflectionDao.getReflectionsForUser(userId);
             List<Reflection> filtered = new ArrayList<>();
-            switch (currentFilter) {
-                case "week":
-                    Calendar cal = Calendar.getInstance();
-                    int dow = cal.get(Calendar.DAY_OF_WEEK);
-                    cal.add(Calendar.DAY_OF_YEAR, -(dow == Calendar.SUNDAY ? 6 : dow - 2));
-                    String weekStart = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(cal.getTime());
-                    for (Reflection r : all) if (r.createdAt != null && r.createdAt.compareTo(weekStart) >= 0) filtered.add(r);
-                    break;
-                case "month":
-                    String mp = new SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(Calendar.getInstance().getTime());
-                    for (Reflection r : all) if (r.createdAt != null && r.createdAt.startsWith(mp)) filtered.add(r);
-                    break;
-                case "favorites":
-                    for (Reflection r : all) if (r.isFavorite == 1) filtered.add(r);
-                    break;
-                default:
-                    filtered.addAll(all);
+
+            if (dateSnap != null) {
+                // Date filter takes priority over chip filters
+                for (Reflection r : all) {
+                    if (r.createdAt != null && r.createdAt.startsWith(dateSnap)) {
+                        filtered.add(r);
+                    }
+                }
+            } else {
+                switch (currentFilter) {
+                    case "week":
+                        Calendar cal = Calendar.getInstance();
+                        int dow = cal.get(Calendar.DAY_OF_WEEK);
+                        cal.add(Calendar.DAY_OF_YEAR, -(dow == Calendar.SUNDAY ? 6 : dow - 2));
+                        String weekStart = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(cal.getTime());
+                        for (Reflection r : all)
+                            if (r.createdAt != null && r.createdAt.compareTo(weekStart) >= 0) filtered.add(r);
+                        break;
+                    case "month":
+                        String mp = new SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(Calendar.getInstance().getTime());
+                        for (Reflection r : all)
+                            if (r.createdAt != null && r.createdAt.startsWith(mp)) filtered.add(r);
+                        break;
+                    case "favorites":
+                        for (Reflection r : all) if (r.isFavorite == 1) filtered.add(r);
+                        break;
+                    default:
+                        filtered.addAll(all);
+                }
             }
-            // Guard: only update UI if fragment is still attached
+
             if (!isAdded()) return;
             requireActivity().runOnUiThread(() -> {
                 if (!isAdded()) return;
-                renderEntries(filtered);
+                renderEntries(filtered, dateSnap);
             });
         });
     }
 
-    private void renderEntries(List<Reflection> entries) {
+    // ── Rendering ─────────────────────────────────────────────────────────
+
+    private void renderEntries(List<Reflection> entries, String dateSnap) {
         entriesContainer.removeAllViews();
 
         if (entries.isEmpty()) {
             emptyState.setVisibility(View.VISIBLE);
-            switch (currentFilter) {
-                case "week":
-                    tvEmptyTitle.setText("No reflections this week");
-                    tvEmptySubtitle.setText("You haven't written anything this week. Start journaling today!");
-                    break;
-                case "month":
-                    tvEmptyTitle.setText("No reflections this month");
-                    tvEmptySubtitle.setText("Nothing written this month yet. Tap + to add a reflection.");
-                    break;
-                case "favorites":
-                    tvEmptyTitle.setText("No favorites yet");
-                    tvEmptySubtitle.setText("Long-press any reflection to mark it as a favourite.");
-                    break;
-                default:
-                    tvEmptyTitle.setText("No reflections yet");
-                    tvEmptySubtitle.setText("Tap the + button to write your first reflection.");
-                    break;
+            if (dateSnap != null) {
+                // Specific date was picked but nothing found
+                String display = dateSnap;
+                try {
+                    java.util.Date d = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(dateSnap);
+                    if (d != null) display = new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(d);
+                } catch (Exception ignored) {}
+                tvEmptyTitle.setText("No reflections on " + display);
+                tvEmptySubtitle.setText("You didn't write anything on this day. Try a different date.");
+            } else {
+                switch (currentFilter) {
+                    case "week":
+                        tvEmptyTitle.setText("No reflections this week");
+                        tvEmptySubtitle.setText("You haven't written anything this week. Start journaling today!");
+                        break;
+                    case "month":
+                        tvEmptyTitle.setText("No reflections this month");
+                        tvEmptySubtitle.setText("Nothing written this month yet. Tap + to add a reflection.");
+                        break;
+                    case "favorites":
+                        tvEmptyTitle.setText("No favorites yet");
+                        tvEmptySubtitle.setText("Long-press any reflection to mark it as a favourite.");
+                        break;
+                    default:
+                        tvEmptyTitle.setText("No reflections yet");
+                        tvEmptySubtitle.setText("Tap the + button to write your first reflection.");
+                        break;
+                }
             }
             return;
         }
@@ -235,6 +341,8 @@ public class JournalFragment extends Fragment {
         }
     }
 
+    // ── Helpers ───────────────────────────────────────────────────────────
+
     private int moodBoxDrawable(String m) {
         if (m == null) return R.drawable.bg_mood_blue;
         switch (m) { case "happy": return R.drawable.bg_mood_green; case "sad": return R.drawable.bg_mood_amber;
@@ -274,9 +382,3 @@ public class JournalFragment extends Fragment {
 
     @Override public void onDestroy() { super.onDestroy(); if (executor != null) executor.shutdown(); }
 }
-
-
-
-
-
-
