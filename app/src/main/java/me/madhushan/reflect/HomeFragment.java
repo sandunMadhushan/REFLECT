@@ -32,6 +32,7 @@ import me.madhushan.reflect.database.HabitDao;
 import me.madhushan.reflect.database.HabitCompletionDao;
 import me.madhushan.reflect.ui.CircularProgressView;
 import me.madhushan.reflect.utils.AvatarLoader;
+import me.madhushan.reflect.utils.InspirationLoader;
 import me.madhushan.reflect.utils.SessionManager;
 
 public class HomeFragment extends Fragment {
@@ -113,7 +114,22 @@ public class HomeFragment extends Fragment {
         v.findViewById(R.id.card_habits).setOnClickListener(b ->
                 startActivity(new Intent(requireContext(), HabitTrackerActivity.class)));
 
+        setupDailyInspiration(v);
         loadData();
+    }
+
+    /** Loads today's quote + image from res/xml/inspirations.xml via InspirationLoader. */
+    private void setupDailyInspiration(View v) {
+        InspirationLoader.Inspiration today =
+                InspirationLoader.getTodaysInspiration(requireContext());
+
+        if (today.imageResId != 0)
+            ((ImageView) v.findViewById(R.id.iv_quote_bg)).setImageResource(today.imageResId);
+
+        ((TextView) v.findViewById(R.id.tv_quote_text))
+                .setText("\u201C" + today.quote + "\u201D");
+        ((TextView) v.findViewById(R.id.tv_quote_author))
+                .setText(today.author);
     }
 
     @Override

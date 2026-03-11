@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Daily Inspiration Data
+    ──────────────────────
+    Add or edit quotes here — no Java changes needed.
+    Each <quote> has:
+        text   — the inspirational quote
+        author — person it is attributed to
+    Each <image> has:
+        name   — the drawable resource name (without @drawable/)
+-->
+<inspirations>
+
+    <!-- ── Quotes ─────────────────────────────────────── -->
+    <quotes>
+        <quote text="Believe you can and you&apos;re halfway there." author="Theodore Roosevelt"/>
+        <quote text="The only way to do great work is to love what you do." author="Steve Jobs"/>
+        <quote text="It does not matter how slowly you go as long as you do not stop." author="Confucius"/>
+        <quote text="Success is not final, failure is not fatal: it is the courage to continue that counts." author="Winston Churchill"/>
+        <quote text="You are never too old to set another goal or to dream a new dream." author="C.S. Lewis"/>
+        <quote text="The secret of getting ahead is getting started." author="Mark Twain"/>
+        <quote text="Don&apos;t watch the clock; do what it does. Keep going." author="Sam Levenson"/>
+        <quote text="Hardships often prepare ordinary people for an extraordinary destiny." author="C.S. Lewis"/>
+        <quote text="Believe in yourself and all that you are." author="Christian D. Larson"/>
+        <quote text="Act as if what you do makes a difference. It does." author="William James"/>
+        <quote text="What you get by achieving your goals is not as important as what you become." author="Zig Ziglar"/>
+        <quote text="Keep your face always toward the sunshine, and shadows will fall behind you." author="Walt Whitman"/>
+        <quote text="Do one thing every day that scares you." author="Eleanor Roosevelt"/>
+        <quote text="You miss 100% of the shots you don&apos;t take." author="Wayne Gretzky"/>
+        <quote text="The future belongs to those who believe in the beauty of their dreams." author="Eleanor Roosevelt"/>
+        <quote text="It always seems impossible until it&apos;s done." author="Nelson Mandela"/>
+        <quote text="Start where you are. Use what you have. Do what you can." author="Arthur Ashe"/>
+        <quote text="Strive not to be a success, but rather to be of value." author="Albert Einstein"/>
+        <quote text="Two roads diverged in a wood, and I took the one less traveled by." author="Robert Frost"/>
+        <quote text="If you can dream it, you can do it." author="Walt Disney"/>
+        <quote text="In the middle of every difficulty lies opportunity." author="Albert Einstein"/>
+        <quote text="Life is what happens when you&apos;re busy making other plans." author="John Lennon"/>
+        <quote text="Spread love everywhere you go. Let no one ever come to you without leaving happier." author="Mother Teresa"/>
+        <quote text="When you reach the end of your rope, tie a knot in it and hang on." author="Franklin D. Roosevelt"/>
+        <quote text="Always remember that you are absolutely unique. Just like everyone else." author="Margaret Mead"/>
+        <quote text="Don&apos;t go where the path may lead, go instead where there is no path and leave a trail." author="Ralph Waldo Emerson"/>
+        <quote text="You will face many defeats in life, but never let yourself be defeated." author="Maya Angelou"/>
+        <quote text="The greatest glory in living lies not in never falling, but in rising every time we fall." author="Nelson Mandela"/>
+        <quote text="In the end, it&apos;s not the years in your life that count. It&apos;s the life in your years." author="Abraham Lincoln"/>
+        <quote text="Never let the fear of striking out keep you from playing the game." author="Babe Ruth"/>
+        <quote text="Darkness cannot drive out darkness; only light can do that." author="Martin Luther King Jr."/>
+        <quote text="The best time to plant a tree was 20 years ago. The second best time is now." author="Chinese Proverb"/>
+        <quote text="An unexamined life is not worth living." author="Socrates"/>
+        <quote text="Spread your wings and let the fairy in you fly!" author="Rumi"/>
+        <quote text="You only live once, but if you do it right, once is enough." author="Mae West"/>
+    </quotes>
+
+    <!-- ── Background images ──────────────────────────── -->
+    <!-- Add more by dropping a photo in res/drawable and listing its name here -->
+    <images>
+        <image name="quote_img_1"/>
+        <image name="quote_img_2"/>
+        <image name="quote_img_3"/>
+        <image name="quote_img_4"/>
+        <image name="quote_img_5"/>
+        <image name="quote_img_6"/>
+        <image name="quote_img_7"/>
+    </images>
+
+</inspirations>
+
