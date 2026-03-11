@@ -36,6 +36,7 @@ public class JournalFragment extends Fragment {
 
     private LinearLayout entriesContainer, emptyState;
     private TextView filterAll, filterWeek, filterMonth, filterFavorites;
+    private TextView tvEmptyTitle, tvEmptySubtitle;
     private String currentFilter = "all";
 
     @Nullable @Override
@@ -51,6 +52,8 @@ public class JournalFragment extends Fragment {
 
         entriesContainer = v.findViewById(R.id.entries_container);
         emptyState       = v.findViewById(R.id.empty_state);
+        tvEmptyTitle     = v.findViewById(R.id.tv_empty_title);
+        tvEmptySubtitle  = v.findViewById(R.id.tv_empty_subtitle);
         filterAll        = v.findViewById(R.id.filter_all);
         filterWeek       = v.findViewById(R.id.filter_week);
         filterMonth      = v.findViewById(R.id.filter_month);
@@ -124,8 +127,31 @@ public class JournalFragment extends Fragment {
 
     private void renderEntries(List<Reflection> entries) {
         entriesContainer.removeAllViews();
-        emptyState.setVisibility(entries.isEmpty() ? View.VISIBLE : View.GONE);
-        if (entries.isEmpty()) return;
+
+        if (entries.isEmpty()) {
+            emptyState.setVisibility(View.VISIBLE);
+            switch (currentFilter) {
+                case "week":
+                    tvEmptyTitle.setText("No reflections this week");
+                    tvEmptySubtitle.setText("You haven't written anything this week. Start journaling today!");
+                    break;
+                case "month":
+                    tvEmptyTitle.setText("No reflections this month");
+                    tvEmptySubtitle.setText("Nothing written this month yet. Tap + to add a reflection.");
+                    break;
+                case "favorites":
+                    tvEmptyTitle.setText("No favorites yet");
+                    tvEmptySubtitle.setText("Long-press any reflection to mark it as a favourite.");
+                    break;
+                default:
+                    tvEmptyTitle.setText("No reflections yet");
+                    tvEmptySubtitle.setText("Tap the + button to write your first reflection.");
+                    break;
+            }
+            return;
+        }
+
+        emptyState.setVisibility(View.GONE);
 
         float dp = getResources().getDisplayMetrics().density;
         for (Reflection r : entries) {

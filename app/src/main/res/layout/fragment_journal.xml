@@ -155,6 +155,7 @@
                     android:alpha="0.25"
                     android:layout_marginBottom="20dp"/>
                 <TextView
+                    android:id="@+id/tv_empty_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No reflections yet"
@@ -163,6 +164,7 @@
                     android:textStyle="bold"
                     android:layout_marginBottom="10dp"/>
                 <TextView
+                    android:id="@+id/tv_empty_subtitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Tap the + button to write your first reflection"
