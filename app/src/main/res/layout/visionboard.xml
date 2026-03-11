@@ -3,34 +3,60 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="#181818"
+    android:background="@color/colorAppBg"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Title -->
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
+    <!-- Header with back button -->
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/vision_board_title"
-        android:textColor="#FFF"
-        android:textSize="32sp"
-        android:textStyle="bold"
-        android:layout_marginTop="32dp"
-        android:layout_marginStart="24dp"/>
+        android:paddingTop="48dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="16dp">
 
-    <!-- Subtitle -->
-    <TextView
-        android:id="@+id/subtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/vision_board_subtitle"
-        android:textColor="#AAB2C8"
-        android:textSize="18sp"
-        android:layout_marginTop="4dp"
-        android:layout_marginStart="24dp"/>
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_arrow_back"
+            android:padding="8dp"
+            app:tint="@color/colorTextPrimary"
+            android:clickable="true"
+            android:focusable="true"/>
 
-    <!-- Vision Board Grid (simplified with GridLayout) -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="60dp"
+            android:layout_centerVertical="true">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/vision_board_title"
+                android:textColor="@color/colorTextPrimary"
+                android:textSize="26sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/vision_board_subtitle"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="14sp"
+                android:layout_marginTop="2dp"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!-- Vision Board Grid -->
     <GridLayout
         android:id="@+id/vision_grid"
         android:layout_width="match_parent"
@@ -38,8 +64,10 @@
         android:layout_weight="1"
         android:columnCount="2"
         android:rowCount="3"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="80dp">
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp">
 
         <!-- Card 1: Dream Home -->
         <LinearLayout
@@ -48,8 +76,10 @@
             android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
-            android:layout_margin="12dp"
-            android:background="@drawable/rounded_card_bg">
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded_card_bg"
+            android:clipToOutline="true"
+            android:elevation="2dp">
             <ImageView
                 android:src="@drawable/dream_home"
                 android:scaleType="centerCrop"
@@ -64,15 +94,15 @@
                 android:textColor="#FFF"
                 android:background="@drawable/label_bg"
                 android:padding="6dp"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 android:layout_marginTop="8dp"
                 android:layout_marginStart="8dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/dream_home"
-                android:textColor="#FFF"
-                android:textSize="20sp"
+                android:textColor="@color/colorTextPrimary"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_margin="8dp"/>
         </LinearLayout>
@@ -84,8 +114,10 @@
             android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
-            android:layout_margin="12dp"
-            android:background="@drawable/rounded_card_bg">
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded_card_bg"
+            android:clipToOutline="true"
+            android:elevation="2dp">
             <ImageView
                 android:src="@drawable/senior_designer"
                 android:scaleType="centerCrop"
@@ -100,15 +132,15 @@
                 android:textColor="#FFF"
                 android:background="@drawable/label_career_bg"
                 android:padding="6dp"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 android:layout_marginTop="8dp"
                 android:layout_marginStart="8dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/senior_designer"
-                android:textColor="#FFF"
-                android:textSize="20sp"
+                android:textColor="@color/colorTextPrimary"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_margin="8dp"/>
         </LinearLayout>
@@ -120,8 +152,10 @@
             android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
-            android:layout_margin="12dp"
-            android:background="@drawable/rounded_card_bg">
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded_card_bg"
+            android:clipToOutline="true"
+            android:elevation="2dp">
             <ImageView
                 android:src="@drawable/travel_switzerland"
                 android:scaleType="centerCrop"
@@ -133,8 +167,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/travel_switzerland"
-                android:textColor="#FFF"
-                android:textSize="20sp"
+                android:textColor="@color/colorTextPrimary"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_margin="8dp"/>
         </LinearLayout>
@@ -146,8 +180,10 @@
             android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
-            android:layout_margin="12dp"
-            android:background="@drawable/rounded_card_bg">
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded_card_bg"
+            android:clipToOutline="true"
+            android:elevation="2dp">
             <ImageView
                 android:src="@drawable/eat_clean"
                 android:scaleType="centerCrop"
@@ -159,8 +195,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/eat_clean"
-                android:textColor="#FFF"
-                android:textSize="20sp"
+                android:textColor="@color/colorTextPrimary"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_margin="8dp"/>
         </LinearLayout>
@@ -172,8 +208,10 @@
             android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
-            android:layout_margin="12dp"
-            android:background="@drawable/rounded_card_bg">
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded_card_bg"
+            android:clipToOutline="true"
+            android:elevation="2dp">
             <ImageView
                 android:src="@drawable/inner_peace"
                 android:scaleType="centerCrop"
@@ -185,8 +223,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/inner_peace"
-                android:textColor="#FFF"
-                android:textSize="20sp"
+                android:textColor="@color/colorTextPrimary"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_margin="8dp"/>
         </LinearLayout>
@@ -198,8 +236,10 @@
             android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
-            android:layout_margin="12dp"
-            android:background="@drawable/rounded_card_bg">
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded_card_bg"
+            android:clipToOutline="true"
+            android:elevation="2dp">
             <ImageView
                 android:src="@drawable/read_books"
                 android:scaleType="centerCrop"
@@ -211,20 +251,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/read_books"
-                android:textColor="#FFF"
-                android:textSize="20sp"
+                android:textColor="@color/colorTextPrimary"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_margin="8dp"/>
         </LinearLayout>
+
     </GridLayout>
 
-    <!-- Bottom Navigation -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#222"
-        app:itemIconTint="@color/bottom_nav_selector"
-        app:itemTextColor="@color/bottom_nav_selector"
-        app:menu="@menu/bottom_nav_menu"/>
 </LinearLayout>
